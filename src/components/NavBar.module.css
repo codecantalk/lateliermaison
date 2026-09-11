@@ -1,0 +1,273 @@
+/* Floating Nav Wrapper */
+.navWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  pointer-events: none;
+}
+
+.navHidden {
+  transform: translateY(-150%);
+}
+
+/* The White Crystal Pill */
+.nav {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(65, 105, 225, 0.15) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  padding: 12px 24px;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 8px 30px rgba(65, 105, 225, 0.1); /* Subtle blue shadow */
+}
+
+.scrolled {
+  background: linear-gradient(135deg, #FFFFFF 0%, #E6EDFB 100%);
+  padding: 8px 24px;
+  box-shadow: 0 12px 40px rgba(65, 105, 225, 0.15);
+}
+
+.navContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Logo (Dark Text on White Crystal) */
+.logo {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  color: var(--color-secondary);
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+  white-space: nowrap;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.05); /* Ensure it's clear over BG */
+}
+
+.logo:hover {
+  opacity: 0.8;
+}
+
+/* Desktop Links */
+.desktopLinks {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .desktopLinks {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+}
+
+.navLink {
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  color: var(--color-secondary); /* Dark Espresso */
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+}
+
+.navLink:hover {
+  color: var(--color-primary); /* Brass on hover */
+  background: rgba(0, 0, 0, 0.04); /* Subtle darkening for hover state on white */
+}
+
+/* Services Dropdown (Premium White Crystal Card) */
+.navDropdownGroup {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(15px);
+  background: rgba(255, 255, 255, 0.95); /* More opaque for readability */
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 1);
+  border-radius: 16px; /* Modern rounded corners */
+  padding: 12px;
+  min-width: 280px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 24px 50px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Invisible bridge so hover doesn't break when moving mouse down */
+.dropdownMenu::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background: transparent;
+}
+
+.navDropdownGroup:hover .dropdownMenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.dropdownItem {
+  display: block;
+  padding: 14px 20px;
+  color: var(--color-secondary);
+  text-decoration: none;
+  font-size: 0.95rem;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+.dropdownItem:hover {
+  background: rgba(65, 105, 225, 0.08); /* Subtle warm brass tint */
+  color: var(--color-primary);
+  transform: translateX(6px); /* Premium slide effect */
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ctaBtn {
+  display: none;
+  border-radius: 4px;
+  padding: 8px 24px;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border: 1px solid var(--color-primary);
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.ctaBtn:hover {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+  color: var(--color-text-inverse);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+@media (min-width: 900px) {
+  .ctaBtn {
+    display: inline-flex;
+  }
+}
+
+/* Hamburger (Dark on White Crystal) */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 24px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 10;
+}
+
+@media (min-width: 900px) {
+  .hamburger {
+    display: none;
+  }
+}
+
+.line {
+  width: 24px;
+  height: 2px;
+  background: var(--color-secondary); /* Dark Espresso */
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+  transform-origin: 1px;
+}
+
+.line1Open { transform: rotate(45deg); }
+.line2Open { opacity: 0; }
+.line3Open { transform: rotate(-45deg); }
+
+/* Mobile Menu (White Crystal Overlay) */
+.mobileMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 100px var(--spacing-xl) var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  transform: translateY(-100%);
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.mobileMenuOpen {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobileLinkGroup {
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-top: 1rem;
+}
+
+.mobileLink {
+  font-size: 2rem;
+  font-family: var(--font-serif);
+  color: var(--color-secondary);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.mobileSubLink {
+  font-size: 1.5rem;
+  font-family: var(--font-serif);
+  color: var(--color-primary);
+  text-decoration: none;
+  margin-left: 1rem;
+}

@@ -1,0 +1,9 @@
+.main {
+  min-height: 100vh;
+  padding-top: 100px;
+  background-color: var(--color-bg-alt);
+}
+
+.estimateContainer {
+  max-width: 1000px;
+}

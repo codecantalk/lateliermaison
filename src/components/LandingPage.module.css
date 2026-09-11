@@ -1,0 +1,583 @@
+.wrapper {
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--color-bg);
+}
+
+.objectCover {
+  object-fit: cover;
+  object-position: center;
+}
+
+.sectionEyebrow {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-primary);
+}
+
+/* 1. Hero Slider */
+.heroSection {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  overflow: hidden;
+  background: var(--color-secondary);
+}
+
+.heroSlide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+  z-index: 1;
+}
+
+.heroSlideActive {
+  opacity: 1;
+  z-index: 2;
+}
+
+.heroImageWrapper {
+  position: absolute;
+  inset: 0;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, rgba(26, 20, 18, 0.95) 0%, rgba(26, 20, 18, 0.5) 45%, rgba(65, 105, 225, 0.15) 100%);
+  background-size: 150% 100%;
+  animation: heroGradientPulse 8s ease-in-out infinite alternate;
+  z-index: 1;
+}
+
+@keyframes heroGradientPulse {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+.heroContent {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 80px;
+}
+
+.heroTextContainer {
+  max-width: 800px;
+}
+
+.heroTextContainer h1 {
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  color: var(--color-text-inverse);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.1;
+}
+
+.heroSubtitle {
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  color: var(--color-bg-alt);
+  margin-bottom: var(--spacing-lg);
+  font-weight: 300;
+}
+
+.heroActions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.sliderDots {
+  position: absolute;
+  bottom: var(--spacing-lg);
+  left: var(--spacing-md);
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.dotActive {
+  background: var(--color-primary);
+  transform: scale(1.2);
+}
+
+/* 2. Process Timeline Section */
+.processSection {
+  padding: var(--spacing-2xl) 0;
+  background-color: var(--color-bg);
+  position: relative;
+  clip-path: inset(0); /* Crucial for fixed parallax */
+}
+
+.bgSvgWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bgSvgWrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 0%, var(--color-bg) 90%);
+  z-index: 2;
+}
+
+.bgSvgWrapper svg {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.processContainer {
+  display: flex;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.processLineWrapper {
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.processSvg {
+  width: 10px;
+  height: 100%;
+  min-height: 400px;
+}
+
+.processSteps {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  padding-top: var(--spacing-md);
+}
+
+.processStep {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.stepIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stepContent h3 {
+  font-size: 1.75rem;
+  margin-bottom: var(--spacing-xs);
+}
+
+.stepContent p {
+  color: var(--color-text-muted);
+}
+
+/* 3. New Section: Before & After Wipe Slider */
+.wipeSection {
+  padding: var(--spacing-2xl) 0;
+  background-color: var(--color-bg-alt);
+}
+
+.wipeContainer {
+  position: relative;
+  width: 100%;
+  height: 60vh;
+  min-height: 500px;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+  user-select: none;
+}
+
+.wipeAfter {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.wipeHandleLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-primary);
+  z-index: 2;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.wipeHandleBtn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  background: var(--color-bg);
+  border: 2px solid var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.wipeHandleBtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.wipeInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 3;
+  cursor: ew-resize;
+}
+
+/* 3.5 Uncompromising Standards Section */
+.standardsSection {
+  padding: var(--spacing-2xl) 0;
+  background-color: var(--color-bg); /* Bright White Crystal */
+  color: var(--color-text);
+  position: relative;
+  clip-path: inset(0); /* Crucial for fixed parallax */
+}
+
+.standardsSection h2 {
+  color: var(--color-text);
+}
+
+.standardsContent {
+  position: relative;
+  z-index: 2;
+}
+
+.standardsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 1024px) {
+  .standardsGrid {
+    grid-template-columns: repeat(12, 1fr);
+  }
+  
+  .standardsHeader {
+    grid-column: 1 / 6;
+  }
+  
+  .standardsCard:nth-of-type(2) {
+    grid-column: 7 / 12;
+  }
+  
+  .standardsCard:nth-of-type(3) {
+    grid-column: 2 / 7;
+  }
+  
+  .standardsCard:nth-of-type(4) {
+    grid-column: 8 / 13;
+  }
+}
+
+.standardsHeader h2 {
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text);
+}
+
+.standardsHeader p {
+  color: var(--color-text-light);
+  font-size: 1.125rem;
+}
+
+.standardsCard {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.9);
+  border-left: 1px solid rgba(255, 255, 255, 0.7);
+  padding: var(--spacing-lg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), inset 0 0 20px rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glass Glare Effect */
+.standardsCard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-25deg);
+  transition: left 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 1;
+}
+
+.standardsCard:hover::before {
+  left: 200%;
+}
+
+.standardsCard:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.standardsCard svg {
+  margin-bottom: var(--spacing-md);
+  position: relative;
+  z-index: 2;
+}
+
+.standardsCard h3 {
+  color: var(--color-text);
+  font-size: 1.75rem;
+  margin-bottom: var(--spacing-sm);
+  position: relative;
+  z-index: 2;
+}
+
+.standardsCard p {
+  color: var(--color-text-light);
+  position: relative;
+  z-index: 2;
+}
+
+/* 4. Award Section */
+.awardSection {
+  padding: var(--spacing-xl) 0;
+  background-color: var(--color-bg-alt);
+}
+
+.awardGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+@media (min-width: 1024px) {
+  .awardGrid {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.awardImageContainer {
+  flex: 1;
+  position: relative;
+  height: 60vh;
+  min-height: 500px;
+  width: 100%;
+}
+
+.awardText {
+  flex: 1;
+}
+
+@media (min-width: 1024px) {
+  .awardText {
+    padding-left: var(--spacing-xl);
+  }
+}
+
+.awardText h2 {
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  margin-bottom: var(--spacing-md);
+}
+
+.awardText p {
+  font-size: 1.125rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-md);
+}
+
+.badges {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 12px 24px;
+  border: 1px solid var(--color-primary);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-secondary);
+}
+
+/* 5. Services Grid */
+.servicesSection {
+  padding: var(--spacing-2xl) 0;
+  background-color: var(--color-bg);
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .servicesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .servicesGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.serviceCard {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-alt);
+  transition: transform var(--transition-normal);
+}
+
+.serviceCard:hover {
+  transform: translateY(-10px);
+}
+
+.serviceImageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.serviceOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 20, 18, 0.2);
+  transition: background var(--transition-normal);
+}
+
+.serviceCard:hover .serviceOverlay {
+  background: rgba(26, 20, 18, 0);
+}
+
+.serviceContent {
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.serviceContent h3 {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.serviceContent p {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  margin-bottom: var(--spacing-lg);
+  flex-grow: 1;
+}
+
+.serviceLink {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-primary);
+  font-weight: 600;
+  transition: color var(--transition-fast);
+}
+
+/* 6. Consultation Banner */
+.consultSection {
+  position: relative;
+  padding: var(--spacing-2xl) 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.parallaxBg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.imageWrapper {
+  position: absolute;
+  top: -20%;
+  left: 0;
+  width: 100%;
+  height: 140%;
+}
+
+.overlayEspressoHalf {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(26, 20, 18, 0.9) 0%, rgba(26, 20, 18, 0.3) 100%);
+}
+
+.consultCard {
+  background: var(--color-bg);
+  padding: var(--spacing-xl);
+  max-width: 600px;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 20px 40px rgba(26, 20, 18, 0.1);
+}
+
+.consultCard h2 {
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  margin-bottom: var(--spacing-md);
+}
+
+.consultCard p {
+  color: var(--color-text-muted);
+  font-size: 1.125rem;
+  margin-bottom: var(--spacing-lg);
+}

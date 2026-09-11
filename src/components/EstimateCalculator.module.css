@@ -1,0 +1,453 @@
+.calculator {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.header h2 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+}
+
+/* Service Selection Ribbon */
+.serviceSelection {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.serviceBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.serviceBtn:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.activeService {
+  background: var(--color-secondary);
+  color: var(--color-text-inverse);
+  border-color: var(--color-secondary);
+  box-shadow: 0 10px 30px rgba(26, 20, 18, 0.2);
+}
+
+.activeService svg {
+  stroke: var(--color-primary);
+}
+
+/* Two Column Layout */
+.container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .container {
+    grid-template-columns: 1.5fr 1fr;
+    gap: 32px;
+  }
+}
+
+/* Form Container */
+.form {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.05);
+}
+
+.stepGroup {
+  margin-bottom: 24px;
+}
+
+.stepGroup h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* Inputs */
+.inputRow {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.inputGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.inputGroup label {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--color-text);
+  transition: all 0.3s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
+}
+
+/* Radio & Checkbox Cards */
+.hiddenRadio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.radioGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.radioGridRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.checkboxGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+/* Large Card Style */
+.radioCard {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.radioCard:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+}
+
+.activeCard {
+  background: var(--color-secondary);
+  border: 1px solid var(--color-secondary);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  color: var(--color-text-inverse);
+  box-shadow: 0 10px 30px rgba(26, 20, 18, 0.2);
+}
+
+.cardContent h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: inherit;
+  font-family: var(--font-sans);
+}
+
+.cardContent p {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  line-height: 1.4;
+}
+
+.activeCard h4, .activeCard p {
+  color: var(--color-text-inverse);
+}
+
+/* Small Chip Style */
+.chip {
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.chip:hover {
+  background: #fff;
+  border-color: rgba(0,0,0,0.1);
+}
+
+.activeChip {
+  padding: 12px 24px;
+  background: var(--color-secondary);
+  color: #fff;
+  border: 1px solid var(--color-secondary);
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* Checkbox Style */
+.checkboxCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.activeCheckboxCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: rgba(65, 105, 225, 0.05); /* Subtle primary tint */
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(65, 105, 225, 0.1);
+}
+
+.submitBtn {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 16px;
+  font-size: 1.1rem;
+}
+
+/* Empty State */
+.emptyState {
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px dashed rgba(0, 0, 0, 0.1);
+  border-radius: 24px;
+  padding: var(--spacing-xl) var(--spacing-md);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.emptyIcon {
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* Receipt Style Result Box */
+.receiptBox {
+  background: #fff;
+  border-radius: 24px;
+  padding: var(--spacing-lg);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 100px;
+  border-top: 6px solid var(--color-secondary);
+}
+
+.receiptHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.receiptHeader h3 {
+  font-size: 2rem;
+  color: var(--color-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.receiptHeader p {
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+}
+
+.receiptBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.receiptLine {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+}
+
+.receiptDivider {
+  height: 1px;
+  background: rgba(0,0,0,0.1);
+  margin: 0.5rem 0;
+}
+
+.receiptTotal {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+}
+
+.receiptTotalRange {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-top: 1rem;
+}
+
+.disclaimer {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.fullWidthBtn {
+  width: 100%;
+}
+
+.leadForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.houseTypeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.houseCard {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background: var(--color-bg);
+  text-align: center;
+  gap: 12px;
+}
+
+.activeHouseCard {
+  composes: houseCard;
+  border-color: var(--color-primary);
+  background: rgba(65, 105, 225, 0.05);
+  box-shadow: 0 8px 24px rgba(65, 105, 225, 0.1);
+}
+
+.imageIconWrapper {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.houseImage {
+  mix-blend-mode: multiply;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.houseCard:hover .houseImage {
+  transform: scale(1.05);
+}
+
+.successMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-secondary);
+}
+
+.successMessage svg {
+  stroke: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.successMessage h4 {
+  font-size: 1.5rem;
+}
+
+.successMessage p {
+  color: var(--color-text-muted);
+}

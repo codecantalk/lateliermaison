@@ -1,0 +1,152 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { gsap } from 'gsap/dist/gsap';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+import styles from './Footer.module.css';
+
+gsap.registerPlugin(ScrollTrigger);
+
+export default function Footer() {
+  const footerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // 1. Premium Background Color Transition
+      gsap.to('.footer-bg-color-anim', {
+        backgroundColor: '#0A0A0C', // Deep Midnight/Charcoal
+        ease: 'none',
+        scrollTrigger: {
+          trigger: footerRef.current,
+          start: 'top 60%',
+          end: 'bottom bottom',
+          scrub: true
+        }
+      });
+      
+      // 2. Base Reveal on Scroll
+      gsap.fromTo('.footer-watermark-letter', 
+        { 
+          y: 100, 
+          rotationX: -90,
+          opacity: 0,
+        },
+        {
+          y: 0,
+          rotationX: 0,
+          opacity: 0.15,
+          stagger: 0.05,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: footerRef.current,
+            start: 'top 60%',
+            end: 'bottom bottom',
+            scrub: 1
+          }
+        }
+      );
+
+      // 3. Infinite Light Sweep Effect
+      gsap.to('.footer-watermark-letter', {
+        color: '#ffffff', // Bright white/gold highlight
+        textShadow: '0px 0px 25px rgba(255, 255, 255, 0.8)',
+        duration: 2,
+        stagger: {
+          each: 0.15,
+          repeat: -1,
+          yoyo: true
+        },
+        ease: 'sine.inOut'
+      });
+      
+    }, footerRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <footer ref={footerRef} className={`footer-bg-color-anim ${styles.footer}`}>
+      <div className={`container ${styles.footerContent}`}>
+        <div className={styles.mainGrid}>
+          
+          {/* Column 1: Brand & Manifesto */}
+          <div className={styles.footerCol}>
+            <div className={styles.manifesto}>
+              <h3 className="font-serif">Curated Sanctuaries.</h3>
+              <p>Elevating the standard of living for the most discerning clientele. We preserve the integrity and beauty of your most valuable asset.</p>
+            </div>
+            <div className={styles.socials} style={{ marginTop: '2.5rem' }}>
+              <a href="#" aria-label="Instagram">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              </a>
+              <a href="#" aria-label="Pinterest">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="12" y1="22" x2="12" y2="10"/><path d="M12 10a4 4 0 1 0-4-4 4 4 0 0 0 4 4z"/><path d="M8 14H4a2 2 0 0 0-2 2v6"/><path d="M22 14h-4a2 2 0 0 0-2 2v6"/></svg>
+              </a>
+              <a href="#" aria-label="Facebook">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              </a>
+            </div>
+          </div>
+
+          {/* Column 2: Navigation & Contact */}
+          <div className={styles.footerCol}>
+            <div className={styles.navGrid}>
+              <div className={styles.linkGroup}>
+                <h4 className={styles.colTitle}>Services</h4>
+                <ul className={styles.linkList}>
+                  <li><Link href="/services/new-construction">New Construction</Link></li>
+                  <li><Link href="/services/bathroom-remodeling">Bathroom Remodeling</Link></li>
+                  <li><Link href="/services/estate-management">Estate Management</Link></li>
+                  <li><Link href="/services/cleaning">Housekeeping</Link></li>
+                </ul>
+              </div>
+              <div className={styles.linkGroup}>
+                <h4 className={styles.colTitle}>Contact</h4>
+                <ul className={styles.contactList}>
+                  <li><a href="mailto:lateliermaisonatl@gmail.com">lateliermaisonatl@gmail.com</a></li>
+                  <li><a href="tel:+18005550199">334-487-5707</a></li>
+                  <li style={{ marginTop: '0.5rem' }}><p>Buckhead, Atlanta GA<br/>Available Worldwide</p></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Column 3: The Journal */}
+          <div className={styles.footerCol}>
+            <div className={styles.newsletterSection}>
+              <h4 className={styles.colTitle}>The L'Atelier Journal</h4>
+              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '1.5rem' }}>Subscribe to receive insights on luxury home management and exclusive service offerings.</p>
+              <form className={styles.newsletterForm} onSubmit={(e) => e.preventDefault()}>
+                <input type="email" placeholder="Email address" required className={styles.newsletterInput} />
+                <button type="submit" aria-label="Subscribe" className={styles.newsletterBtn}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Massive Brand Watermark at Bottom */}
+      <div className={styles.watermarkContainer}>
+        {"L'ATELIER MAISON".split('').map((char, index) => (
+          <span key={index} className={`footer-watermark-letter ${styles.watermarkLetter}`}>
+            {char === ' ' ? '\u00A0' : char}
+          </span>
+        ))}
+      </div>
+
+      <div className={styles.footerBottom}>
+        <div className={`container ${styles.footerBottomInner}`}>
+          <p>&copy; {new Date().getFullYear()} L'Atelier Maison. All rights reserved.</p>
+          <div className={styles.legalLinks}>
+            <Link href="/privacy">Privacy Policy</Link>
+            <Link href="/terms">Terms of Service</Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}

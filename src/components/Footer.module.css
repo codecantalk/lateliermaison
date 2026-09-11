@@ -1,0 +1,249 @@
+.footer {
+  background: linear-gradient(135deg, #FFFFFF 0%, rgba(65, 105, 225, 0.08) 100%);
+  color: var(--color-secondary);
+  position: relative;
+  z-index: 10;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(65, 105, 225, 0.1);
+}
+
+/* SVG Background was removed, but keep standard absolute div for color transitions if needed */
+.bgSvgWrapper {
+  display: none;
+}
+
+.footerContent {
+  position: relative;
+  z-index: 2;
+  padding: 8rem 0 var(--spacing-xl);
+  flex-grow: 1;
+}
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-2xl);
+}
+
+@media (min-width: 1024px) {
+  .mainGrid {
+    grid-template-columns: 4fr 4fr 3fr;
+    gap: var(--spacing-2xl);
+  }
+}
+
+.navGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+@media (min-width: 640px) {
+  .navGrid {
+    flex-direction: row;
+    gap: 4rem;
+  }
+}
+
+/* Columns */
+.footerCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.manifesto h3 {
+  font-size: clamp(1.75rem, 2.5vw, 2.5rem);
+  color: var(--color-secondary);
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: -0.02em;
+}
+
+.manifesto p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  max-width: 340px;
+}
+
+.socials {
+  display: flex;
+  gap: 16px;
+}
+
+.socials a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--color-text-muted);
+  transition: all 0.3s ease;
+}
+
+.socials a:hover {
+  color: #fff;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  transform: translateY(-3px);
+}
+
+.newsletterSection {
+  max-width: 100%;
+}
+
+.colTitle {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-md);
+  font-weight: 600;
+}
+
+.newsletterForm {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: 12px;
+  transition: border-color 0.3s ease;
+  margin-top: var(--spacing-md);
+}
+
+.newsletterForm:focus-within {
+  border-color: var(--color-primary);
+}
+
+.newsletterInput {
+  background: transparent;
+  border: none;
+  color: var(--color-secondary);
+  font-size: 1.125rem;
+  flex: 1;
+  outline: none;
+  font-family: inherit;
+}
+
+.newsletterInput::placeholder {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.newsletterBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-secondary);
+  cursor: pointer;
+  padding: 4px 0 4px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.newsletterBtn:hover {
+  color: var(--color-primary);
+  transform: translateX(6px);
+}
+
+.linkGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.linkList, .contactList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.linkList a, .contactList a, .contactList p {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 1rem;
+  line-height: 1.4;
+  transition: color 0.3s ease;
+}
+
+.contactList p {
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.linkList a:hover, .contactList a:hover {
+  color: var(--color-primary);
+}
+
+/* Watermark */
+.watermarkContainer {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  overflow: hidden;
+  padding: 0 var(--spacing-sm);
+  margin-top: auto; /* Push to bottom */
+  display: flex;
+  justify-content: space-between;
+}
+
+.watermarkLetter {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 11vw, 15rem);
+  line-height: 0.75;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  user-select: none;
+  pointer-events: none;
+  transform-style: preserve-3d;
+}
+
+/* Bottom Bar */
+.footerBottom {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  padding: var(--spacing-lg) 0;
+  background: rgba(255, 255, 255, 0.5); /* Light glass */
+  backdrop-filter: blur(10px);
+}
+
+.footerBottomInner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 768px) {
+  .footerBottomInner {
+    flex-direction: row;
+  }
+}
+
+.footerBottomInner p {
+  margin: 0;
+}
+
+.legalLinks {
+  display: flex;
+  gap: 24px;
+}
+
+.legalLinks a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.legalLinks a:hover {
+  color: var(--color-secondary);
+}
