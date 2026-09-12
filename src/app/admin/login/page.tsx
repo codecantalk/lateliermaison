@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import Image from 'next/image';
 import styles from './login.module.css';
 
 export default function AdminLogin() {
@@ -49,7 +50,9 @@ export default function AdminLogin() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <h1>L'Atelier Portal</h1>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <Image src="/logo.png" alt="L'Atelier Admin Logo" width={160} height={50} style={{ objectFit: 'contain' }} />
+        </div>
         <p className={styles.subtitle}>Secure Access</p>
 
         {error && <div className={styles.error}>{error}</div>}

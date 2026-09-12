@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { gsap } from 'gsap/dist/gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import styles from './Footer.module.css';
 
@@ -76,6 +77,9 @@ export default function Footer() {
           {/* Column 1: Brand & Manifesto */}
           <div className={styles.footerCol}>
             <div className={styles.manifesto}>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <Image src="/logo.png" alt="L'Atelier Maison Logo" width={180} height={50} style={{ objectFit: 'contain' }} />
+              </div>
               <h3 className="font-serif">Curated Sanctuaries.</h3>
               <p>Elevating the standard of living for the most discerning clientele. We preserve the integrity and beauty of your most valuable asset.</p>
             </div>

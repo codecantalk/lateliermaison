@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import styles from './NavBar.module.css'
 
+import Image from 'next/image'
+
 export default function NavBar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -26,8 +28,7 @@ export default function NavBar() {
         
         {/* Logo */}
         <Link href="/" className={styles.logo}>
-          <span style={{ fontWeight: 600, letterSpacing: '0.1em' }}>L'ATELIER</span>
-          <span style={{ fontWeight: 300, fontStyle: 'italic', letterSpacing: '0.05em', color: 'var(--color-primary)' }}> Maison</span>
+          <Image src="/logo.png" alt="L'Atelier Maison Logo" width={140} height={40} style={{ objectFit: 'contain' }} priority />
         </Link>
         
         {/* Desktop Links */}

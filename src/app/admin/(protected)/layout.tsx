@@ -1,5 +1,6 @@
 import styles from './page.module.css'
 import Link from 'next/link'
+import Image from 'next/image'
 import LogoutButton from './LogoutButton'
 import { LayoutDashboard, Settings, Image as ImageIcon, Calculator } from 'lucide-react'
 
@@ -11,9 +12,8 @@ export default function AdminLayout({
   return (
     <div className={styles.adminLayout}>
       <aside className={styles.sidebar}>
-        <div className={styles.logo}>
-          <span style={{ fontWeight: 700, letterSpacing: '0.1em' }}>L'ATELIER</span>
-          <span style={{ fontWeight: 300, fontStyle: 'italic', letterSpacing: '0.05em', color: 'var(--color-primary)' }}> CMS</span>
+        <div className={styles.logo} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1.5rem' }}>
+          <Image src="/logo.png" alt="L'Atelier Admin Logo" width={140} height={40} style={{ objectFit: 'contain' }} />
         </div>
         <nav className={styles.nav}>
           <Link href="/admin" className={styles.navLink}>
