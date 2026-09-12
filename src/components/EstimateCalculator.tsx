@@ -11,6 +11,9 @@ import {
 } from 'lucide-react'
 import styles from './EstimateCalculator.module.css'
 
+import { useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
+
 type ServiceType = 'cleaning' | 'remodeling' | 'construction' | 'estate' | null
 
 type CleaningData = {
@@ -37,47 +40,18 @@ type EstateData = {
   scope: 'diagnostic' | 'minor' | 'major'
 }
 
-// MaidBright EXACT Pricing Model
-const CLEANING_PRICING = {
-  base: {
-    apartment: 199,
-    townhome: 214,
-    single: 249
-  },
-  additions: {
-    bedroom: 10, // Cost per bedroom beyond 1
-    bathroom: 20 // Cost per bathroom beyond 1
-  },
-  fixedExtras: {
-    fridge: { label: 'Inside Fridge', price: 30, icon: <Refrigerator size={32} strokeWidth={1.2} /> },
-    oven: { label: 'Inside Oven', price: 30, icon: <Microwave size={32} strokeWidth={1.2} /> },
-    dishwashing: { label: 'Dishwashing', price: 20, icon: <UtensilsCrossed size={32} strokeWidth={1.2} /> },
-    laundry: { label: 'Laundry Wash & Dry', price: 35, icon: <Shirt size={32} strokeWidth={1.2} /> },
-    deep: { label: 'Deep Clean', price: 75, icon: <Sparkles size={32} strokeWidth={1.2} /> },
-    cabinets: { label: 'Inside Cabinets', price: 40, icon: <Archive size={32} strokeWidth={1.2} /> }
-  },
-  dynamicExtras: {
-    windows: {
-      label: 'Inside Windows',
-      icon: <LayoutGrid size={32} strokeWidth={1.2} />,
-      prices: { apartment: 45, townhome: 55, single: 95 }
-    },
-    post_construction: {
-      label: 'Post Construction',
-      icon: <Hammer size={32} strokeWidth={1.2} />,
-      prices: { apartment: 100, townhome: 150, single: 195 }
-    },
-    garage: {
-      label: 'Inside Garage',
-      icon: <CarFront size={32} strokeWidth={1.2} />,
-      prices: { apartment: 0, townhome: 25, single: 35 } // Not available for apartments usually
-    },
-    porch: {
-      label: 'Screened Porch',
-      icon: <Tent size={32} strokeWidth={1.2} />,
-      prices: { apartment: 0, townhome: 30, single: 30 }
-    }
-  }
+// Local mapping for icons since we can't store JSX in the database
+const ICONS_MAP: Record<string, JSX.Element> = {
+  fridge: <Refrigerator size={32} strokeWidth={1.2} />,
+  oven: <Microwave size={32} strokeWidth={1.2} />,
+  dishwashing: <UtensilsCrossed size={32} strokeWidth={1.2} />,
+  laundry: <Shirt size={32} strokeWidth={1.2} />,
+  deep: <Sparkles size={32} strokeWidth={1.2} />,
+  cabinets: <Archive size={32} strokeWidth={1.2} />,
+  windows: <LayoutGrid size={32} strokeWidth={1.2} />,
+  post_construction: <Hammer size={32} strokeWidth={1.2} />,
+  garage: <CarFront size={32} strokeWidth={1.2} />,
+  porch: <Tent size={32} strokeWidth={1.2} />
 }
 
 const REMODELING_PRICING = {
@@ -93,6 +67,25 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 
 export default function EstimateCalculator() {
   const [selectedService, setSelectedService] = useState<ServiceType>(null)
+  const [pricingConfig, setPricingConfig] = useState<any>(null)
+  const [isPricingLoading, setIsPricingLoading] = useState(true)
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchPricing() {
+      const { data, error } = await supabase
+        .from('pricing_config')
+        .select('value')
+        .eq('key', 'cleaning_pricing')
+        .single()
+      
+      if (data) {
+        setPricingConfig(data.value)
+      }
+      setIsPricingLoading(false)
+    }
+    fetchPricing()
+  }, [])
   
   // Results State
   const [cleaningResult, setCleaningResult] = useState<{total: number, subtotal: number, discount: number} | null>(null)
@@ -130,26 +123,28 @@ export default function EstimateCalculator() {
   }
 
   const onCleanSubmit = (data: CleaningData) => {
+    if (!pricingConfig) return;
+
     // 1. Base Price
-    let total = CLEANING_PRICING.base[data.houseType]
+    let total = pricingConfig.base[data.houseType]
 
     // 2. Room Additions (subtracting 1 because base includes 1bd/1ba)
     if (data.bedrooms > 1) {
-      total += (data.bedrooms - 1) * CLEANING_PRICING.additions.bedroom
+      total += (data.bedrooms - 1) * pricingConfig.additions.bedroom
     }
     if (data.bathrooms > 1) {
-      total += (data.bathrooms - 1) * CLEANING_PRICING.additions.bathroom
+      total += (data.bathrooms - 1) * pricingConfig.additions.bathroom
     }
 
     // 3. Fixed Extras
     data.extras.forEach(extra => {
-      const fixed = CLEANING_PRICING.fixedExtras[extra as keyof typeof CLEANING_PRICING.fixedExtras]
+      const fixed = pricingConfig.fixedExtras[extra]
       if (fixed) total += fixed.price
     })
 
     // 4. Dynamic Extras
     data.dynamicExtras.forEach(extra => {
-      const dyn = CLEANING_PRICING.dynamicExtras[extra as keyof typeof CLEANING_PRICING.dynamicExtras]
+      const dyn = pricingConfig.dynamicExtras[extra]
       if (dyn && dyn.prices[data.houseType] > 0) {
         total += dyn.prices[data.houseType]
       }
@@ -188,8 +183,30 @@ export default function EstimateCalculator() {
     gsap.fromTo('.result-anim', { scale: 0.95, y: 20, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 0.5, ease: 'back.out(1.5)' })
   }
 
-  const handleCheckout = async () => {
+  const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '' })
+
+  const saveLeadToDatabase = async (service: string, amount: number, details: any) => {
+    try {
+      await supabase.from('leads').insert({
+        customer_name: customerInfo.name,
+        email: customerInfo.email,
+        phone: customerInfo.phone,
+        service_type: service,
+        total_price: amount,
+        details: details,
+        status: 'pending'
+      });
+    } catch (e) {
+      console.error("Failed to save lead", e);
+    }
+  }
+
+  const handleCheckout = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!cleaningResult) return
+
+    await saveLeadToDatabase('housekeeping', cleaningResult.total, cleanValues);
+
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST',
@@ -204,8 +221,14 @@ export default function EstimateCalculator() {
     }
   }
 
-  const handleLeadSubmit = (e: React.FormEvent) => {
+  const handleLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    const serviceName = selectedService || 'unknown';
+    const amount = rangeResult?.min || 0;
+    const details = selectedService === 'construction' ? constValues : selectedService === 'remodeling' ? remodelValues : estateValues;
+    
+    await saveLeadToDatabase(serviceName, amount, details);
     setLeadSubmitted(true)
   }
 
@@ -343,7 +366,12 @@ export default function EstimateCalculator() {
           )}
 
           {/* --- NEW HOUSEKEEPING FLOW --- */}
-          {selectedService === 'cleaning' && (
+          {selectedService === 'cleaning' && isPricingLoading && (
+            <div className={styles.emptyState}>
+              <p>Loading pricing engine...</p>
+            </div>
+          )}
+          {selectedService === 'cleaning' && !isPricingLoading && pricingConfig && (
             <form onSubmit={handleCleanSubmit(onCleanSubmit)} className={`form-anim ${styles.form}`}>
               <div className={styles.stepGroup}>
                 <h3>1. Select House Type</h3>
@@ -389,7 +417,7 @@ export default function EstimateCalculator() {
               <div className={styles.stepGroup}>
                 <h3>3. Select Add-Ons</h3>
                 <div className={styles.checkboxGrid}>
-                  {Object.entries(CLEANING_PRICING.fixedExtras).map(([key, extra]) => (
+                  {Object.entries(pricingConfig.fixedExtras).map(([key, extra]: [string, any]) => (
                     <label key={key} className={cleanValues.extras.includes(key) ? styles.activeCheckboxCard : styles.checkboxCard}>
                       <input type="checkbox" value={key} {...controlClean.register('extras')} className={styles.hiddenRadio} />
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px', width: '100%', textAlign: 'center' }}>
@@ -398,7 +426,7 @@ export default function EstimateCalculator() {
                           transition: 'color 0.3s ease',
                           marginBottom: '4px'
                         }}>
-                          {extra.icon}
+                          {ICONS_MAP[key]}
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                           <span style={{ fontWeight: 600, fontSize: '0.95rem', lineHeight: '1.2' }}>{extra.label}</span>
@@ -407,7 +435,7 @@ export default function EstimateCalculator() {
                       </div>
                     </label>
                   ))}
-                  {Object.entries(CLEANING_PRICING.dynamicExtras).map(([key, extra]) => {
+                  {Object.entries(pricingConfig.dynamicExtras).map(([key, extra]: [string, any]) => {
                     const price = extra.prices[cleanValues.houseType];
                     if (price <= 0) return null; // Don't show options that don't apply to this house type
                     return (
@@ -419,7 +447,7 @@ export default function EstimateCalculator() {
                             transition: 'color 0.3s ease',
                             marginBottom: '4px'
                           }}>
-                            {extra.icon}
+                            {ICONS_MAP[key]}
                           </div>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                             <span style={{ fontWeight: 600, fontSize: '0.95rem', lineHeight: '1.2' }}>{extra.label}</span>
@@ -484,9 +512,14 @@ export default function EstimateCalculator() {
                 </div>
               </div>
               <p className={styles.disclaimer}>*This is a finalized estimate for standard home conditions.</p>
-              <button onClick={handleCheckout} className={`btn btn-secondary ${styles.fullWidthBtn}`}>
-                Secure & Book Now
-              </button>
+              <form onSubmit={handleCheckout} className={styles.leadForm} style={{ marginTop: '1.5rem' }}>
+                <input type="text" placeholder="Full Name" required className={styles.input} value={customerInfo.name} onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})} />
+                <input type="email" placeholder="Email Address" required className={styles.input} value={customerInfo.email} onChange={(e) => setCustomerInfo({...customerInfo, email: e.target.value})} />
+                <input type="tel" placeholder="Phone Number" required className={styles.input} value={customerInfo.phone} onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})} />
+                <button type="submit" className={`btn btn-secondary ${styles.fullWidthBtn}`}>
+                  Secure & Book Now
+                </button>
+              </form>
             </div>
           )}
 
@@ -514,10 +547,10 @@ export default function EstimateCalculator() {
               <p className={styles.disclaimer} style={{marginTop: '1rem'}}>*An on-site evaluation by a lead architect is required for an exact proposal.</p>
               
               {!leadSubmitted ? (
-                <form onSubmit={handleLeadSubmit} className={styles.leadForm}>
-                  <input type="text" placeholder="Full Name" required className={styles.input} />
-                  <input type="email" placeholder="Email Address" required className={styles.input} />
-                  <input type="tel" placeholder="Phone Number" required className={styles.input} />
+                <form onSubmit={handleLeadSubmit} className={styles.leadForm} style={{ marginTop: '1.5rem' }}>
+                  <input type="text" placeholder="Full Name" required className={styles.input} value={customerInfo.name} onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})} />
+                  <input type="email" placeholder="Email Address" required className={styles.input} value={customerInfo.email} onChange={(e) => setCustomerInfo({...customerInfo, email: e.target.value})} />
+                  <input type="tel" placeholder="Phone Number" required className={styles.input} value={customerInfo.phone} onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})} />
                   <button type="submit" className={`btn btn-secondary ${styles.fullWidthBtn}`}>
                     Request Consultation
                   </button>

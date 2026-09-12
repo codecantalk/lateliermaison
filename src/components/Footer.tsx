@@ -1,17 +1,32 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { gsap } from 'gsap/dist/gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+import { createClient } from '@/lib/supabase/client';
 import styles from './Footer.module.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
+  const [settings, setSettings] = useState<any>({
+    email: 'lateliermaisonatl@gmail.com',
+    phone: '334-487-5707',
+    address: 'Buckhead, Atlanta GA',
+    availability: 'Available Worldwide'
+  });
+  
+  const supabase = createClient();
 
   useEffect(() => {
+    async function fetchSettings() {
+      const { data } = await supabase.from('site_settings').select('value').eq('key', 'contact_info').single();
+      if (data) setSettings(data.value);
+    }
+    fetchSettings();
+
     const ctx = gsap.context(() => {
       // 1. Base Reveal on Scroll
       gsap.fromTo('.footer-watermark-letter', 
@@ -92,9 +107,9 @@ export default function Footer() {
               <div className={styles.linkGroup}>
                 <h4 className={styles.colTitle}>Contact</h4>
                 <ul className={styles.contactList}>
-                  <li><a href="mailto:lateliermaisonatl@gmail.com">lateliermaisonatl@gmail.com</a></li>
-                  <li><a href="tel:+18005550199">334-487-5707</a></li>
-                  <li style={{ marginTop: '0.5rem' }}><p>Buckhead, Atlanta GA<br/>Available Worldwide</p></li>
+                  <li><a href={`mailto:${settings.email}`}>{settings.email}</a></li>
+                  <li><a href={`tel:${settings.phone.replace(/[^0-9+]/g, '')}`}>{settings.phone}</a></li>
+                  <li style={{ marginTop: '0.5rem' }}><p>{settings.address}<br/>{settings.availability}</p></li>
                 </ul>
               </div>
             </div>

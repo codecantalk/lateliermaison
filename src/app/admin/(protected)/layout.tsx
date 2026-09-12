@@ -1,4 +1,6 @@
 import styles from './page.module.css'
+import Link from 'next/link'
+import LogoutButton from './LogoutButton'
 
 export default function AdminLayout({
   children,
@@ -10,16 +12,16 @@ export default function AdminLayout({
       <aside className={styles.sidebar}>
         <div className={styles.logo}>L'Atelier Admin</div>
         <nav className={styles.nav}>
-          <a href="/admin" className={styles.navLink}>Dashboard</a>
-          <a href="/admin/bookings" className={styles.navLink}>Bookings</a>
-          <a href="/admin/customers" className={styles.navLink}>Customers</a>
-          <a href="/admin/settings" className={styles.navLink}>Settings</a>
+          <Link href="/admin" className={styles.navLink}>Dashboard (Leads)</Link>
+          <Link href="/admin/pricing" className={styles.navLink}>Pricing Engine</Link>
+          <Link href="/admin/portfolio" className={styles.navLink}>Portfolio</Link>
+          <Link href="/admin/settings" className={styles.navLink}>Settings</Link>
         </nav>
       </aside>
       <main className={styles.mainContent}>
         <header className={styles.topbar}>
           <h2>Admin Portal</h2>
-          <button className="btn btn-outline">Logout</button>
+          <LogoutButton />
         </header>
         <div className={styles.contentArea}>
           {children}
