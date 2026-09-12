@@ -13,19 +13,7 @@ export default function Footer() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Premium Background Color Transition
-      gsap.to('.footer-bg-color-anim', {
-        backgroundColor: '#0A0A0C', // Deep Midnight/Charcoal
-        ease: 'none',
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: 'top 60%',
-          end: 'bottom bottom',
-          scrub: true
-        }
-      });
-      
-      // 2. Base Reveal on Scroll
+      // 1. Base Reveal on Scroll
       gsap.fromTo('.footer-watermark-letter', 
         { 
           y: 100, 
@@ -47,10 +35,10 @@ export default function Footer() {
         }
       );
 
-      // 3. Infinite Light Sweep Effect
+      // 2. Infinite Light Sweep Effect (adjusted for light theme)
       gsap.to('.footer-watermark-letter', {
-        color: '#ffffff', // Bright white/gold highlight
-        textShadow: '0px 0px 25px rgba(255, 255, 255, 0.8)',
+        color: '#4169E1', // Royal blue highlight instead of white
+        textShadow: '0px 0px 25px rgba(65, 105, 225, 0.4)',
         duration: 2,
         stagger: {
           each: 0.15,
@@ -116,7 +104,7 @@ export default function Footer() {
           <div className={styles.footerCol}>
             <div className={styles.newsletterSection}>
               <h4 className={styles.colTitle}>The L'Atelier Journal</h4>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '1.5rem' }}>Subscribe to receive insights on luxury home management and exclusive service offerings.</p>
+              <p style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '1.5rem' }}>Subscribe to receive insights on luxury home management and exclusive service offerings.</p>
               <form className={styles.newsletterForm} onSubmit={(e) => e.preventDefault()}>
                 <input type="email" placeholder="Email address" required className={styles.newsletterInput} />
                 <button type="submit" aria-label="Subscribe" className={styles.newsletterBtn}>
