@@ -10,7 +10,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
 }
 
-const portfolioItems = [
+const DEFAULT_ITEMS = [
   { img: '/luxury-hero.jpg', title: 'The Glass House', location: 'Paris, FR' },
   { img: '/luxury-bathroom.jpg', title: 'Spa Sanctuary', location: 'London, UK' },
   { img: '/award-bg.jpg', title: 'Modern Minimalism', location: 'Atlanta, GA' },
@@ -19,10 +19,28 @@ const portfolioItems = [
   { img: '/luxury-bathroom.jpg', title: 'Urban Penthouse', location: 'New York, NY' },
 ]
 
+import { createClient } from '@/lib/supabase/client'
+import { useState } from 'react'
+
 export default function PortfolioClient() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [portfolioItems, setPortfolioItems] = useState(DEFAULT_ITEMS)
+  const supabase = createClient()
 
   useEffect(() => {
+    async function loadPortfolio() {
+      const { data } = await supabase.from('portfolio_items').select('*').order('sort_order', { ascending: true })
+      if (data && data.length > 0) {
+        const mapped = data.map(item => ({
+          img: item.image_url,
+          title: item.title,
+          location: item.category
+        }))
+        setPortfolioItems(mapped)
+      }
+    }
+    loadPortfolio()
+    
     const ctx = gsap.context(() => {
       
       // 1. Hero Animations
