@@ -79,8 +79,14 @@ export default function EstimateCalculator() {
         .eq('key', 'cleaning_pricing')
         .single()
       
+      if (error) {
+        console.error('Error fetching pricing config:', error.message)
+      }
+
       if (data) {
         setPricingConfig(data.value)
+      } else {
+        console.error('No pricing config found.')
       }
       setIsPricingLoading(false)
     }
@@ -369,6 +375,14 @@ export default function EstimateCalculator() {
           {selectedService === 'cleaning' && isPricingLoading && (
             <div className={styles.emptyState}>
               <p>Loading pricing engine...</p>
+            </div>
+          )}
+          {selectedService === 'cleaning' && !isPricingLoading && !pricingConfig && (
+            <div className={styles.emptyState}>
+              <div className={styles.emptyIcon}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="1"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <p style={{ color: '#ef4444' }}>Pricing engine unavailable. Please try again later.</p>
             </div>
           )}
           {selectedService === 'cleaning' && !isPricingLoading && pricingConfig && (

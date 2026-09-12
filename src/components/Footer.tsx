@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { gsap } from 'gsap/dist/gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import Image from 'next/image';
@@ -12,6 +13,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
+  const pathname = usePathname();
   const [settings, setSettings] = useState<any>({
     email: 'lateliermaisonatl@gmail.com',
     phone: '334-487-5707',
@@ -68,6 +70,14 @@ export default function Footer() {
 
     return () => ctx.revert();
   }, []);
+
+  // Refresh ScrollTrigger when the route changes because the page height changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [pathname]);
 
   return (
     <footer ref={footerRef} className={`footer-bg-color-anim ${styles.footer}`}>
