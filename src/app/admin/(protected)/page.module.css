@@ -113,7 +113,7 @@
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .statNumber {
@@ -122,6 +122,16 @@
   color: var(--color-secondary);
   line-height: 1;
   font-family: var(--font-serif);
+}
+
+.statIconWrapper {
+  width: 48px;
+  height: 48px;
+  background: #f1f5f9;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .recentBookings {

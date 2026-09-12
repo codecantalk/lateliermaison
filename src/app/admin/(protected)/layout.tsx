@@ -1,6 +1,7 @@
 import styles from './page.module.css'
 import Link from 'next/link'
 import LogoutButton from './LogoutButton'
+import { LayoutDashboard, Settings, Image as ImageIcon, Calculator } from 'lucide-react'
 
 export default function AdminLayout({
   children,
@@ -10,17 +11,32 @@ export default function AdminLayout({
   return (
     <div className={styles.adminLayout}>
       <aside className={styles.sidebar}>
-        <div className={styles.logo}>L'Atelier Admin</div>
+        <div className={styles.logo}>
+          <span style={{ fontWeight: 700, letterSpacing: '0.1em' }}>L'ATELIER</span>
+          <span style={{ fontWeight: 300, fontStyle: 'italic', letterSpacing: '0.05em', color: 'var(--color-primary)' }}> CMS</span>
+        </div>
         <nav className={styles.nav}>
-          <Link href="/admin" className={styles.navLink}>Dashboard (Leads)</Link>
-          <Link href="/admin/pricing" className={styles.navLink}>Pricing Engine</Link>
-          <Link href="/admin/portfolio" className={styles.navLink}>Portfolio</Link>
-          <Link href="/admin/settings" className={styles.navLink}>Settings</Link>
+          <Link href="/admin" className={styles.navLink}>
+            <LayoutDashboard size={20} />
+            Dashboard
+          </Link>
+          <Link href="/admin/pricing" className={styles.navLink}>
+            <Calculator size={20} />
+            Pricing Engine
+          </Link>
+          <Link href="/admin/portfolio" className={styles.navLink}>
+            <ImageIcon size={20} />
+            Portfolio
+          </Link>
+          <Link href="/admin/settings" className={styles.navLink}>
+            <Settings size={20} />
+            Settings
+          </Link>
         </nav>
       </aside>
       <main className={styles.mainContent}>
         <header className={styles.topbar}>
-          <h2>Admin Portal</h2>
+          <h2 style={{ fontFamily: 'var(--font-serif)', letterSpacing: '0.02em' }}>Admin Portal</h2>
           <LogoutButton />
         </header>
         <div className={styles.contentArea}>

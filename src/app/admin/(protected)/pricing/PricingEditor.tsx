@@ -2,7 +2,24 @@
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { 
+  Refrigerator, Microwave, UtensilsCrossed, Shirt, 
+  Sparkles, Archive, LayoutGrid, Hammer, CarFront, Tent 
+} from 'lucide-react'
 import styles from './pricing.module.css';
+
+const ICONS_MAP: Record<string, JSX.Element> = {
+  fridge: <Refrigerator size={24} strokeWidth={1.5} />,
+  oven: <Microwave size={24} strokeWidth={1.5} />,
+  dishwashing: <UtensilsCrossed size={24} strokeWidth={1.5} />,
+  laundry: <Shirt size={24} strokeWidth={1.5} />,
+  deep: <Sparkles size={24} strokeWidth={1.5} />,
+  cabinets: <Archive size={24} strokeWidth={1.5} />,
+  windows: <LayoutGrid size={24} strokeWidth={1.5} />,
+  post_construction: <Hammer size={24} strokeWidth={1.5} />,
+  garage: <CarFront size={24} strokeWidth={1.5} />,
+  porch: <Tent size={24} strokeWidth={1.5} />
+}
 
 export default function PricingEditor({ initialData }: { initialData: any }) {
   const [data, setData] = useState(initialData);
@@ -81,8 +98,10 @@ export default function PricingEditor({ initialData }: { initialData: any }) {
         <h3>Base Rates by Property Type</h3>
         <div className={styles.grid}>
           {Object.entries(data.base).map(([type, price]) => (
-            <div key={type} className={styles.inputGroup}>
-              <label>{type.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
+            <div key={type} className={styles.cardInput}>
+              <div className={styles.cardIconHeader}>
+                <label>{type.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
+              </div>
               <div className={styles.inputWrapper}>
                 <span className={styles.currencySymbol}>$</span>
                 <input 
@@ -101,8 +120,10 @@ export default function PricingEditor({ initialData }: { initialData: any }) {
         <h3>Room Additions</h3>
         <div className={styles.grid}>
           {Object.entries(data.additions).map(([type, price]) => (
-            <div key={type} className={styles.inputGroup}>
-              <label>Per Extra {type.toUpperCase()}</label>
+            <div key={type} className={styles.cardInput}>
+              <div className={styles.cardIconHeader}>
+                <label>Per Extra {type.toUpperCase()}</label>
+              </div>
               <div className={styles.inputWrapper}>
                 <span className={styles.currencySymbol}>$</span>
                 <input 
@@ -121,8 +142,11 @@ export default function PricingEditor({ initialData }: { initialData: any }) {
         <h3>Fixed Price Add-ons</h3>
         <div className={styles.grid}>
           {Object.entries(data.fixedExtras).map(([key, item]: [string, any]) => (
-            <div key={key} className={styles.inputGroup}>
-              <label>{item.label}</label>
+            <div key={key} className={styles.cardInput}>
+              <div className={styles.cardIconHeader}>
+                <div className={styles.iconWrapper}>{ICONS_MAP[key]}</div>
+                <label>{item.label}</label>
+              </div>
               <div className={styles.inputWrapper}>
                 <span className={styles.currencySymbol}>$</span>
                 <input 
@@ -139,26 +163,31 @@ export default function PricingEditor({ initialData }: { initialData: any }) {
       {/* Dynamic Extras */}
       <section className={styles.section}>
         <h3>Dynamic Price Add-ons (Varies by Property)</h3>
-        {Object.entries(data.dynamicExtras).map(([key, item]: [string, any]) => (
-          <div key={key} className={styles.dynamicRow}>
-            <h4>{item.label}</h4>
-            <div className={styles.grid}>
-              {Object.entries(item.prices).map(([type, price]) => (
-                <div key={type} className={styles.inputGroup}>
-                  <label>{type}</label>
-                  <div className={styles.inputWrapper}>
-                    <span className={styles.currencySymbol}>$</span>
-                    <input 
-                      type="number" 
-                      value={price as number} 
-                      onChange={(e) => handleDynamicExtraChange(key, type, e.target.value)}
-                    />
+        <div className={styles.dynamicGrid}>
+          {Object.entries(data.dynamicExtras).map(([key, item]: [string, any]) => (
+            <div key={key} className={styles.cardInput}>
+              <div className={styles.cardIconHeader}>
+                <div className={styles.iconWrapper}>{ICONS_MAP[key]}</div>
+                <h4>{item.label}</h4>
+              </div>
+              <div className={styles.miniGrid}>
+                {Object.entries(item.prices).map(([type, price]) => (
+                  <div key={type} className={styles.inputGroupSmall}>
+                    <label>{type}</label>
+                    <div className={styles.inputWrapper}>
+                      <span className={styles.currencySymbol}>$</span>
+                      <input 
+                        type="number" 
+                        value={price as number} 
+                        onChange={(e) => handleDynamicExtraChange(key, type, e.target.value)}
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </section>
 
       <div className={styles.actions}>

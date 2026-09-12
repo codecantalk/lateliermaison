@@ -129,3 +129,73 @@
   color: #ef4444;
   border: 1px solid #fecaca;
 }
+
+/* New Premium Card Styles for Editor */
+.cardInput {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  transition: all 0.2s ease;
+}
+
+.cardInput:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+  border-color: rgba(65, 105, 225, 0.2);
+}
+
+.cardIconHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: rgba(65, 105, 225, 0.08);
+  color: var(--color-primary);
+  border-radius: 10px;
+}
+
+.cardIconHeader label, .cardIconHeader h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+  text-transform: capitalize;
+  letter-spacing: normal;
+}
+
+.dynamicGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.miniGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.inputGroupSmall {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.inputGroupSmall label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
