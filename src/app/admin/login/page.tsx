@@ -30,7 +30,7 @@ export default function AdminLogin() {
         return;
       }
 
-      if (data.user?.email !== 'arko@codecantalk.com') {
+      if (data.user?.email !== 'arko@codecantalk.com' && data.user?.email !== 'flenjureatl@gmail.com') {
         await supabase.auth.signOut();
         setError('Access denied. Unauthorized admin account.');
         return;
