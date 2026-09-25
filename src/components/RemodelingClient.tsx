@@ -1,220 +1,181 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
+import FamilyBanner from './FamilyBanner'
+import BottomCTA from './BottomCTA'
+import RemodelingChecklist from './RemodelingChecklist'
 import Image from 'next/image'
 import Link from 'next/link'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
-import styles from './LandingPage.module.css'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import landingStyles from './LandingPage.module.css'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
 }
 
-const faqs = [
-  { q: "How long does a bathroom remodel typically take?", a: "A cosmetic update generally takes 1-2 weeks. A partial remodel takes 2-3 weeks, and a full-gut master suite transformation usually requires 4-6 weeks of dedicated architectural work." },
-  { q: "Do you handle all plumbing and permitting?", a: "Absolutely. We employ master plumbers and handle all municipal permitting and inspections required for structural or plumbing re-routes." },
-  { q: "Can I remain in my home during the renovation?", a: "Yes. Our artisans operate with absolute discretion. We seal off the work environment, utilize commercial-grade air scrubbers to eliminate dust, and maintain a pristine pathway." }
-]
-
 export default function RemodelingClient() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Hero Parallax
-      gsap.to('.hero-parallax-bg', {
-        yPercent: 30,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '.remodel-hero',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true
+      // Reveal animations for text
+      gsap.utils.toArray('.reveal-up').forEach((elem: any) => {
+        gsap.from(elem, {
+          y: 50,
+          opacity: 0,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: elem,
+            start: 'top 85%'
+          }
+        })
+      })
+
+      // Image Parallax for Alternating Sections
+      gsap.utils.toArray('.parallax-img-container').forEach((container: any) => {
+        const img = container.querySelector('img')
+        if (img) {
+          gsap.to(img, {
+            yPercent: 15,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: container,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true
+            }
+          })
         }
       })
-
-      // Reveal Animations
-      gsap.utils.toArray('.reveal-up').forEach((elem: any) => {
-        gsap.fromTo(elem, 
-          { y: 50, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 1,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: elem,
-              start: 'top 85%'
-            }
-          }
-        )
-      })
-
-
-
-      // Modern SVG 3D Wireframe Sphere Animation
-      gsap.to('.modern-wireframe', {
-        rotation: 360,
-        transformOrigin: '500px 500px',
-        duration: 90,
-        repeat: -1,
-        ease: 'linear'
-      });
-      
-      Array.from({ length: 18 }).forEach((_, i) => {
-        gsap.fromTo(`.wire-circle-${i}`, 
-          { scaleY: 0.02 },
-          {
-            scaleY: 1,
-            transformOrigin: '500px 500px',
-            duration: 8,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            delay: i * 0.4
-          }
-        );
-      });
-
     }, containerRef)
+
     return () => ctx.revert()
   }, [])
 
   return (
-    <div ref={containerRef} className={styles.wrapper}>
+    <div ref={containerRef} style={{ width: '100%', overflow: 'hidden', backgroundColor: '#ffffff' }}>
       
-      {/* Hero Section */}
-      <section className={`remodel-hero ${styles.heroSection}`} style={{ height: '100vh', overflow: 'hidden' }}>
-        <div className={styles.heroImageWrapper}>
-          <Image src="/luxury-bathroom.jpg" alt="Luxury Bathroom Remodel" fill className={`hero-parallax-bg ${styles.objectCover}`} priority />
-          <div className={styles.heroOverlay}></div>
+      {/* 1. Fixed Parallax Hero */}
+      <section className={landingStyles.heroSection} style={{ overflow: 'hidden' }}>
+        <div className={landingStyles.heroImageWrapper}>
+          <img 
+            src="/latelier-images/residential/hero_remodeling.jpg" 
+            alt="Remodeling"
+            className={landingStyles.infiniteZoomImg}
+          />
+          {/* Sunny Golden Hour Overlay */}
+          <div className={landingStyles.heroOverlay} style={{ zIndex: 1, background: 'linear-gradient(45deg, rgba(255, 195, 113, 0.15) 0%, rgba(255, 229, 180, 0.05) 100%)', mixBlendMode: 'overlay' }}></div>
+          <div className={landingStyles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at top left, rgba(255, 220, 150, 0.15) 0%, transparent 60%)' }}></div>
         </div>
         
-        <div className={`container ${styles.heroContent}`}>
-          <div className={styles.heroTextContainer}>
-            <h4 className="reveal-up" style={{ color: '#8A9CFF', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '1rem', textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>Architectural Transformation</h4>
-            <h1 className="reveal-up font-serif" style={{ color: '#fff', marginBottom: '1rem', textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}>Bathroom Remodeling</h1>
-            <p className="reveal-up" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.25rem', marginBottom: '2rem', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>We transform ordinary bathrooms into extraordinary spa-like sanctuaries.</p>
-            <div className="reveal-up">
-              <Link href="/estimate" className="btn btn-primary">Request Consultation</Link>
-            </div>
-          </div>
-        </div>
-      </section>
+        {/* Ambient White Glow strictly behind the text to ensure absolute legibility of the Navy font */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '50%', background: 'linear-gradient(to top, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.4) 40%, rgba(255,255,255,0) 100%)', zIndex: 3 }}></div>
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', height: '60%', background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%)', zIndex: 3 }}></div>
 
-      {/* Content Section */}
-      <section className={styles.processSection} style={{ padding: 'var(--spacing-2xl) 0' }}>
-        <div className="container">
-          <div className="reveal-up" style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center', marginBottom: 'var(--spacing-xl)' }}>
-            <h2 className="font-serif">The Art of <span className="font-italic" style={{ color: 'var(--color-primary)' }}>Transformation.</span></h2>
-            <p style={{ marginTop: 'var(--spacing-md)', fontSize: '1.125rem' }}>
-              Whether you desire a cosmetic refresh with modern fixtures, or a complete full-gut renovation featuring a custom walk-in shower and luxury tile work, our team of expert architects and master plumbers execute with absolute precision.
-            </p>
-          </div>
-
-          <div className={styles.servicesGrid}>
-            <div className={`reveal-up ${styles.serviceCard}`} style={{ padding: 'var(--spacing-lg)' }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" style={{marginBottom: '1rem'}}><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-              <h3 className="font-serif">Cosmetic Updates</h3>
-              <p>Elevate your space without changing the footprint. We install premium vanities, modern lighting, and high-end fixtures.</p>
-            </div>
-            <div className={`reveal-up ${styles.serviceCard}`} style={{ padding: 'var(--spacing-lg)' }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" style={{marginBottom: '1rem'}}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              <h3 className="font-serif">Custom Showers & Tile</h3>
-              <p>Our artisans specialize in intricate tile work, frameless glass enclosures, and massive rain-shower systems.</p>
-            </div>
-            <div className={`reveal-up ${styles.serviceCard}`} style={{ padding: 'var(--spacing-lg)' }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" style={{marginBottom: '1rem'}}><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-              <h3 className="font-serif">Expert Plumbing</h3>
-              <p>Behind every beautiful bathroom is flawless plumbing infrastructure. We ensure perfect water pressure and drainage.</p>
-            </div>
-            <div className={`reveal-up ${styles.serviceCard}`} style={{ padding: 'var(--spacing-lg)' }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" style={{marginBottom: '1rem'}}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              <h3 className="font-serif">Full Gut Renovations</h3>
-              <p>We handle everything from demolition to final polish, managing the entire architectural re-layout of your master suite.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* NEW: The Guarantee Section */}
-      <section className="guarantee-section" style={{ padding: 'var(--spacing-2xl) 0', backgroundColor: 'var(--color-secondary)', color: 'var(--color-text-inverse)', position: 'relative', clipPath: 'inset(0)' }}>
-        <div className="guarantee-parallax" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 0, pointerEvents: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <svg className="bg-anim-svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-            <defs>
-              <radialGradient id="sphere-glow-remodeling" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.15" />
-                <stop offset="100%" stopColor="transparent" stopOpacity="0" />
-              </radialGradient>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#sphere-glow-remodeling)" />
-            <g className="modern-wireframe" stroke="var(--color-primary)" fill="none" strokeWidth="0.5" opacity="0.1">
-              {Array.from({ length: 18 }).map((_, i) => (
-                <g key={i} transform={`rotate(${i * 10} 500 500)`}>
-                  <circle className={`wire-circle-${i}`} cx="500" cy="500" r="350" />
-                </g>
-              ))}
-            </g>
-          </svg>
-        </div>
-        <div className="container" style={{ position: 'relative', zIndex: 2, textAlign: 'center', maxWidth: '800px' }}>
-          <div style={{ display: 'inline-block', textAlign: 'center' }}>
-            <h4 className="reveal-up" style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '1rem' }}>Our Promise</h4>
-            <h2 className="reveal-up font-serif" style={{ color: 'var(--color-text-inverse)', marginBottom: '1rem' }}>The Lifetime Warranty</h2>
-            <p className="reveal-up" style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.95)' }}>
-              Unlike contractors who disappear after the check clears, we stand by our work forever. Any defect in craftsmanship is repaired instantly, without question. We build for generations, not just for today.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* NEW: FAQ Section */}
-      <section style={{ padding: 'var(--spacing-2xl) 0', backgroundColor: 'var(--color-bg-alt)' }}>
-        <div className="container" style={{ maxWidth: '800px' }}>
-          <div className="reveal-up" style={{ textAlign: 'center', marginBottom: 'var(--spacing-xl)' }}>
-            <h2 className="font-serif">Frequently Asked <span className="font-italic" style={{ color: 'var(--color-primary)' }}>Questions</span></h2>
-          </div>
-          
+        <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', textAlign: 'right', paddingBottom: '4rem' }}>
           <div className="reveal-up">
-            {faqs.map((faq, idx) => (
-              <div key={idx} style={{ borderBottom: '1px solid var(--color-border)', marginBottom: '1rem' }}>
-                <button 
-                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                  style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'none', border: 'none', padding: '1rem 0', cursor: 'pointer', textAlign: 'left', color: 'var(--color-secondary)' }}
-                >
-                  <span className="font-serif" style={{ fontSize: '1.25rem', fontWeight: 500 }}>{faq.q}</span>
-                  <span style={{ color: 'var(--color-primary)', fontSize: '1.5rem', transform: openFaq === idx ? 'rotate(45deg)' : 'none', transition: 'transform 0.3s ease' }}>+</span>
-                </button>
-                <div style={{ maxHeight: openFaq === idx ? '500px' : '0', overflow: 'hidden', transition: 'max-height 0.4s ease' }}>
-                  <p style={{ paddingBottom: '1.5rem', color: 'var(--color-text-muted)' }}>{faq.a}</p>
-                </div>
-              </div>
-            ))}
+            <h1 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2rem, 5vw, 4rem)', color: '#1e3a8a', letterSpacing: '0.02em', margin: '0 0 1rem 0' }}>
+              <span style={{ fontStyle: 'italic', fontWeight: 300 }}>Home</span><br/>
+              Remodeling.
+            </h1>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className={styles.consultSection}>
-        <div className={styles.parallaxBg}>
-          <div className={`parallax-img ${styles.imageWrapper}`}>
-            <Image src="/luxury-hero.jpg" alt="Immaculate Architecture" fill className={styles.objectCover} />
-            <div className={styles.overlayEspressoHalf}></div>
+      {/* --- CONTENT WRAPPER FOR PARALLAX UNVEIL --- */}
+      <div style={{ position: 'relative', zIndex: 5, backgroundColor: '#ffffff' }}>
+        <FamilyBanner 
+          prefix="YOUR" 
+          suffix="Revival." 
+          content="At MAISON ATELIER, we breathe new life into existing spaces. Our family approaches home remodeling with a deep respect for the original structure while infusing it with modern luxury and elegance. We seamlessly blend the old with the new, ensuring your home perfectly evolves with your lifestyle."
+        />
+        <div style={{ paddingTop: '4rem' }}>
+
+        {/* Intro text moved to BottomCTA */}
+
+        {/* 3. Services (Alternating Layout) */}
+        <section style={{ padding: '4rem 5% 8rem 5%', backgroundColor: '#fcfaf8' }}>
+          <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+            
+            {/* Service 1 - Text Left, Image Right */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'center', marginBottom: '8rem' }}>
+              <div className="reveal-up" style={{ paddingRight: '2rem' }}>
+                <h3 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: '2.5rem', color: '#1e3a8a', marginBottom: '1.5rem', lineHeight: 1.2 }}>
+                  <span style={{ fontStyle: 'italic', color: '#d97706' }}>BATHROOM</span> <br/>REMODELING
+                </h3>
+                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', lineHeight: 1.8, color: '#4b5563' }}>
+                  Elevate your daily routine with a luxurious bathroom renovation. From spa-like walk-in showers to custom vanities, we transform your bathroom into a private sanctuary of relaxation and style.
+                </p>
+              </div>
+              <div className="parallax-img-container" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden' }}>
+                <img 
+                  src="/latelier-images/residential/bathroom.jpg" 
+                  alt="Bathroom Remodeling" 
+                  style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%', objectFit: 'cover' }}
+                />
+              </div>
+            </div>
+
+            {/* Service 2 - Image Left, Text Right */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'center', marginBottom: '8rem' }}>
+              <div className="parallax-img-container" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden', order: 1 }}>
+                <img 
+                  src="/latelier-images/residential/kitchen.jpg" 
+                  alt="Kitchen Remodeling" 
+                  style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%', objectFit: 'cover' }}
+                />
+              </div>
+              <div className="reveal-up" style={{ paddingLeft: '2rem', order: 2 }}>
+                <h3 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: '2.5rem', color: '#1e3a8a', marginBottom: '1.5rem', lineHeight: 1.2 }}>
+                  <span style={{ fontStyle: 'italic', color: '#d97706' }}>KITCHEN</span> <br/>REMODELING
+                </h3>
+                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', lineHeight: 1.8, color: '#4b5563' }}>
+                  The heart of your home deserves to be extraordinary. We design and build kitchens that blend high-end culinary functionality with breathtaking aesthetic appeal, tailored perfectly to your lifestyle.
+                </p>
+              </div>
+            </div>
+
+            {/* Service 3 - Text Left, Image Right */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+              <div className="reveal-up" style={{ paddingRight: '2rem' }}>
+                <h3 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: '2.5rem', color: '#1e3a8a', marginBottom: '1.5rem', lineHeight: 1.2 }}>
+                  <span style={{ fontStyle: 'italic', color: '#d97706' }}>INTERIOR</span> <br/>BASEMENTS
+                </h3>
+                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', lineHeight: 1.8, color: '#4b5563' }}>
+                  Unlock the hidden potential of your home. Whether you envision a state-of-the-art home theater, a wine cellar, or an elegant guest suite, we transform unfinished basements into exceptional living spaces.
+                </p>
+              </div>
+              <div className="parallax-img-container" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden' }}>
+                <img 
+                  src="/latelier-images/residential/basement.jpg" 
+                  alt="Interior Basements" 
+                  style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%', objectFit: 'cover' }}
+                />
+              </div>
+            </div>
+
           </div>
+        </section>
+
+        <RemodelingChecklist />
+
+        {/* 4. CTA */}
+        <BottomCTA 
+          title="Transform your" 
+          titleHighlight="space"
+          text={[
+            "Transforming older rooms in your home into a beautiful and functional space requires the expertise of a trusted and skilled renovation team.",
+            "MAISON ATELIER is your ideal partner for the project, offering a commitment to excellence in every stage—from initial consultation to final installation.",
+            "We take pride in delivering results that exceed expectations, ensuring your home renovation is seamless and enjoyable. With MAISON ATELIER, you can look forward to a stunning, highly functional kitchen that you’ll cherish for years to come."
+          ]}
+          buttonText="Start Your Renovation"
+        />
+
         </div>
-        
-        <div className="container">
-          <div className={`reveal-up ${styles.consultCard}`}>
-            <h2 className="font-serif">Begin Your <span className="font-italic" style={{ color: 'var(--color-primary)' }}>Journey</span></h2>
-            <p>
-              Use our interactive estimator to get a baseline price range for your remodel, and schedule a free in-home consultation with our lead architect.
-            </p>
-            <Link href="/estimate" className="btn btn-secondary">Get Estimate & Schedule</Link>
-          </div>
-        </div>
-      </section>
+      </div> {/* END CONTENT WRAPPER */}
+
     </div>
   )
 }

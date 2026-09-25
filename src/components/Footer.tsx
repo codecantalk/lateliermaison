@@ -106,40 +106,43 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2: Navigation & Contact */}
+          {/* Column 2: Locations (Atlanta & London) */}
           <div className={styles.footerCol}>
             <div className={styles.navGrid}>
               <div className={styles.linkGroup}>
-                <h4 className={styles.colTitle}>Services</h4>
-                <ul className={styles.linkList}>
-                  <li><Link href="/services/new-construction">New Construction</Link></li>
-                  <li><Link href="/services/bathroom-remodeling">Bathroom Remodeling</Link></li>
-                  <li><Link href="/services/estate-management">Estate Management</Link></li>
-                  <li><Link href="/services/cleaning">Housekeeping</Link></li>
+                <h4 className={styles.colTitle}>Atlanta</h4>
+                <ul className={styles.contactList}>
+                  <li><p style={{ margin: 0 }}>Cumberland Blvd SE<br/>Vinings, GA -- 30339</p></li>
+                  <li><a href="tel:3344875707">334-487-5707</a></li>
+                  <li><a href="mailto:lateliermaisonatl@gmail.com" style={{ fontSize: '0.85rem' }}>lateliermaisonatl@gmail.com</a></li>
                 </ul>
               </div>
               <div className={styles.linkGroup}>
-                <h4 className={styles.colTitle}>Contact</h4>
+                <h4 className={styles.colTitle}>London</h4>
                 <ul className={styles.contactList}>
-                  <li><a href={`mailto:${settings.email}`}>{settings.email}</a></li>
-                  <li><a href={`tel:${settings.phone.replace(/[^0-9+]/g, '')}`}>{settings.phone}</a></li>
-                  <li style={{ marginTop: '0.5rem' }}><p>{settings.address}<br/>{settings.availability}</p></li>
+                  <li><p style={{ margin: 0 }}>26 Thunderer St<br/>London, UK -- E13 9HE</p></li>
+                  <li><a href="mailto:lateliermaisonldn@gmail.com" style={{ fontSize: '0.85rem' }}>lateliermaisonldn@gmail.com</a></li>
                 </ul>
               </div>
             </div>
           </div>
 
-          {/* Column 3: The Journal */}
+          {/* Column 3: Locations & Hours */}
           <div className={styles.footerCol}>
-            <div className={styles.newsletterSection}>
-              <h4 className={styles.colTitle}>The L'Atelier Journal</h4>
-              <p style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '1.5rem' }}>Subscribe to receive insights on luxury home management and exclusive service offerings.</p>
-              <form className={styles.newsletterForm} onSubmit={(e) => e.preventDefault()}>
-                <input type="email" placeholder="Email address" required className={styles.newsletterInput} />
-                <button type="submit" aria-label="Subscribe" className={styles.newsletterBtn}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                </button>
-              </form>
+            <div className={styles.navGrid}>
+              <div className={styles.linkGroup}>
+                <h4 className={styles.colTitle}>Lagos</h4>
+                <ul className={styles.contactList} style={{ marginBottom: '2rem' }}>
+                  <li><p style={{ margin: 0 }}>1 Emmanuel Keshi St<br/>Magodo GRA, Lagos</p></li>
+                  <li><a href="mailto:lateliermaisonatl@gmail.com" style={{ fontSize: '0.85rem' }}>lateliermaisonatl@gmail.com</a></li>
+                </ul>
+                
+                <h4 className={styles.colTitle}>Hours</h4>
+                <ul className={styles.contactList}>
+                  <li><p style={{ margin: 0, fontWeight: 500 }}>Monday — Saturday</p></li>
+                  <li><p style={{ margin: 0 }}>8am — 6pm</p></li>
+                </ul>
+              </div>
             </div>
           </div>
 
@@ -157,7 +160,7 @@ export default function Footer() {
 
       <div className={styles.footerBottom}>
         <div className={`container ${styles.footerBottomInner}`}>
-          <p>&copy; {new Date().getFullYear()} L'Atelier Maison. All rights reserved.</p>
+          <p>Copyright 2025 &copy; MAISON. All Rights Reserved.</p>
           <div className={styles.legalLinks}>
             <Link href="/privacy">Privacy Policy</Link>
             <Link href="/terms">Terms of Service</Link>

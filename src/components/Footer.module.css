@@ -1,12 +1,12 @@
 .footer {
-  background: linear-gradient(135deg, #FFFFFF 0%, rgba(65, 105, 225, 0.08) 100%);
+  background: #ffffff;
   color: var(--color-secondary);
   position: relative;
   z-index: 10;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  border-top: 1px solid rgba(65, 105, 225, 0.1);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 /* SVG Background was removed, but keep standard absolute div for color transitions if needed */

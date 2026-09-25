@@ -16,7 +16,7 @@ export default function NavBar() {
       // Shrink the pill when scrolled
       setScrolled(currentScrollY > 50)
     }
-    
+
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
@@ -24,58 +24,64 @@ export default function NavBar() {
   return (
     <div className={styles.navWrapper}>
       <nav className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}>
-      <div className={`container ${styles.navContainer}`}>
-        
-        {/* Logo */}
-        <Link href="/" className={styles.logo}>
-          <Image src="/logo.png" alt="L'Atelier Maison Logo" width={140} height={40} style={{ objectFit: 'contain' }} priority />
-        </Link>
-        
-        {/* Desktop Links */}
-        <div className={styles.desktopLinks}>
-          <div className={styles.navDropdownGroup}>
-            <span className={styles.navLink} style={{cursor: 'pointer'}}>Services</span>
-            <div className={styles.dropdownMenu}>
-              <Link href="/services/new-construction" className={styles.dropdownItem}>New Construction</Link>
-              <Link href="/services/bathroom-remodeling" className={styles.dropdownItem}>Bathroom Remodeling</Link>
-              <Link href="/services/estate-management" className={styles.dropdownItem}>Estate Management</Link>
-              <Link href="/services/cleaning" className={styles.dropdownItem}>Housekeeping</Link>
-            </div>
-          </div>
-          <Link href="/portfolio" className={styles.navLink}>Portfolio</Link>
-          <Link href="/locations" className={styles.navLink}>Locations</Link>
-          <Link href="/about" className={styles.navLink}>About</Link>
-        </div>
+        <div className={`container ${styles.navContainer}`}>
 
-        {/* CTA & Mobile Toggle */}
-        <div className={styles.actions}>
-          <Link href="/estimate" className={`btn btn-primary ${styles.ctaBtn}`}>
-            Get Estimate
+          {/* Logo */}
+          <Link href="/" className={styles.logo}>
+            <Image src="/logo.png" alt="L'Atelier Maison Logo" width={140} height={40} style={{ objectFit: 'contain' }} priority />
           </Link>
-          <button 
-            className={styles.hamburger} 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            <div className={`${styles.line} ${mobileMenuOpen ? styles.line1Open : ''}`}></div>
-            <div className={`${styles.line} ${mobileMenuOpen ? styles.line2Open : ''}`}></div>
-            <div className={`${styles.line} ${mobileMenuOpen ? styles.line3Open : ''}`}></div>
-          </button>
-        </div>
-      </div>
 
-      {/* Mobile Menu Dropdown */}
-      <div className={`${styles.mobileMenu} ${mobileMenuOpen ? styles.mobileMenuOpen : ''}`}>
-        <div className={styles.mobileLinkGroup}>Services</div>
-        <Link href="/services/new-construction" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- New Construction</Link>
-        <Link href="/services/bathroom-remodeling" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- Bathroom Remodeling</Link>
-        <Link href="/services/estate-management" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- Estate Management</Link>
-        <Link href="/services/cleaning" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- Housekeeping</Link>
-        <Link href="/portfolio" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>Portfolio</Link>
-        <Link href="/locations" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>Locations</Link>
-        <Link href="/about" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>About</Link>
-      </div>
-    </nav>
+          {/* Desktop Links */}
+          <div className={styles.desktopLinks}>
+            <Link href="/" className={styles.navLink}>HOME</Link>
+
+            <div className={styles.navDropdownGroup}>
+              <span className={styles.navLink} style={{ cursor: 'pointer' }}>RESIDENTIAL</span>
+              <div className={styles.dropdownMenu}>
+                <Link href="/services/new-construction" className={styles.dropdownItem}>NEW CONSTRUCTION</Link>
+                <Link href="/services/remodeling" className={styles.dropdownItem}>REMODELING</Link>
+              </div>
+            </div>
+
+            <Link href="/services" className={styles.navLink}>HOME SERVICES</Link>
+
+            <Link href="/portfolio" className={styles.navLink}>PORTFOLIO</Link>
+
+            <Link href="/locations" className={styles.navLink}>CONTACT</Link>
+          </div>
+
+          {/* CTA & Mobile Toggle */}
+          <div className={styles.actions}>
+            <Link href="/estimate" className={`btn btn-primary ${styles.ctaBtn}`}>
+              Get Estimate
+            </Link>
+            <button
+              className={styles.hamburger}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              <div className={`${styles.line} ${mobileMenuOpen ? styles.line1Open : ''}`}></div>
+              <div className={`${styles.line} ${mobileMenuOpen ? styles.line2Open : ''}`}></div>
+              <div className={`${styles.line} ${mobileMenuOpen ? styles.line3Open : ''}`}></div>
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu Dropdown */}
+        <div className={`${styles.mobileMenu} ${mobileMenuOpen ? styles.mobileMenuOpen : ''}`}>
+          <Link href="/" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>HOME</Link>
+
+          <div className={styles.mobileLinkGroup}>RESIDENTIAL</div>
+          <Link href="/services/new-construction" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- NEW CONSTRUCTION</Link>
+          <Link href="/services/remodeling" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- REMODELING</Link>
+
+          <Link href="/services" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>HOME SERVICES</Link>
+
+          <Link href="/portfolio" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>PORTFOLIO</Link>
+
+          <Link href="/locations" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)} style={{ marginTop: '1rem' }}>CONTACT</Link>
+        </div>
+      </nav>
     </div>
   )
 }

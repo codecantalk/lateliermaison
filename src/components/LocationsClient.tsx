@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { gsap } from 'gsap/dist/gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import styles from './LandingPage.module.css'
+import FamilyBanner from './FamilyBanner'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -70,45 +71,51 @@ export default function LocationsClient() {
   }, [])
 
   return (
-    <div ref={containerRef} className={styles.wrapper} style={{ backgroundColor: 'var(--color-bg)', paddingTop: '10rem', position: 'relative', overflow: 'hidden' }}>
-      
-      {/* Dynamic Background Gradient */}
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(250,246,240,0.4) 100%)', zIndex: 0, pointerEvents: 'none' }}></div>
+    <div ref={containerRef} className={styles.wrapper} style={{ backgroundColor: 'var(--color-bg)', position: 'relative', overflow: 'hidden' }}>
+      {/* 1. Fixed Parallax Hero */}
+      <section className={styles.heroSection} style={{ overflow: 'hidden' }}>
+        <div className={styles.heroImageWrapper}>
+          <img 
+            src="/award-bg.jpg" 
+            alt="Locations"
+            className={styles.infiniteZoomImg}
+          />
+          {/* Sunny Golden Hour Overlay */}
+          <div className={styles.heroOverlay} style={{ zIndex: 1, background: 'linear-gradient(45deg, rgba(255, 195, 113, 0.15) 0%, rgba(255, 229, 180, 0.05) 100%)', mixBlendMode: 'overlay' }}></div>
+          <div className={styles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at top left, rgba(255, 220, 150, 0.15) 0%, transparent 60%)' }}></div>
+        </div>
+        
+        {/* Ambient White Glow strictly behind the text to ensure absolute legibility of the Navy font */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '50%', background: 'linear-gradient(to top, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.4) 40%, rgba(255,255,255,0) 100%)', zIndex: 3 }}></div>
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', height: '60%', background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%)', zIndex: 3 }}></div>
 
-      {/* SVG Background Animation */}
-      <div className={styles.bgSvgWrapper} style={{ zIndex: 0 }}>
-        <svg className="bg-anim-svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-          <defs>
-            <radialGradient id="sphere-glow-loc" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.15" />
-              <stop offset="100%" stopColor="transparent" stopOpacity="0" />
-            </radialGradient>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#sphere-glow-loc)" />
-          <g stroke="var(--color-primary)" fill="none" strokeWidth="0.8" opacity="0.2">
-            {Array.from({ length: 18 }).map((_, i) => (
-              <g key={i} transform={`rotate(${i * 10} 500 500)`}>
-                <circle className="wire-circle" cx="500" cy="500" r="350" />
-              </g>
-            ))}
-          </g>
-        </svg>
-      </div>
+        <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', textAlign: 'right', paddingBottom: '4rem' }}>
+          <div className="reveal-up">
+            <h1 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2rem, 5vw, 4rem)', color: '#1e3a8a', letterSpacing: '0.02em', margin: '0 0 1rem 0' }}>
+              <span style={{ fontStyle: 'italic', fontWeight: 300 }}>Our</span><br/>
+              Locations.
+            </h1>
+          </div>
+        </div>
+      </section>
 
-      <div className="container" style={{ textAlign: 'center', marginBottom: 'var(--spacing-3xl)', position: 'relative', zIndex: 2 }}>
-        <h4 className="loc-title font-sans" style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '1rem', fontWeight: 600 }}>Global Presence</h4>
-        <h1 className="loc-title font-serif" style={{ fontSize: 'clamp(3.5rem, 6vw, 6rem)', color: 'var(--color-text)', lineHeight: 1.1 }}>Our <span className="font-italic" style={{ color: 'var(--color-primary)' }}>Locations</span></h1>
-        <p className="loc-title" style={{ maxWidth: '600px', margin: 'var(--spacing-md) auto 0', fontSize: '1.25rem', color: 'var(--color-text-muted)' }}>
+      {/* --- CONTENT WRAPPER FOR PARALLAX UNVEIL --- */}
+      <div style={{ position: 'relative', zIndex: 5, backgroundColor: '#ffffff' }}>
+        <FamilyBanner 
+          prefix="OUR" 
+          suffix="Reach." 
+          content="At MAISON ATELIER, our family spans the globe. We bring our unwavering commitment to quality and luxurious living to select prime locations. Whether you are in London, Atlanta, or Lagos, our trusted team is ready to bring your architectural vision to life."
+        />
+        <div style={{ paddingTop: '4rem' }}>
+        <p className="loc-title" style={{ maxWidth: '600px', margin: 'var(--spacing-md) auto 0', fontSize: '1.25rem', color: 'var(--color-text-muted)', textAlign: 'center', paddingBottom: '4rem' }}>
           Serving the most discerning clients across four continents with uncompromising standards.
         </p>
-      </div>
-
       <div className="container" style={{ paddingBottom: 'var(--spacing-4xl)', position: 'relative', zIndex: 2 }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--spacing-2xl)' }}>
           {locations.map((loc, i) => (
             <div key={i} className={`loc-card ${styles.glassCard}`} style={{ padding: 'var(--spacing-xl)', textAlign: 'center' }}>
               <div style={{ position: 'relative', width: '100%', height: '260px', marginBottom: '2rem', borderRadius: '4px', overflow: 'hidden' }}>
-                <Image src={loc.img} alt={loc.city} fill style={{ objectFit: 'cover' }} className={styles.zoomImage} />
+                <Image src={loc.img} alt={loc.city} fill style={{ objectFit: 'cover' }} className={styles.zoomImage}  sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
               <h3 className="font-serif" style={{ color: 'var(--color-secondary)', fontSize: '2.25rem', marginBottom: '1rem' }}>{loc.city}</h3>
               <p style={{ color: 'var(--color-text-muted)', marginBottom: '2.5rem', fontSize: '1.1rem', lineHeight: 1.6 }}>{loc.desc}</p>
@@ -117,6 +124,9 @@ export default function LocationsClient() {
           ))}
         </div>
       </div>
+        </div>
+      </div> {/* END CONTENT WRAPPER */}
+
     </div>
   )
 }

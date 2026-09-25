@@ -1,11 +1,13 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import FamilyBanner from './FamilyBanner'
+import BottomCTA from './BottomCTA'
 import Image from 'next/image'
 import Link from 'next/link'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
-import styles from './LandingPage.module.css'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import landingStyles from './LandingPage.module.css'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -16,137 +18,144 @@ export default function NewConstructionClient() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Hero Parallax
-      gsap.to('.hero-parallax-bg', {
-        yPercent: 30,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '.construction-hero',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true
-        }
+      // Reveal animations for text
+      gsap.utils.toArray('.reveal-up').forEach((elem: any) => {
+        gsap.from(elem, {
+          y: 50,
+          opacity: 0,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: elem,
+            start: 'top 85%'
+          }
+        })
       })
 
-      // Reveal Animations
-      gsap.utils.toArray('.reveal-up').forEach((elem: any) => {
-        gsap.fromTo(elem, 
-          { y: 50, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 1,
-            ease: 'power3.out',
+      // Image Parallax for Alternating Sections
+      gsap.utils.toArray('.parallax-img-container').forEach((container: any) => {
+        const img = container.querySelector('img')
+        if (img) {
+          gsap.to(img, {
+            yPercent: 15,
+            ease: 'none',
             scrollTrigger: {
-              trigger: elem,
-              start: 'top 85%'
+              trigger: container,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true
             }
-          }
-        )
+          })
+        }
       })
     }, containerRef)
+
     return () => ctx.revert()
   }, [])
 
   return (
-    <div ref={containerRef} className={styles.wrapper}>
+    <div ref={containerRef} style={{ width: '100%', overflow: 'hidden', backgroundColor: '#ffffff' }}>
       
-      {/* Hero Section */}
-      <section className={`construction-hero ${styles.heroSection}`} style={{ height: '100vh', overflow: 'hidden' }}>
-        <div className={styles.heroImageWrapper}>
-          <Image src="/luxury-hero.jpg" alt="Luxury New Construction" fill className={`hero-parallax-bg ${styles.objectCover}`} priority />
-          <div className={styles.heroOverlay}></div>
+      {/* 1. Fixed Parallax Hero */}
+      <section className={landingStyles.heroSection} style={{ overflow: 'hidden' }}>
+        <div className={landingStyles.heroImageWrapper}>
+          <img 
+            src="/latelier-images/residential/hero_new_construction.jpg" 
+            alt="New Construction"
+            className={landingStyles.infiniteZoomImg}
+          />
+          {/* Sunny Golden Hour Overlay */}
+          <div className={landingStyles.heroOverlay} style={{ zIndex: 1, background: 'linear-gradient(45deg, rgba(255, 195, 113, 0.15) 0%, rgba(255, 229, 180, 0.05) 100%)', mixBlendMode: 'overlay' }}></div>
+          <div className={landingStyles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at top left, rgba(255, 220, 150, 0.15) 0%, transparent 60%)' }}></div>
         </div>
         
-        <div className={`container ${styles.heroContent}`}>
-          <div className={styles.heroTextContainer}>
-            <h4 className="reveal-up" style={{ color: '#8A9CFF', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '1rem', textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>Ground-Up Architecture</h4>
-            <h1 className="reveal-up font-serif" style={{ color: '#fff', marginBottom: '1rem', textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}>New Construction</h1>
-            <p className="reveal-up" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.25rem', marginBottom: '2rem', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>We bring your vision to life with uncompromising quality and transparency.</p>
-            <div className="reveal-up">
-              <Link href="/estimate" className="btn btn-primary">Build Your Home With Us</Link>
-            </div>
+        {/* Ambient White Glow strictly behind the text to ensure absolute legibility of the Navy font */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '50%', background: 'linear-gradient(to top, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.4) 40%, rgba(255,255,255,0) 100%)', zIndex: 3 }}></div>
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', height: '60%', background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%)', zIndex: 3 }}></div>
+
+        <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', textAlign: 'right', paddingBottom: '4rem' }}>
+          <div className="reveal-up">
+            <h1 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2rem, 5vw, 4rem)', color: '#1e3a8a', letterSpacing: '0.02em', margin: '0 0 1rem 0' }}>
+              <span style={{ fontStyle: 'italic', fontWeight: 300 }}>New</span><br/>
+              Construction.
+            </h1>
           </div>
         </div>
       </section>
 
-      {/* Content Section */}
-      <section className={styles.processSection} style={{ padding: 'var(--spacing-2xl) 0' }}>
-        <div className="container">
-          <div className="reveal-up" style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center', marginBottom: 'var(--spacing-xl)' }}>
-            <h2 className="font-serif">Building Your <span className="font-italic" style={{ color: 'var(--color-primary)' }}>Legacy.</span></h2>
-            <p style={{ marginTop: 'var(--spacing-md)', fontSize: '1.125rem' }}>
-              At L’ATELIER MAISON, we guide you through every step of the new construction process with a focus on quality, transparency, and collaboration. From the initial consultation to the final walk-through, we prioritize your vision and make it our reality.
-            </p>
-          </div>
+      {/* --- CONTENT WRAPPER FOR PARALLAX UNVEIL --- */}
+      <div style={{ position: 'relative', zIndex: 5, backgroundColor: '#ffffff' }}>
+        <FamilyBanner 
+          prefix="YOUR" 
+          suffix="Vision." 
+          content="At MAISON ATELIER, building your dream home is our greatest privilege. Our family is dedicated to constructing enduring, luxurious new builds from the ground up. With uncompromising attention to detail and a commitment to architectural excellence, we create the perfect foundation for your family's future."
+        />
+        <div style={{ paddingTop: '4rem' }}>
 
-          <div className={styles.servicesGrid}>
-            <div className={`reveal-up ${styles.serviceCard}`} style={{ padding: 'var(--spacing-lg)' }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" style={{marginBottom: '1rem'}}><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-              <h3 className="font-serif">Planning & Design</h3>
-              <p>Our process begins with understanding your needs and goals, followed by detailed architectural planning and aesthetic design.</p>
-            </div>
-            <div className={`reveal-up ${styles.serviceCard}`} style={{ padding: 'var(--spacing-lg)' }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" style={{marginBottom: '1rem'}}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              <h3 className="font-serif">Execution</h3>
-              <p>Once approved, we handle all permits, coordinate with trusted subcontractors, and manage the construction process from start to finish.</p>
-            </div>
-            <div className={`reveal-up ${styles.serviceCard}`} style={{ padding: 'var(--spacing-lg)' }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" style={{marginBottom: '1rem'}}><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-              <h3 className="font-serif">Communication</h3>
-              <p>We maintain open communication throughout the build, ensuring you’re informed and confident every step of the way.</p>
-            </div>
-            <div className={`reveal-up ${styles.serviceCard}`} style={{ padding: 'var(--spacing-lg)' }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" style={{marginBottom: '1rem'}}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              <h3 className="font-serif">Longevity</h3>
-              <p>Our commitment to craftsmanship ensures your new home is built to last, tailored to your exact specifications.</p>
-            </div>
-          </div>
-        </div>
-      </section>
+        {/* Intro text moved to BottomCTA */}
 
-      {/* Featured Projects Section */}
-      <section style={{ padding: 'var(--spacing-2xl) 0', backgroundColor: 'var(--color-bg-alt)' }}>
-        <div className="container">
-          <div className="reveal-up" style={{ textAlign: 'center', marginBottom: 'var(--spacing-xl)' }}>
-            <h4 style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '1rem' }}>Portfolio Showcase</h4>
-            <h2 className="font-serif">2024 <span className="font-italic" style={{ color: 'var(--color-primary)' }}>Projects</span></h2>
-          </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-md)', justifyContent: 'center' }}>
-            <div className="reveal-up" style={{ width: '100%', maxWidth: '400px', background: 'var(--color-bg)', padding: 'var(--spacing-md)', border: '1px solid var(--color-border)', borderRadius: '4px', textAlign: 'center' }}>
-              <h3 className="font-serif" style={{ color: 'var(--color-secondary)' }}>190 Barcelona Dr</h3>
-              <p style={{ color: 'var(--color-text-muted)' }}>Atlanta, GA</p>
+        {/* 3. Projects (Alternating Layout) */}
+        <section style={{ padding: '4rem 5% 8rem 5%', backgroundColor: '#f8fafc' }}>
+          <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+            
+            {/* Project 1 - Text Left, Image Right */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'center', marginBottom: '8rem' }}>
+              <div className="reveal-up" style={{ paddingRight: '2rem' }}>
+                <h3 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: '2.5rem', color: '#1e3a8a', marginBottom: '1.5rem', lineHeight: 1.2 }}>
+                  190 BARCELONA DR, <br/><span style={{ fontStyle: 'italic', color: '#d97706' }}>ATLANTA</span>
+                </h3>
+                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', lineHeight: 1.8, color: '#4b5563' }}>
+                  A magnificent showcase of structural elegance and bespoke design. Built from the ground up to reflect the modern family's highest standards of luxury and comfort.
+                </p>
+              </div>
+              <div className="parallax-img-container" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden' }}>
+                <img 
+                  src="/latelier-images/residential/190_barcelona.jpg" 
+                  alt="190 Barcelona Dr" 
+                  style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%', objectFit: 'cover' }}
+                />
+              </div>
             </div>
-            <div className="reveal-up" style={{ width: '100%', maxWidth: '400px', background: 'var(--color-bg)', padding: 'var(--spacing-md)', border: '1px solid var(--color-border)', borderRadius: '4px', textAlign: 'center' }}>
-              <h3 className="font-serif" style={{ color: 'var(--color-secondary)' }}>210 Barcelona Dr</h3>
-              <p style={{ color: 'var(--color-text-muted)' }}>Atlanta, GA</p>
-            </div>
-          </div>
-          <div className="reveal-up" style={{ textAlign: 'center', marginTop: 'var(--spacing-lg)' }}>
-            <Link href="/portfolio" className="btn btn-secondary">View Full Portfolio</Link>
-          </div>
-        </div>
-      </section>
 
-      {/* CTA Section */}
-      <section className={styles.consultSection}>
-        <div className={styles.parallaxBg}>
-          <div className={`parallax-img ${styles.imageWrapper}`}>
-            <Image src="/award-bg.jpg" alt="Immaculate Architecture" fill className={styles.objectCover} />
-            <div className={styles.overlayEspressoHalf}></div>
+            {/* Project 2 - Image Left, Text Right */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+              <div className="parallax-img-container" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden', order: 1 }}>
+                <img 
+                  src="/latelier-images/residential/210_barcelona.jpg" 
+                  alt="210 Barcelona Dr" 
+                  style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%', objectFit: 'cover' }}
+                />
+              </div>
+              <div className="reveal-up" style={{ paddingLeft: '2rem', order: 2 }}>
+                <h3 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: '2.5rem', color: '#1e3a8a', marginBottom: '1.5rem', lineHeight: 1.2 }}>
+                  210 BARCELONA DR, <br/><span style={{ fontStyle: 'italic', color: '#d97706' }}>ATLANTA</span>
+                </h3>
+                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', lineHeight: 1.8, color: '#4b5563' }}>
+                  An architectural masterpiece perfectly blending contemporary design with timeless warmth. Every material selected and every line drawn speaks to unparalleled craftsmanship.
+                </p>
+              </div>
+              {/* Force order on mobile via media query if needed, but flex-direction column handles it usually. Grid auto-fit will wrap in DOM order. 
+                  To be safe without CSS modules, we just use DOM order and accept image top on mobile. */}
+            </div>
+
           </div>
+        </section>
+
+        {/* 4. CTA */}
+        <BottomCTA 
+          title="Ready to break" 
+          titleHighlight="ground?"
+          text={[
+            "At L’ATELIER MAISON, we guide you through every step of the new construction process with a focus on quality, transparency, and collaboration. From the initial consultation to the final walk-through, we prioritize your vision and make it our reality.",
+            "Our process begins with understanding your needs and goals, followed by detailed planning and design. Once approved, we handle all permits, coordinate with trusted subcontractors, and manage the construction process from start to finish.",
+            "Throughout, we maintain open communication, ensuring you’re informed and confident every step of the way. Our commitment to craftsmanship and attention to detail ensures your new home is built to last, tailored to your exact specifications. Your satisfaction is our priority, and we’re here to make your dream home a reality."
+          ]}
+          buttonText="Build Your Home With Us"
+        />
+
         </div>
-        
-        <div className="container">
-          <div className={`reveal-up ${styles.consultCard}`}>
-            <h2 className="font-serif">Ready to <span className="font-italic" style={{ color: 'var(--color-primary)' }}>Build?</span></h2>
-            <p>
-              Your satisfaction is our priority, and we’re here to make your dream home a reality.
-            </p>
-            <Link href="/estimate" className="btn btn-secondary">Contact Us Today</Link>
-          </div>
-        </div>
-      </section>
+      </div> {/* END CONTENT WRAPPER */}
+
     </div>
   )
 }

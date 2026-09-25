@@ -1,22 +1,28 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import FamilyBanner from './FamilyBanner'
 import Image from 'next/image'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import styles from './Portfolio.module.css'
+import landingStyles from './LandingPage.module.css'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
 }
 
 const DEFAULT_ITEMS = [
-  { img: '/luxury-hero.jpg', title: 'The Glass House', location: 'Paris, FR' },
-  { img: '/luxury-bathroom.jpg', title: 'Spa Sanctuary', location: 'London, UK' },
-  { img: '/award-bg.jpg', title: 'Modern Minimalism', location: 'Atlanta, GA' },
-  { img: '/luxury-hero.jpg', title: 'Historic Restoration', location: 'Lagos, NG' },
-  { img: '/award-bg.jpg', title: 'Coastal Retreat', location: 'Malibu, CA' },
-  { img: '/luxury-bathroom.jpg', title: 'Urban Penthouse', location: 'New York, NY' },
+  { img: '/latelier-images/portfolio/IMG_8183.JPG', title: 'The Glass House', location: 'Paris, FR' },
+  { img: '/latelier-images/portfolio/IMG_8184.JPG', title: 'Spa Sanctuary', location: 'London, UK' },
+  { img: '/latelier-images/portfolio/IMG_8185.JPG', title: 'Modern Minimalism', location: 'Atlanta, GA' },
+  { img: '/latelier-images/portfolio/IMG_8186.JPG', title: 'Historic Restoration', location: 'Lagos, NG' },
+  { img: '/latelier-images/portfolio/IMG_8187.JPG', title: 'Coastal Retreat', location: 'Malibu, CA' },
+  { img: '/latelier-images/portfolio/IMG_8188.JPG', title: 'Urban Penthouse', location: 'New York, NY' },
+  { img: '/latelier-images/portfolio/IMG_8189.JPG', title: 'Mountain Chalet', location: 'Aspen, CO' },
+  { img: '/latelier-images/portfolio/IMG_8190.JPG', title: 'Desert Oasis', location: 'Scottsdale, AZ' },
+  { img: '/latelier-images/portfolio/IMG_8191.JPG', title: 'Mid-Century Modern', location: 'Palm Springs, CA' },
+  { img: '/latelier-images/portfolio/5A6BE788-BBDC-4362-83B1-50E26B74249D.JPG', title: 'Lakefront Estate', location: 'Lake Tahoe, NV' },
 ]
 
 import { createClient } from '@/lib/supabase/client'
@@ -24,6 +30,7 @@ import { useState } from 'react'
 
 export default function PortfolioClient() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const galleryRef = useRef<HTMLDivElement>(null)
   const [portfolioItems, setPortfolioItems] = useState(DEFAULT_ITEMS)
   const supabase = createClient()
 
@@ -41,160 +48,143 @@ export default function PortfolioClient() {
     }
     loadPortfolio()
     
-    const ctx = gsap.context(() => {
-      
-      // 1. Hero Animations
-      gsap.fromTo('.hero-title-anim', 
-        { y: 50, opacity: 0 }, 
-        { y: 0, opacity: 1, duration: 1.5, stagger: 0.2, ease: 'power3.out', delay: 0.2 }
-      )
-      
-      // Hero Background Parallax
-      gsap.to('.hero-parallax-bg', {
-        yPercent: 20,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: `.${styles.heroSection}`,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true
-        }
-      })
+    const timer = setTimeout(() => {
+      const ctx = gsap.context(() => {
+        
+        // 1. Hero Animations (Reveal)
+        gsap.fromTo('.reveal-up', 
+          { y: 50, opacity: 0 }, 
+          { y: 0, opacity: 1, duration: 1.5, stagger: 0.2, ease: 'power3.out', delay: 0.2 }
+        )
 
-      // Hero SVG Breathing (Infinite)
-      gsap.to('.hero-svg-breathe', {
-        scale: 1.05,
-        rotation: 2,
-        duration: 15,
-        yoyo: true,
-        repeat: -1,
-        ease: 'sine.inOut'
-      })
-
-      // 2. Grid Items - Wipe Reveal & Inner Parallax
-      gsap.utils.toArray(`.${styles.gridItem}`).forEach((item: any) => {
-        // Wipe Reveal
-        gsap.to(item, {
-          clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-          duration: 1.5,
-          ease: 'power3.inOut',
-          scrollTrigger: {
-            trigger: item,
-            start: 'top 85%',
-          }
-        })
-
-        // Inner Image Parallax
-        const img = item.querySelector(`.${styles.parallaxImage}`)
-        if (img) {
-          gsap.fromTo(img, 
-            { yPercent: -10 },
-            {
-              yPercent: 10,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: item,
-                start: 'top bottom',
-                end: 'bottom top',
-                scrub: true
+        // 2. Editorial Gallery Parallax & Reveals
+        gsap.utils.toArray(`.${styles.editorialCard}`).forEach((card: any, i: number) => {
+          
+          // Image zoom effect
+          const imgWrapper = card.querySelector(`.${styles.editorialImageWrapper}`)
+          if (imgWrapper) {
+            gsap.fromTo(imgWrapper, 
+              { scale: 0.9, opacity: 0 },
+              {
+                scale: 1,
+                opacity: 1,
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: card,
+                  start: "top 85%",
+                  end: "center center",
+                  scrub: 1
+                }
               }
-            }
-          )
-        }
-      })
-
-      // 3. Floating SVG Accents
-      gsap.utils.toArray('.accent-anim').forEach((accent: any, i: number) => {
-        gsap.to(accent, {
-          y: -100 * (i + 1),
-          rotation: 45 * (i % 2 === 0 ? 1 : -1),
-          ease: 'none',
-          scrollTrigger: {
-            trigger: `.${styles.gridContainer}`,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1
+            )
           }
-        })
-      })
+          
+          // Inner image parallax (moving up slightly)
+          const img = card.querySelector(`.${styles.editorialImage}`)
+          if (img) {
+            gsap.fromTo(img, 
+              { yPercent: -15 },
+              {
+                yPercent: 15,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: card,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: true
+                }
+              }
+            )
+          }
 
-    }, containerRef)
-    return () => ctx.revert()
-  }, [])
+          // Text reveal
+          const text = card.querySelector(`.${styles.editorialText}`)
+          if (text) {
+            gsap.fromTo(text,
+              { y: 50, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                ease: "power3.out",
+                scrollTrigger: {
+                  trigger: card,
+                  start: "top 75%",
+                }
+              }
+            )
+          }
+
+        })
+
+      }, containerRef)
+      return () => ctx.revert()
+    }, 100)
+    
+    return () => clearTimeout(timer)
+  }, [portfolioItems])
 
   return (
     <div ref={containerRef} className={styles.wrapper}>
       
-      {/* Cinematic Hero */}
-      <section className={styles.heroSection}>
-        <div className={styles.heroImageContainer}>
-          <Image src="/luxury-hero.jpg" alt="Luxury Architecture" fill className="hero-parallax-bg" style={{objectFit: 'cover'}} priority />
+      {/* 1. Fixed Parallax Hero */}
+      <section className={landingStyles.heroSection} style={{ overflow: 'hidden' }}>
+        <div className={landingStyles.heroImageWrapper}>
+          <img 
+            src="/latelier-images/portfolio/IMG_8184.JPG" 
+            alt="Luxury Architecture"
+            className={landingStyles.infiniteZoomImg}
+          />
+          {/* Sunny Golden Hour Overlay */}
+          <div className={landingStyles.heroOverlay} style={{ zIndex: 1, background: 'linear-gradient(45deg, rgba(255, 195, 113, 0.15) 0%, rgba(255, 229, 180, 0.05) 100%)', mixBlendMode: 'overlay' }}></div>
+          <div className={landingStyles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at top left, rgba(255, 220, 150, 0.15) 0%, transparent 60%)' }}></div>
         </div>
-        <div className={styles.heroOverlay}></div>
         
-        {/* SVG Overlay */}
-        <div className={styles.heroSvgOverlay}>
-          <svg className="hero-svg-breathe" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="var(--color-primary)" strokeWidth="0.2" />
-            <circle cx="50" cy="50" r="45" fill="none" stroke="var(--color-primary)" strokeWidth="0.1" />
-            <path d="M10 50 L90 50 M50 10 L50 90" stroke="var(--color-primary)" strokeWidth="0.1" />
-          </svg>
-        </div>
+        {/* Ambient White Glow strictly behind the text to ensure absolute legibility of the Navy font */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '50%', background: 'linear-gradient(to top, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.4) 40%, rgba(255,255,255,0) 100%)', zIndex: 3 }}></div>
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', height: '60%', background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%)', zIndex: 3 }}></div>
 
-        <div className={styles.heroContent}>
-          <h4 className="hero-title-anim" style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '1rem', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>Our Work</h4>
-          <h1 className="hero-title-anim font-serif" style={{ fontSize: 'clamp(3.5rem, 6vw, 6rem)', lineHeight: 1.1, marginBottom: '1.5rem', textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}>The <span className="font-italic" style={{ color: 'var(--color-primary)' }}>Portfolio</span></h1>
-          <p className="hero-title-anim" style={{ maxWidth: '600px', margin: '0 auto', fontSize: '1.25rem', color: 'rgba(255,255,255,0.9)', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
-            A curated selection of our most exquisite architectural transformations and ground-up builds across the globe.
-          </p>
+        <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', textAlign: 'right', paddingBottom: '4rem' }}>
+          <div className="reveal-up">
+            <h1 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2rem, 5vw, 4rem)', color: '#1e3a8a', letterSpacing: '0.02em', margin: '0 0 1rem 0' }}>
+              <span style={{ fontStyle: 'italic', fontWeight: 300 }}>The</span><br/>
+              Portfolio.
+            </h1>
+          </div>
         </div>
       </section>
 
-      {/* Asymmetrical Grid Section */}
-      <section className="container">
-        <div className={styles.gridContainer}>
-          
-          {/* Floating SVG Accents in Background */}
-          <svg className={`accent-anim ${styles.accentSvg} ${styles.accent1}`} viewBox="0 0 100 100">
-            <rect x="10" y="10" width="80" height="80" fill="none" stroke="var(--color-primary)" strokeWidth="0.5" transform="rotate(45 50 50)" />
-          </svg>
-          <svg className={`accent-anim ${styles.accentSvg} ${styles.accent2}`} viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="var(--color-primary)" strokeWidth="0.5" />
-            <circle cx="50" cy="50" r="30" fill="none" stroke="var(--color-primary)" strokeWidth="0.2" />
-          </svg>
-          
+      {/* --- CONTENT WRAPPER FOR PARALLAX UNVEIL --- */}
+      <div style={{ position: 'relative', zIndex: 5, backgroundColor: '#ffffff' }}>
+        <FamilyBanner 
+          prefix="OUR" 
+          suffix="Masterpieces." 
+          content="At MAISON ATELIER, we don't just build houses; we craft bespoke homes tailored to your unique lifestyle. Explore our portfolio to see how our family's dedication to architectural brilliance and refined elegance has transformed visions into stunning realities."
+        />
+        <div style={{ paddingTop: '4rem' }}>
+
+      {/* Editorial Premium Gallery */}
+      <section className={styles.editorialGalleryWrapper} ref={galleryRef}>
+        <div className={styles.editorialContainer}>
           {portfolioItems.map((item, i) => (
-            <div key={i} className={styles.gridItem}>
-              <Image src={item.img} alt={item.title} fill className={styles.parallaxImage} />
-              <div className={styles.itemOverlay}>
-                <div className={styles.itemText}>
-                  <h3 className={`font-serif ${styles.itemTitle}`}>{item.title}</h3>
-                  <p className={styles.itemLocation}>{item.location}</p>
-                </div>
+            <div key={i} className={`${styles.editorialCard} ${styles[`editorialCard${i + 1}`]}`}>
+              
+              <div className={styles.editorialImageWrapper}>
+                <Image src={item.img} alt={item.title} fill className={styles.editorialImage} sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
+              
+              <div className={styles.editorialText}>
+                <span className={styles.editorialNumber} style={{ fontWeight: 100 }}>0{i + 1}</span>
+                <h3 className={`font-serif ${styles.editorialTitle}`}>{item.title}</h3>
+                <p className={styles.editorialLocation} style={{ fontWeight: 100 }}>{item.location}</p>
+                <div className={styles.editorialLine}></div>
+              </div>
+
             </div>
           ))}
         </div>
       </section>
-
-      {/* Premium Newsletter Section */}
-      <section className={styles.newsletter}>
-        <div className="container" style={{ maxWidth: '700px' }}>
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="1" style={{ margin: '0 auto 1.5rem' }}>
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-            <polyline points="22,6 12,13 2,6"/>
-          </svg>
-          <h2 className="font-serif" style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>The <span className="font-italic" style={{ color: 'var(--color-primary)' }}>Journal</span></h2>
-          <p style={{ marginBottom: '2.5rem', color: 'rgba(255,255,255,0.7)', fontSize: '1.1rem' }}>
-            Receive exclusive insights into our latest projects, architectural trends, and private events.
-          </p>
-          <form style={{ display: 'flex', gap: '1rem', flexDirection: 'row' }} onSubmit={(e) => e.preventDefault()}>
-            <input type="email" placeholder="Email Address" required className={styles.newsletterInput} />
-            <button type="submit" className="btn btn-primary" style={{ padding: '18px 40px' }}>Subscribe</button>
-          </form>
         </div>
-      </section>
-
+      </div> {/* END CONTENT WRAPPER */}
     </div>
   )
 }

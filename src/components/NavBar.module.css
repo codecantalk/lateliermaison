@@ -23,7 +23,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(65, 105, 225, 0.15) 100%);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
@@ -163,24 +163,6 @@
 
 .ctaBtn {
   display: none;
-  border-radius: 4px;
-  padding: 8px 24px;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  background: var(--color-primary);
-  color: var(--color-text-inverse);
-  border: 1px solid var(--color-primary);
-  text-transform: uppercase;
-  font-weight: 500;
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.ctaBtn:hover {
-  background: var(--color-secondary);
-  border-color: var(--color-secondary);
-  color: var(--color-text-inverse);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
 @media (min-width: 900px) {

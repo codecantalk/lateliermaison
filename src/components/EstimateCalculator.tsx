@@ -65,8 +65,8 @@ const CONSTRUCTION_PRICING = {
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
-export default function EstimateCalculator() {
-  const [selectedService, setSelectedService] = useState<ServiceType>(null)
+export default function EstimateCalculator({ defaultService = null }: { defaultService?: ServiceType }) {
+  const [selectedService, setSelectedService] = useState<ServiceType>(defaultService)
   const [pricingConfig, setPricingConfig] = useState<any>(null)
   const [isPricingLoading, setIsPricingLoading] = useState(true)
   const supabase = createClient()

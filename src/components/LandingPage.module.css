@@ -9,6 +9,19 @@
   object-position: center;
 }
 
+@keyframes infiniteZoom {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.infiniteZoomImg {
+  animation: infiniteZoom 40s ease-in-out infinite;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
 .sectionEyebrow {
   font-family: var(--font-sans);
   text-transform: uppercase;
@@ -41,8 +54,10 @@
 }
 
 .heroImageWrapper {
-  position: absolute;
+  position: fixed;
   inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .heroOverlay {
@@ -450,76 +465,105 @@
   color: var(--color-secondary);
 }
 
-/* 5. Services Grid */
+/* 5. Modern Services Grid */
 .servicesSection {
   padding: var(--spacing-2xl) 0;
   background-color: var(--color-bg);
 }
 
-.servicesGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-md);
+.modernServicesGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8rem;
+  padding: 2rem 0;
 }
 
-@media (min-width: 768px) {
-  .servicesGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.modernServiceCard {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
+  text-decoration: none;
 }
 
 @media (min-width: 1024px) {
-  .servicesGrid {
-    grid-template-columns: repeat(4, 1fr);
+  .modernServiceCard {
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
   }
+  
+  .cardLeft {
+    /* Image on left, text on right */
+    grid-template-areas: "image text";
+  }
+  
+  .cardRight {
+    /* Text on left, image on right */
+    grid-template-areas: "text image";
+  }
+
+  .cardLeft .modernServiceImageWrapper { grid-area: image; }
+  .cardLeft .modernServiceContent { grid-area: text; }
+  
+  .cardRight .modernServiceImageWrapper { grid-area: image; }
+  .cardRight .modernServiceContent { grid-area: text; text-align: right; }
 }
 
-.serviceCard {
-  display: flex;
-  flex-direction: column;
-  background: var(--color-bg-alt);
-  transition: transform var(--transition-normal);
-}
-
-.serviceCard:hover {
-  transform: translateY(-10px);
-}
-
-.serviceImageWrapper {
+.modernServiceImageWrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 5;
   overflow: hidden;
+  border-radius: 4px;
 }
 
-.serviceOverlay {
+.modernServiceOverlay {
   position: absolute;
   inset: 0;
-  background: rgba(26, 20, 18, 0.2);
-  transition: background var(--transition-normal);
+  background: rgba(0, 0, 0, 0.15);
+  transition: background 0.5s ease;
 }
 
-.serviceCard:hover .serviceOverlay {
-  background: rgba(26, 20, 18, 0);
+.modernServiceCard:hover .modernServiceOverlay {
+  background: rgba(0, 0, 0, 0);
 }
 
-.serviceContent {
-  padding: var(--spacing-md);
+.modernServiceContent {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  padding: 1rem 0;
 }
 
-.serviceContent h3 {
-  font-size: 1.5rem;
-  margin-bottom: var(--spacing-sm);
+.modernServiceNumber {
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  color: var(--color-primary);
+  opacity: 0.7;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
 }
 
-.serviceContent p {
+.modernServiceContent h3 {
+  font-size: clamp(2rem, 3vw, 3rem);
+  margin-bottom: 1rem;
+  color: var(--color-text);
+  transition: color 0.3s ease;
+}
+
+.modernServiceCard:hover .modernServiceContent h3 {
+  color: var(--color-primary);
+}
+
+.modernServiceContent p {
   color: var(--color-text-muted);
-  font-size: 0.95rem;
-  margin-bottom: var(--spacing-lg);
-  flex-grow: 1;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  max-width: 400px;
+}
+
+.cardRight .modernServiceContent p {
+  margin-left: auto;
 }
 
 .serviceLink {
@@ -532,19 +576,86 @@
   transition: color var(--transition-fast);
 }
 
-/* 6. Consultation Banner */
+/* 6. Premium Editorial Consultation */
+.premiumConsultSection {
+  padding: 10rem 0;
+  background-color: var(--color-bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.premiumConsultGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .premiumConsultGrid {
+    grid-template-columns: 1fr 1.2fr;
+    gap: 8rem;
+  }
+}
+
+.consultTextCol {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.consultImageCol {
+  position: relative;
+  width: 100%;
+}
+
+.consultImageMask {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+/* Custom Animated Button */
+.animatedBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text);
+  text-decoration: none;
+  group: hover;
+  width: fit-content;
+}
+
+.btnIcon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.animatedBtn:hover .btnIcon {
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+  transform: translateX(10px);
+}
+
+/* 7. Subpage Consultation Banner Fallback */
 .consultSection {
   position: relative;
   padding: var(--spacing-2xl) 0;
   display: flex;
   align-items: center;
-  overflow: hidden;
-}
-
-.parallaxBg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
   overflow: hidden;
 }
 
@@ -554,12 +665,6 @@
   left: 0;
   width: 100%;
   height: 140%;
-}
-
-.overlayEspressoHalf {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to right, rgba(26, 20, 18, 0.9) 0%, rgba(26, 20, 18, 0.3) 100%);
 }
 
 .consultCard {
@@ -580,4 +685,90 @@
   color: var(--color-text-muted);
   font-size: 1.125rem;
   margin-bottom: var(--spacing-lg);
+}
+
+/* 8. Architectural Shapes & Service Redesign */
+.archMask {
+  border-radius: 50% 50% 0 0 / 25% 25% 0 0;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.pillMask {
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.premiumServiceGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4rem;
+  margin-top: 4rem;
+}
+
+@media (min-width: 768px) {
+  .premiumServiceGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem 4rem;
+  }
+}
+
+.premiumFeatureCard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.premiumFeatureImage {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  position: relative;
+}
+
+.premiumFeatureCard:nth-child(even) .premiumFeatureImage {
+  aspect-ratio: 4 / 3;
+}
+
+/* SVG Path Animation */
+.svg-anim-path {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: drawPath 4s cubic-bezier(0.25, 1, 0.5, 1) forwards infinite alternate;
+}
+
+@keyframes drawPath {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Premium Hover Cards for Home Services */
+.premiumCardWrapper {
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+
+.premiumCardWrapper:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(30, 58, 138, 0.15);
+}
+
+.premiumCardInner img {
+  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.premiumCardWrapper:hover .premiumCardInner img {
+  transform: scale(1.08);
+}
+
+.premiumCardOverlay {
+  transition: background 0.6s ease;
+}
+
+.premiumCardWrapper:hover .premiumCardOverlay {
+  background: linear-gradient(to top, rgba(30, 58, 138, 0.95) 0%, rgba(30, 58, 138, 0.4) 50%, transparent 100%) !important;
 }

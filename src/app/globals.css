@@ -95,60 +95,78 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 14px 36px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
+  padding: 8px 20px; /* Small padding */
+  font-weight: 600;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  font-size: 0.85rem;
+  font-size: 0.75rem; /* Small font size */
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-  border: 1px solid var(--color-primary);
-  border-radius: 4px; /* Modern minimal rectangle */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px; /* Round corners */
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   text-decoration: none;
-  background: transparent;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: var(--color-text);
+  z-index: 1;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+  z-index: -1;
+}
+
+.btn:hover::before {
+  left: 100%;
 }
 
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  background: var(--color-primary);
-  color: var(--color-text-inverse);
-  border-color: var(--color-primary);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
 }
 
 .btn-primary {
-  background: var(--color-secondary);
-  color: var(--color-text-inverse);
-  border-color: var(--color-secondary);
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.8), rgba(217, 119, 6, 0.4));
+  color: #ffffff;
+  border: 1px solid rgba(217, 119, 6, 0.5);
+  box-shadow: 0 4px 15px rgba(217, 119, 6, 0.2);
 }
 
 .btn-primary:hover {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
+  background: linear-gradient(135deg, rgba(217, 119, 6, 1), rgba(217, 119, 6, 0.6));
+  box-shadow: 0 8px 25px rgba(217, 119, 6, 0.4);
+  color: #ffffff;
 }
 
 .btn-secondary {
-  border-color: var(--color-secondary);
-  color: var(--color-secondary);
+  background: linear-gradient(135deg, rgba(26, 20, 18, 0.7), rgba(26, 20, 18, 0.3));
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .btn-secondary:hover {
-  background: var(--color-secondary);
-  color: var(--color-text-inverse);
+  background: linear-gradient(135deg, rgba(26, 20, 18, 0.9), rgba(26, 20, 18, 0.5));
+  color: #ffffff;
 }
 
 .btn-outline {
-  border-color: var(--color-primary);
+  border-color: rgba(30, 58, 138, 0.4);
   color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .btn-outline:hover {
-  background: var(--color-primary);
-  color: var(--color-text-inverse);
+  background: rgba(30, 58, 138, 0.1);
 }
 
 .glass-panel {

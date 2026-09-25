@@ -59,7 +59,7 @@ export default function Hero() {
           fill
           priority
           className={styles.image}
-        />
+         sizes="(max-width: 768px) 100vw, 50vw" />
         <div className={styles.imageOverlay} />
       </div>
       

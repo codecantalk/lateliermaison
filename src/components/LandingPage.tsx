@@ -6,133 +6,41 @@ import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import styles from './LandingPage.module.css'
+import CleaningChecklist from './CleaningChecklist'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
 }
 
-const slides = [
-  { img: '/award-bg.jpg', title: 'Architectural transformation.', subtitle: 'Spa-like sanctuaries built entirely around you.' },
-  { img: '/luxury-hero.jpg', title: 'Ground-up architecture.', subtitle: 'We bring your vision to life with uncompromising quality.' },
-  { img: '/luxury-bathroom.jpg', title: 'Uncompromising perfection.', subtitle: 'Every detail meticulously curated and restored.' }
+const services = [
+  { title: 'Residential', desc: 'Crafting luxury living spaces tailored to your family.', img: '/latelier-images/home/IMG_8191.JPG', link: '/services/new-construction' },
+  { title: 'New Construction', desc: 'Ground-up builds built on a foundation of passion and commitment.', img: '/latelier-images/home/5A6BE788-BBDC-4362-83B1-50E26B74249D.JPG', link: '/services/new-construction' },
+  { title: 'Remodeling', desc: 'Transforming existing spaces into your dream home.', img: '/latelier-images/home/IMG_8185.JPG', link: '/services/remodeling' },
+  { title: 'Home Services', desc: 'Comprehensive property maintenance and expert care.', img: '/latelier-images/portfolio/IMG_8184.JPG', link: '/services' }
 ]
 
-const services = [
-  { title: 'Housekeeping', desc: 'Meticulous attention to detail for a pristine living space.', img: '/award-bg.jpg' },
-  { title: 'Recurring Cleanings', desc: 'Book weekly, bi-weekly, or monthly for a flawless sanctuary.', img: '/luxury-hero.jpg' },
-  { title: 'Moving Cleaning', desc: 'Pre- and post-move deep cleaning by our artisans.', img: '/luxury-bathroom.jpg' },
-  { title: 'One-Time Reset', desc: 'Seeking a seasonal reset? Restored to absolute peak condition.', img: '/award-bg.jpg' }
+const heroSlides = [
+  '/latelier-images/portfolio/IMG_8191.JPG',
+  '/latelier-images/portfolio/IMG_8184.JPG',
+  '/latelier-images/portfolio/5A6BE788-BBDC-4362-83B1-50E26B74249D.JPG',
+  '/latelier-images/portfolio/IMG_8187.JPG',
 ]
 
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement>(null)
-  
-  // Hero Slider State
   const [currentSlide, setCurrentSlide] = useState(0)
-  const slideRef = useRef<HTMLDivElement>(null)
-  
-  // Before/After Slider State
-  const [wipeValue, setWipeValue] = useState(50)
 
+  // Revolution Slider Autoplay
   useEffect(() => {
-    // Hero Slider Auto-Advance
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length)
-    }, 6000)
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
+    }, 6000) // 6 seconds per slide
     return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
-    // Animate Hero Text on slide change
-    if (slideRef.current) {
-      gsap.fromTo(slideRef.current.querySelectorAll('.hero-anim'), 
-        { y: 50, opacity: 0 }, 
-        { y: 0, opacity: 1, duration: 1.5, stagger: 0.2, ease: 'power3.out' }
-      )
-      gsap.fromTo('.hero-bg-zoom',
-        { scale: 1.1 },
-        { scale: 1, duration: 6, ease: 'none' }
-      )
-    }
-  }, [currentSlide])
-
-  useEffect(() => {
     const ctx = gsap.context(() => {
-      
-      // 1. Process Timeline SVG Animation
-      const processPath = document.querySelector('.process-path') as SVGPathElement
-      if (processPath) {
-        const length = processPath.getTotalLength()
-        gsap.set(processPath, { strokeDasharray: length, strokeDashoffset: length })
-        gsap.to(processPath, {
-          strokeDashoffset: 0,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '.process-section',
-            start: 'top center',
-            end: 'bottom center',
-            scrub: true
-          }
-        })
-      }
-
-      // 1b. Animate the individual SVG icons when they scroll into view
-      gsap.utils.toArray('.processStep').forEach((step: any) => {
-        const paths = step.querySelectorAll('.icon-anim-path');
-        paths.forEach((p: SVGPathElement) => {
-          const l = p.getTotalLength();
-          gsap.set(p, { strokeDasharray: l, strokeDashoffset: l });
-          gsap.to(p, {
-            strokeDashoffset: 0,
-            duration: 1.5,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: step,
-              start: 'top 80%'
-            }
-          });
-        });
-      });
-
-      // Modern SVG 3D Wireframe Sphere Animation
-      gsap.to('.modern-wireframe', {
-        rotation: 360,
-        transformOrigin: '500px 500px',
-        duration: 90,
-        repeat: -1,
-        ease: 'linear'
-      });
-      
-      Array.from({ length: 18 }).forEach((_, i) => {
-        gsap.fromTo(`.wire-circle-${i}`, 
-          { scaleY: 0.02 },
-          {
-            scaleY: 1,
-            transformOrigin: '500px 500px',
-            duration: 8,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            delay: i * 0.4
-          }
-        );
-      });
-
-      // 3. True Parallax for Banners
-      gsap.utils.toArray('.parallax-img').forEach((elem: any) => {
-        gsap.to(elem, {
-          yPercent: 30,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: elem.parentElement.parentElement,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: true
-          }
-        })
-      })
-
-      // 4. Elegant Text & Image Reveals
+      // Elegant Text & Image Reveals
       gsap.utils.toArray('.reveal-up').forEach((elem: any) => {
         gsap.from(elem, {
           y: 40,
@@ -146,32 +54,71 @@ export default function LandingPage() {
         })
       })
 
-      // 5. Floating Parallax for Uncompromising Standards Cards
-      gsap.utils.toArray('.standards-card-anim').forEach((card: any, i: number) => {
-        gsap.to(card, {
-          y: -120 * (i + 1), // Each card moves up further/faster
+      // Continuous SVG Drawing Animation (Smoother with pause at full shape)
+      const svgTl = gsap.timeline({ repeat: -1 });
+      
+      // Draw in smoothly
+      svgTl.fromTo('.draw-path', 
+        { strokeDasharray: 100, strokeDashoffset: 100 },
+        { 
+          strokeDashoffset: 0, 
+          duration: 2.5, 
+          ease: "power2.inOut", 
+          stagger: 0.2 
+        }
+      )
+      // Wait for a few milliseconds (1.5 seconds) while fully drawn
+      .to({}, { duration: 1.5 })
+      // Un-draw smoothly
+      .to('.draw-path', 
+        { 
+          strokeDashoffset: 100, 
+          duration: 2, 
+          ease: "power2.inOut", 
+          stagger: {
+            each: 0.1,
+            from: "end" // Erases from the last drawn path to the first
+          }
+        }
+      )
+      // Small pause before drawing again
+      .to({}, { duration: 0.5 })
+
+      // Slow Continuous Rotation for the SVG
+      gsap.to('.intro-svg', {
+        rotation: 360,
+        duration: 40,
+        ease: "none",
+        repeat: -1
+      })
+
+      // Image Parallax for Service Cards
+      gsap.utils.toArray('.service-parallax-img').forEach((img: any) => {
+        gsap.to(img, {
+          yPercent: 20,
           ease: 'none',
           scrollTrigger: {
-            trigger: '.standards-section-anim',
+            trigger: img.parentElement,
             start: 'top bottom',
             end: 'bottom top',
-            scrub: 1
+            scrub: true
           }
         })
       })
 
-      // 6. Dynamic Background Color Change on Scroll for Standards Section
-      gsap.to('.standards-scroll-gradient', {
-        opacity: 1,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '.standards-section-anim',
-          start: 'top 60%',
-          end: 'bottom 40%',
-          scrub: true
-        }
+      // Background Parallax for Consult Section Images
+      gsap.utils.toArray('.consult-parallax-img').forEach((img: any) => {
+        gsap.to(img, {
+          yPercent: 20,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: img.parentElement,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true
+          }
+        })
       })
-
     }, containerRef)
     return () => ctx.revert()
   }, [])
@@ -179,273 +126,211 @@ export default function LandingPage() {
   return (
     <div ref={containerRef} className={styles.wrapper}>
       
-      {/* 1. GSAP Animated Hero Slider */}
-      <section className={styles.heroSection}>
-        {slides.map((slide, idx) => (
-          <div 
-            key={idx} 
-            className={`${styles.heroSlide} ${idx === currentSlide ? styles.heroSlideActive : ''}`}
-          >
-            <div className={styles.heroImageWrapper}>
-              <Image 
-                src={slide.img} 
-                alt="Luxury Background" 
-                fill 
-                className={`hero-bg-zoom ${styles.objectCover}`} 
-                priority={idx === 0}
+      {/* 1. Animated Slider Hero Section */}
+      <section className={styles.heroSection} style={{ overflow: 'hidden' }}>
+        <div className={styles.heroImageWrapper}>
+          {heroSlides.map((slide, index) => (
+            <div 
+              key={index}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                opacity: currentSlide === index ? 1 : 0,
+                transition: 'opacity 1.5s ease-in-out',
+                zIndex: currentSlide === index ? 1 : 0,
+              }}
+            >
+              <img 
+                src={slide} 
+                alt={`Hero Slide ${index + 1}`}
+                className={styles.objectCover}
+                style={{ 
+                  width: '100%', 
+                  height: '100%',
+                  transform: currentSlide === index ? 'scale(1.1)' : 'scale(1)',
+                  transition: 'transform 8s ease-out',
+                  transformOrigin: 'center center'
+                }} 
               />
-              <div className={styles.heroOverlay}></div>
             </div>
-          </div>
-        ))}
-        
-        <div className={`container ${styles.heroContent}`} ref={slideRef}>
-          <div className={styles.heroTextContainer}>
-            <h4 className={`hero-anim ${styles.heroEyebrow}`} style={{ color: '#8A9CFF', textTransform: 'uppercase', letterSpacing: '0.25em', marginBottom: '1.5rem', textShadow: '0 2px 15px rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <span style={{ width: '40px', height: '2px', backgroundColor: '#8A9CFF', boxShadow: '0 2px 10px rgba(0,0,0,0.5)' }}></span>
-              L'Atelier Maison
-            </h4>
-            <h1 className="hero-anim font-serif" style={{ marginBottom: '1rem', textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}>{slides[currentSlide].title}</h1>
-            <p className={`hero-anim ${styles.heroSubtitle}`} style={{ fontSize: '1.25rem', marginBottom: '2rem', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>{slides[currentSlide].subtitle}</p>
-            <div className={`hero-anim ${styles.heroActions}`}>
-              <Link href="/services" className="btn btn-primary" style={{ marginRight: '1rem' }}>Our Services</Link>
-              <Link href="/portfolio" className="btn btn-secondary">View Portfolio</Link>
-            </div>
-          </div>
-          
-          <div className={styles.sliderDots}>
-            {slides.map((_, idx) => (
-              <button 
-                key={idx} 
-                onClick={() => setCurrentSlide(idx)}
-                className={`${styles.dot} ${idx === currentSlide ? styles.dotActive : ''}`}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 2. New Section: The L'Atelier Process (SVG Timeline) */}
-      <section className={`process-section ${styles.processSection}`}>
-        {/* Subtle Background Geometric Tile Animation */}
-        <div className={styles.bgSvgWrapper}>
-          <svg className="bg-anim-svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-            <defs>
-              <radialGradient id="sphere-glow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.35" />
-                <stop offset="100%" stopColor="transparent" stopOpacity="0" />
-              </radialGradient>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#sphere-glow)" />
-            <g className="modern-wireframe" stroke="var(--color-primary)" fill="none" strokeWidth="1" opacity="0.3">
-              {Array.from({ length: 18 }).map((_, i) => (
-                <g key={i} transform={`rotate(${i * 10} 500 500)`}>
-                  <circle className={`wire-circle-${i}`} cx="500" cy="500" r="350" />
-                </g>
-              ))}
-            </g>
-          </svg>
-        </div>
-
-        <div className="container" style={{ position: 'relative', zIndex: 2 }}>
-          <div className="reveal-up" style={{ textAlign: 'center', marginBottom: 'var(--spacing-xl)', maxWidth: '600px', margin: '0 auto var(--spacing-xl)' }}>
-            <h4 className={styles.sectionEyebrow} style={{ color: 'var(--color-primary)' }}>Our Methodology</h4>
-            <h2 className="font-serif" style={{ color: 'var(--color-text-inverse)' }}>The L'Atelier <span className="font-italic" style={{ color: 'var(--color-primary)' }}>Process</span></h2>
-          </div>
-          
-          <div className={styles.processContainer}>
-            <div className={styles.processLineWrapper}>
-              <svg viewBox="0 0 10 600" className={styles.processSvg}>
-                <line x1="5" y1="0" x2="5" y2="600" stroke="var(--color-border)" strokeWidth="2" />
-                <line className="process-path" x1="5" y1="0" x2="5" y2="600" stroke="var(--color-primary)" strokeWidth="4" />
-              </svg>
-            </div>
-
-            <div className={styles.processSteps}>
-              <div className={`processStep reveal-up ${styles.processStep}`}>
-                <div className={styles.stepIcon}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle className="icon-anim-path" cx="12" cy="12" r="10"/><path className="icon-anim-path" d="M12 8v4l3 3"/></svg>
-                </div>
-                <div className={styles.stepContent}>
-                  <h3 className="font-serif">01. Consultation</h3>
-                  <p>A meticulous walk-through of your sanctuary to understand your exact requirements, materials, and preferences.</p>
-                </div>
-              </div>
-              <div className={`processStep reveal-up ${styles.processStep}`}>
-                <div className={styles.stepIcon}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path className="icon-anim-path" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                </div>
-                <div className={styles.stepContent}>
-                  <h3 className="font-serif">02. Execution</h3>
-                  <p>Our artisans deploy using industry-leading techniques and premium products tailored specifically to your home.</p>
-                </div>
-              </div>
-              <div className={`processStep reveal-up ${styles.processStep}`}>
-                <div className={styles.stepIcon}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path className="icon-anim-path" d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline className="icon-anim-path" points="22 4 12 14.01 9 11.01"/></svg>
-                </div>
-                <div className={styles.stepContent}>
-                  <h3 className="font-serif">03. Perfection</h3>
-                  <p>A rigorous final inspection ensures the L'Atelier standard is met, leaving behind nothing but absolute tranquility.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. New Section: Before & After Wipe Slider */}
-      <section className={styles.wipeSection}>
-        <div className="container">
-          <div className="reveal-up" style={{ textAlign: 'center', marginBottom: 'var(--spacing-lg)' }}>
-            <h4 className={styles.sectionEyebrow}>The Transformation</h4>
-            <h2 className="font-serif">A Masterpiece <span className="font-italic" style={{ color: 'var(--color-primary)' }}>Revealed</span></h2>
-            <p>Drag the slider to see the standard of a L'Atelier home.</p>
-          </div>
+          ))}
+          {/* Sunny Golden Hour Overlay */}
+          <div className={styles.heroOverlay} style={{ zIndex: 1, background: 'linear-gradient(45deg, rgba(255, 195, 113, 0.3) 0%, rgba(255, 229, 180, 0.1) 100%)', mixBlendMode: 'overlay' }}></div>
+          <div className={styles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at top left, rgba(255, 220, 150, 0.25) 0%, transparent 60%)' }}></div>
         </div>
         
-        <div className={`reveal-up ${styles.wipeContainer}`}>
-          {/* Before Image */}
-          <Image src="/award-bg.jpg" alt="Before Cleaning" fill className={styles.objectCover} />
+        {/* Ambient White Glow strictly behind the text to ensure dark text legibility without a full overlay */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '50%', background: 'radial-gradient(ellipse at bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 40%, transparent 80%)', zIndex: 5, pointerEvents: 'none' }}></div>
+        
+        <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', paddingBottom: '6rem' }}>
           
-          {/* After Image (Clipped) */}
-          <div className={styles.wipeAfter} style={{ clipPath: `inset(0 ${100 - wipeValue}% 0 0)` }}>
-            <Image src="/luxury-bathroom.jpg" alt="After Cleaning" fill className={styles.objectCover} />
-          </div>
-          
-          {/* Slider Handle */}
-          <div className={styles.wipeHandleLine} style={{ left: `${wipeValue}%` }}>
-            <div className={styles.wipeHandleBtn}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-secondary)" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-secondary)" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
-            </div>
-          </div>
-          
-          {/* Hidden Range Input for Interaction */}
-          <input 
-            type="range" 
-            min="0" 
-            max="100" 
-            value={wipeValue} 
-            onChange={(e) => setWipeValue(Number(e.target.value))} 
-            className={styles.wipeInput} 
-          />
-        </div>
-      </section>
-
-      {/* 3.5 New Section: Uncompromising Standards */}
-      <section className={`standards-section-anim ${styles.standardsSection}`}>
-        {/* Dynamic Gradient Overlay that fades in on scroll */}
-        <div className="standards-scroll-gradient" style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(250,246,240,0.4) 100%)', zIndex: 1, opacity: 0, pointerEvents: 'none' }}></div>
-        <div className={styles.bgSvgWrapper} style={{ zIndex: 0 }}>
-          <svg className="bg-anim-svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-            <rect width="100%" height="100%" fill="url(#sphere-glow)" />
-            <g className="modern-wireframe" stroke="var(--color-primary)" fill="none" strokeWidth="1" opacity="0.3">
-              {Array.from({ length: 18 }).map((_, i) => (
-                <g key={i} transform={`rotate(${i * 10} 500 500)`}>
-                  <circle className={`wire-circle-${i}`} cx="500" cy="500" r="350" />
-                </g>
-              ))}
-            </g>
-          </svg>
-        </div>
-        <div className={`container ${styles.standardsContent}`}>
-          <div className={styles.standardsGrid}>
-            <div className={`reveal-up ${styles.standardsHeader}`}>
-              <h4 className={styles.sectionEyebrow} style={{ color: 'var(--color-primary)' }}>Our Promise</h4>
-              <h2 className="font-serif">Uncompromising <br/><span className="font-italic" style={{ color: 'var(--color-primary)' }}>Standards</span></h2>
-              <p>We do not clean homes; we curate sanctuaries. Every element of our service is designed to provide absolute peace of mind for the most discerning clientele.</p>
-            </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'flex-end' }}>
             
-            <div className={`standards-card-anim ${styles.standardsCard}`}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <h3 className="font-serif">Vetted Artisans</h3>
-              <p>Our professionals undergo rigorous background checks, extensive training, and absolute NDA agreements to ensure your privacy and security.</p>
-            </div>
-            
-            <div className={`standards-card-anim ${styles.standardsCard}`}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
-              <h3 className="font-serif">Eco-Formulations</h3>
-              <p>We utilize exclusively non-toxic, sustainable, and highly effective premium cleaning formulations that are perfectly safe for your family, pets, and delicate materials.</p>
+            {/* Left Column: Title */}
+            <div>
+              <h1 className="hero-anim" style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2rem, 4vw, 3.5rem)', lineHeight: 1.1, color: '#1e3a8a', letterSpacing: '-0.02em', textShadow: '0 4px 20px rgba(255,255,255,0.8), 0 0 10px rgba(255,255,255,1)', margin: 0 }}>
+                Keeping Your <span style={{ fontStyle: 'italic' }}>House</span> <br/>in Order.
+              </h1>
             </div>
 
-            <div className={`standards-card-anim ${styles.standardsCard}`}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              <h3 className="font-serif">Absolute Discretion</h3>
-              <p>We respect the sanctity of your home. We operate invisibly, efficiently, and with the utmost confidentiality.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. MaidBright Award Section (Restyled) */}
-      <section className={styles.awardSection}>
-        <div className="container">
-          <div className={styles.awardGrid}>
-            <div className={styles.awardImageContainer}>
-              <Image src="/luxury-hero.jpg" alt="Immaculate Living Room" fill className={`reveal-up ${styles.objectCover}`} />
-            </div>
-            <div className={styles.awardText}>
-              <h4 className={styles.sectionEyebrow}>Recognition</h4>
-              <h2 className="reveal-up font-serif">Award Winning <span className="font-italic" style={{ color: 'var(--color-primary)' }}>Service</span></h2>
-              <p className="reveal-up">
-                Services to write home about. Recognized by top consumer organizations, including Yelp, Angie's List, and Consumer's Checkbook, our track record makes us confident in our quality-assured services.
+            {/* Right Column: Description & Buttons */}
+            <div>
+              <p className="hero-anim" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', lineHeight: 1.7, color: '#1e3a8a', fontWeight: 400, letterSpacing: '0.05em', marginBottom: '2rem', textShadow: '0 2px 10px rgba(255,255,255,0.9), 0 0 5px rgba(255,255,255,1)', maxWidth: '550px' }}>
+                Our Home Improvement and Housekeeping services include home cleaning and housekeeping, home remodeling, and interior and exterior painting. We’re your home’s best friend.
               </p>
-              
-              <div className={`reveal-up ${styles.badges}`}>
-                <div className={styles.badge}>Yelp Certified</div>
-                <div className={styles.badge}>Angi 2024</div>
-                <div className={styles.badge}>Best of Atlanta</div>
+              <div className="hero-anim" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                <Link href="/services/housekeeping" className="btn btn-primary" style={{ border: '1px solid transparent', backgroundColor: '#d97706', color: '#fff' }}>House Keeping</Link>
+                <Link href="/services/remodeling" className="btn" style={{ background: 'transparent', border: '1px solid #1e3a8a', color: '#1e3a8a' }}>Home Remodeling</Link>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 5. MaidBright Services Grid (Restyled) */}
-      <section className={styles.servicesSection}>
-        <div className="container">
-          <div className="reveal-up" style={{ textAlign: 'center', marginBottom: 'var(--spacing-xl)' }}>
-            <h2 className="font-serif">Our <span className="font-italic" style={{ color: 'var(--color-primary)' }}>Expertise</span></h2>
-          </div>
-          
-          <div className={styles.servicesGrid}>
-            {services.map((svc, i) => (
-              <Link href="/services" key={i} className={`reveal-up ${styles.serviceCard}`}>
-                <div className={styles.serviceImageWrapper}>
-                  <Image src={svc.img} alt={svc.title} fill className={styles.objectCover} />
-                  <div className={styles.serviceOverlay}></div>
-                </div>
-                <div className={styles.serviceContent}>
-                  <h3 className="font-serif">{svc.title}</h3>
-                  <p>{svc.desc}</p>
-                  <span className={styles.serviceLink}>Explore Service ⟶</span>
-                </div>
+      {/* --- CONTENT WRAPPER FOR PARALLAX UNVEIL --- */}
+      <div style={{ position: 'relative', zIndex: 5, backgroundColor: '#ffffff' }}>
+
+      {/* 1.5 Introduction Statement - Compact Premium Banner */}
+      <section style={{ padding: '4rem 5%', backgroundColor: '#1e3a8a', color: '#ffffff' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', alignItems: 'center' }}>
+            
+            {/* Left: Tiny SVG & Title */}
+            <div className="reveal-up" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+              <svg className="intro-svg" width="60" height="60" viewBox="0 0 100 100" fill="none" stroke="#d97706" strokeWidth="2" style={{ flexShrink: 0 }}>
+                <rect className="draw-path" pathLength="100" x="10" y="10" width="80" height="80" />
+                <path className="draw-path" pathLength="100" d="M50 10 L10 50 L50 90 L90 50 Z" />
+                <path className="draw-path" pathLength="100" d="M25 50 V85 H75 V50" />
+                <circle className="draw-path" pathLength="100" cx="50" cy="50" r="10" />
+              </svg>
+              <div>
+                <h2 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: '2rem', fontWeight: 400, color: '#ffffff', lineHeight: 1.1, margin: '0 0 0.25rem 0' }}>
+                  <span style={{ fontStyle: 'italic', color: '#d97706' }}>YOUR</span> Home.
+                </h2>
+                <span style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.25rem', fontStyle: 'italic', color: 'rgba(255,255,255,0.7)' }}>by family.</span>
+              </div>
+            </div>
+
+            {/* Middle: Compact Text */}
+            <div className="reveal-up">
+              <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '0.95rem', fontWeight: 400, lineHeight: 1.6, color: 'rgba(255,255,255,0.85)', margin: 0, paddingRight: '1rem' }}>
+                At <strong style={{ color: '#d97706' }}>MAISON ATELIER</strong>, we prioritize YOU. As a family-oriented company, we are dedicated to creating homes for families, built on a foundation of passion and commitment to your satisfaction. Whether you're planning a small renovation or building your dream home, we are the trusted contractors to bring your vision to life. Your home should reflect who you are, and we guarantee it will. <span style={{ fontStyle: 'italic', color: '#fff', fontWeight: 600 }}>Maison—where your vision becomes home.</span>
+              </p>
+            </div>
+
+            {/* Right: Button */}
+            <div className="reveal-up" style={{ textAlign: 'right' }}>
+              <Link href="/estimate" className="btn btn-primary" style={{ letterSpacing: '0.1em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+                Start Your Project
               </Link>
-            ))}
+            </div>
+
           </div>
         </div>
       </section>
 
-      {/* 6. MaidBright VIP Consultation Banner */}
-      <section className={`consult-section ${styles.consultSection}`}>
-        <div className={styles.parallaxBg}>
-          <div className={`parallax-img ${styles.imageWrapper}`}>
-            <Image src="/luxury-bathroom.jpg" alt="Luxury Bathroom" fill className={styles.objectCover} />
-            <div className={styles.overlayEspressoHalf}></div>
-          </div>
-        </div>
-        
-        <div className="container">
-          <div className={`reveal-up ${styles.consultCard}`}>
-            <h2 className="font-serif">Free In-Home <span className="font-italic" style={{ color: 'var(--color-primary)' }}>Consultation</span></h2>
-            <p>
-              L'Atelier Maison offers free in-home consultations for those interested in recurring cleanings. You can also book your cleaning directly online if you are looking for an initial deep clean or moving transitions.
-            </p>
-            <Link href="/estimate" className="btn btn-secondary">Book My First Cleaning</Link>
+      {/* --- MAIDBRIGHT STYLED ALTERNATING LAYOUT --- */}
+
+      {/* 2. Philosophy - Text Left, Image Right */}
+      <section style={{ padding: '8rem 5%', backgroundColor: '#ffffff' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '6rem', alignItems: 'center' }}>
+            
+            {/* Text (Left) */}
+            <div className="reveal-up" style={{ paddingRight: '2rem' }}>
+              <h4 style={{ textTransform: 'uppercase', letterSpacing: '0.15em', color: '#d97706', fontSize: '0.85rem', marginBottom: '2rem', fontWeight: 600 }}>Our Philosophy</h4>
+              <h2 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: '3rem', fontWeight: 400, lineHeight: 1.2, color: '#1e3a8a', margin: 0, marginBottom: '2rem' }}>
+                The devil is in the <span style={{ fontStyle: 'italic', color: '#1e3a8a' }}>details</span>, <br/>but so are we...
+              </h2>
+              <div style={{ borderTop: '1px solid #eaeaea', paddingTop: '2rem' }}>
+                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', fontWeight: 400, lineHeight: 1.8, color: '#4b5563' }}>
+                  You’re in control of every detail, we’re here to execute. Live on your terms!
+                </p>
+              </div>
+            </div>
+
+            {/* Image (Right) */}
+            <div className="reveal-up" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden', borderRadius: '8px' }}>
+              <div className="consult-parallax-img" style={{ position: 'absolute', top: '-10%', left: 0, width: '100%', height: '120%' }}>
+                <Image src="/IMG_8185.webp" alt="Details" fill className={styles.objectCover}  sizes="(max-width: 768px) 100vw, 50vw" />
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
+
+      {/* 3. Preparation - Image Left, Text Right */}
+      <section style={{ padding: '8rem 5%', backgroundColor: '#f8fafc' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '6rem', alignItems: 'center' }}>
+            
+            {/* Image (Left) */}
+            <div className="reveal-up" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden', borderRadius: '8px' }}>
+              <div className="consult-parallax-img" style={{ position: 'absolute', top: '-10%', left: 0, width: '100%', height: '120%' }}>
+                <Image src="/hero-bg.jpg" alt="Preparation" fill className={styles.objectCover}  sizes="(max-width: 768px) 100vw, 50vw" />
+              </div>
+            </div>
+
+            {/* Text (Right) */}
+            <div className="reveal-up" style={{ paddingLeft: '2rem' }}>
+              <h4 style={{ textTransform: 'uppercase', letterSpacing: '0.15em', color: '#d97706', fontSize: '0.85rem', marginBottom: '2rem', fontWeight: 600 }}>The Process</h4>
+              <h2 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: '3rem', fontWeight: 400, lineHeight: 1.2, color: '#1e3a8a', margin: 0, marginBottom: '2rem' }}>
+                We leave <span style={{ fontStyle: 'italic', color: '#1e3a8a' }}>nothing</span> to chance.
+              </h2>
+              <div style={{ borderTop: '1px solid #eaeaea', paddingTop: '2rem' }}>
+                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', fontWeight: 400, lineHeight: 1.8, color: '#4b5563', marginBottom: '1.5rem' }}>
+                  Your dream room/home is where preparation and opportunity meet. Whether it’s an old room in your home or a complex new build, we prioritize the highest quality project delivery through construction management, design-build, and subcontracting, backed by our team.
+                </p>
+                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', fontWeight: 400, lineHeight: 1.8, color: '#4b5563' }}>
+                  We prepare detailed cost estimates, project scheduling, materials evaluation, conflict identification, and site utilization planning, ensuring each project is managed with precision and professionalism from start to finish.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Quality - Text Left, Image Right */}
+      <section style={{ padding: '8rem 5%', backgroundColor: '#ffffff' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '6rem', alignItems: 'center' }}>
+            
+            {/* Text (Left) */}
+            <div className="reveal-up" style={{ paddingRight: '2rem' }}>
+              <h4 style={{ textTransform: 'uppercase', letterSpacing: '0.15em', color: '#d97706', fontSize: '0.85rem', marginBottom: '2rem', fontWeight: 600 }}>Our Promise</h4>
+              <h2 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: '3rem', fontWeight: 400, lineHeight: 1.2, color: '#1e3a8a', margin: 0, marginBottom: '2rem' }}>
+                Quality. Experience. Detail.
+              </h2>
+              <div style={{ borderTop: '1px solid #eaeaea', paddingTop: '2rem' }}>
+                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', fontWeight: 400, lineHeight: 1.8, color: '#4b5563', marginBottom: '3rem' }}>
+                  L’ATELIER MAISON caters to everyone. But we care more about your satisfaction and the quality of our work product. <span style={{ fontStyle: 'italic', color: '#1e3a8a' }}>Dream with us.</span>
+                </p>
+                <Link href="/estimate" className="btn btn-primary" style={{ letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                  Start Your Project
+                </Link>
+              </div>
+            </div>
+
+            {/* Image (Right) */}
+            <div className="reveal-up" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden', borderRadius: '8px' }}>
+              <div className="consult-parallax-img" style={{ position: 'absolute', top: '-10%', left: 0, width: '100%', height: '120%' }}>
+                <Image src="/IMG_8191.webp" alt="Quality Experience" fill className={styles.objectCover}  sizes="(max-width: 768px) 100vw, 50vw" />
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Interactive Cleaning Checklist */}
+      <CleaningChecklist />
+
+      </div> {/* END CONTENT WRAPPER */}
 
     </div>
   )

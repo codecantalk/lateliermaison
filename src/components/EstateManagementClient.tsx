@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import styles from './LandingPage.module.css'
+import FamilyBanner from './FamilyBanner'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -51,24 +52,41 @@ export default function EstateManagementClient() {
   return (
     <div ref={containerRef} className={styles.wrapper}>
       
-      {/* Hero Section */}
-      <section className={`estate-hero ${styles.heroSection}`} style={{ height: '100vh', overflow: 'hidden' }}>
+      {/* 1. Fixed Parallax Hero */}
+      <section className={styles.heroSection} style={{ overflow: 'hidden' }}>
         <div className={styles.heroImageWrapper}>
-          <Image src="/award-bg.jpg" alt="Estate Management Services" fill className={`hero-parallax-bg ${styles.objectCover}`} priority />
-          <div className={styles.heroOverlay}></div>
+          <img 
+            src="/award-bg.jpg" 
+            alt="Estate Management Services"
+            className={styles.infiniteZoomImg}
+          />
+          {/* Sunny Golden Hour Overlay */}
+          <div className={styles.heroOverlay} style={{ zIndex: 1, background: 'linear-gradient(45deg, rgba(255, 195, 113, 0.15) 0%, rgba(255, 229, 180, 0.05) 100%)', mixBlendMode: 'overlay' }}></div>
+          <div className={styles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at top left, rgba(255, 220, 150, 0.15) 0%, transparent 60%)' }}></div>
         </div>
         
-        <div className={`container ${styles.heroContent}`}>
-          <div className={styles.heroTextContainer}>
-            <h4 className="reveal-up" style={{ color: '#8A9CFF', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '1rem', textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>Bespoke Home Services</h4>
-            <h1 className="reveal-up font-serif" style={{ color: '#fff', marginBottom: '1rem', textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}>Estate Management</h1>
-            <p className="reveal-up" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.25rem', marginBottom: '2rem', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>We provide comprehensive maintenance and enhancements for your most valuable asset.</p>
-            <div className="reveal-up">
-              <Link href="/estimate" className="btn btn-primary">Request Service</Link>
-            </div>
+        {/* Ambient White Glow strictly behind the text to ensure absolute legibility of the Navy font */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '50%', background: 'linear-gradient(to top, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.4) 40%, rgba(255,255,255,0) 100%)', zIndex: 3 }}></div>
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', height: '60%', background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%)', zIndex: 3 }}></div>
+
+        <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', textAlign: 'right', paddingBottom: '4rem' }}>
+          <div className="reveal-up">
+            <h1 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2rem, 5vw, 4rem)', color: '#1e3a8a', letterSpacing: '0.02em', margin: '0 0 1rem 0' }}>
+              <span style={{ fontStyle: 'italic', fontWeight: 300 }}>Estate</span><br/>
+              Management.
+            </h1>
           </div>
         </div>
       </section>
+
+      {/* --- CONTENT WRAPPER FOR PARALLAX UNVEIL --- */}
+      <div style={{ position: 'relative', zIndex: 5, backgroundColor: '#ffffff' }}>
+        <FamilyBanner 
+          prefix="YOUR" 
+          suffix="Legacy." 
+          content="At MAISON ATELIER, we safeguard what you value most. Managing your estate is an honor we take seriously. As a family-oriented firm, we provide proactive, comprehensive management to preserve the beauty, functionality, and value of your property for generations to come."
+        />
+        <div style={{ paddingTop: '4rem' }}>
 
       {/* Content Section */}
       <section className={styles.processSection} style={{ padding: 'var(--spacing-2xl) 0' }}>
@@ -119,7 +137,7 @@ export default function EstateManagementClient() {
       <section className={styles.consultSection}>
         <div className={styles.parallaxBg}>
           <div className={`parallax-img ${styles.imageWrapper}`}>
-            <Image src="/luxury-bathroom.jpg" alt="Estate Interior" fill className={styles.objectCover} />
+            <Image src="/luxury-bathroom.jpg" alt="Estate Interior" fill className={styles.objectCover}  sizes="(max-width: 768px) 100vw, 50vw" />
             <div className={styles.overlayEspressoHalf}></div>
           </div>
         </div>
@@ -134,6 +152,10 @@ export default function EstateManagementClient() {
           </div>
         </div>
       </section>
+      
+        </div>
+      </div> {/* END CONTENT WRAPPER */}
+
     </div>
   )
 }

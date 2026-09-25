@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { gsap } from 'gsap/dist/gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import styles from './LandingPage.module.css'
+import FamilyBanner from './FamilyBanner'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -68,21 +69,41 @@ export default function AboutClient() {
   return (
     <div ref={containerRef} className={styles.wrapper}>
       
-      {/* Hero Section */}
-      <section className={`about-hero ${styles.heroSection}`} style={{ height: '100vh', overflow: 'hidden', position: 'relative' }}>
+      {/* 1. Fixed Parallax Hero */}
+      <section className={styles.heroSection} style={{ overflow: 'hidden' }}>
         <div className={styles.heroImageWrapper}>
-          <Image src="/award-bg.jpg" alt="L'Atelier Maison About" fill className={`hero-parallax-bg ${styles.objectCover}`} priority />
-          <div className={styles.heroOverlay}></div>
+          <img 
+            src="/award-bg.jpg" 
+            alt="L'Atelier Maison About"
+            className={styles.infiniteZoomImg}
+          />
+          {/* Sunny Golden Hour Overlay */}
+          <div className={styles.heroOverlay} style={{ zIndex: 1, background: 'linear-gradient(45deg, rgba(255, 195, 113, 0.15) 0%, rgba(255, 229, 180, 0.05) 100%)', mixBlendMode: 'overlay' }}></div>
+          <div className={styles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at top left, rgba(255, 220, 150, 0.15) 0%, transparent 60%)' }}></div>
         </div>
         
-        <div className={`container ${styles.heroContent}`}>
-          <div className={styles.heroTextContainer}>
-            <h4 className="reveal-up" style={{ color: '#8A9CFF', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '1.5rem', textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>The Philosophy</h4>
-            <h1 className="reveal-up font-serif" style={{ color: '#fff', marginBottom: '1.5rem', textShadow: '0 2px 20px rgba(0,0,0,0.5)', fontSize: 'clamp(4rem, 8vw, 8rem)' }}>Heritage &<br/><span className="font-italic" style={{ color: 'var(--color-primary)' }}>Vision</span></h1>
-            <p className="reveal-up" style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.5rem', marginBottom: '2rem', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>We curate sanctuaries for generations to come.</p>
+        {/* Ambient White Glow strictly behind the text to ensure absolute legibility of the Navy font */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '50%', background: 'linear-gradient(to top, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.4) 40%, rgba(255,255,255,0) 100%)', zIndex: 3 }}></div>
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', height: '60%', background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%)', zIndex: 3 }}></div>
+
+        <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', textAlign: 'right', paddingBottom: '4rem' }}>
+          <div className="reveal-up">
+            <h1 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2rem, 5vw, 4rem)', color: '#1e3a8a', letterSpacing: '0.02em', margin: '0 0 1rem 0' }}>
+              <span style={{ fontStyle: 'italic', fontWeight: 300 }}>Our</span><br/>
+              Philosophy.
+            </h1>
           </div>
         </div>
       </section>
+
+      {/* --- CONTENT WRAPPER FOR PARALLAX UNVEIL --- */}
+      <div style={{ position: 'relative', zIndex: 5, backgroundColor: '#ffffff' }}>
+        <FamilyBanner 
+          prefix="OUR" 
+          suffix="Philosophy." 
+          content="At MAISON ATELIER, we believe every home should tell a story. As a family-oriented company, we understand that a home is more than just a space—it's where your life unfolds. Our passion is delivering uncompromising quality and ensuring that every detail reflects your unique vision."
+        />
+        <div style={{ paddingTop: '4rem' }}>
 
       {/* Founder's Statement (Asymmetrical Layout) */}
       <section style={{ padding: '8rem 0', backgroundColor: 'var(--color-bg)', position: 'relative' }}>
@@ -105,7 +126,7 @@ export default function AboutClient() {
               </div>
 
               <div className="reveal-image" style={{ position: 'relative', width: '100%', height: '400px', borderRadius: '4px', overflow: 'hidden' }}>
-                <Image src="/luxury-hero.jpg" alt="Craftsmanship" fill style={{ objectFit: 'cover' }} />
+                <Image src="/luxury-hero.jpg" alt="Craftsmanship" fill style={{ objectFit: 'cover' }}  sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
 
               <div className="reveal-up" style={{ fontSize: '1.25rem', lineHeight: '1.8', color: 'var(--color-text)', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -130,7 +151,7 @@ export default function AboutClient() {
             
             <div className="reveal-up" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div style={{ position: 'relative', width: '100%', height: '450px', borderRadius: '4px', overflow: 'hidden' }}>
-                <Image src="/consultation-bg.jpg" alt="Artisans" fill style={{ objectFit: 'cover' }} />
+                <Image src="/consultation-bg.jpg" alt="Artisans" fill style={{ objectFit: 'cover' }}  sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
               <h3 className="font-serif" style={{ fontSize: '2rem' }}>Master Artisans</h3>
               <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.1rem', lineHeight: 1.6 }}>We employ only the most highly vetted and extensively trained craftsmen. Our teams combine traditional generational techniques with modern structural innovations to ensure perfection in every joint, seam, and finish.</p>
@@ -138,7 +159,7 @@ export default function AboutClient() {
 
             <div className="reveal-up" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginTop: '4rem' }}>
               <div style={{ position: 'relative', width: '100%', height: '450px', borderRadius: '4px', overflow: 'hidden' }}>
-                <Image src="/luxury-bathroom.jpg" alt="Materials" fill style={{ objectFit: 'cover' }} />
+                <Image src="/luxury-bathroom.jpg" alt="Materials" fill style={{ objectFit: 'cover' }}  sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
               <h3 className="font-serif" style={{ fontSize: '2rem' }}>Rare Materials</h3>
               <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.1rem', lineHeight: 1.6 }}>From hand-quarried Italian marble to ethically sourced African mahogany, we travel the world to procure materials that possess distinct character, unrivaled durability, and timeless aesthetic value.</p>
@@ -186,7 +207,7 @@ export default function AboutClient() {
             
             <div className="reveal-up" style={{ textAlign: 'center' }}>
               <div style={{ position: 'relative', width: '100%', height: '500px', borderRadius: '4px', overflow: 'hidden', marginBottom: '2.5rem' }}>
-                <Image src="/award-bg.jpg" alt="Founder" fill style={{ objectFit: 'cover', filter: 'grayscale(100%) brightness(0.8)' }} className={styles.zoomImage} />
+                <Image src="/award-bg.jpg" alt="Founder" fill style={{ objectFit: 'cover', filter: 'grayscale(100%) brightness(0.8)' }} className={styles.zoomImage}  sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
               <h3 className="font-serif" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Eleanor Vance</h3>
               <p style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '1rem', marginBottom: '1.5rem' }}>Founder & Principal Architect</p>
@@ -195,7 +216,7 @@ export default function AboutClient() {
 
             <div className="reveal-up" style={{ textAlign: 'center' }}>
               <div style={{ position: 'relative', width: '100%', height: '500px', borderRadius: '4px', overflow: 'hidden', marginBottom: '2.5rem' }}>
-                <Image src="/hero-bg.jpg" alt="Director" fill style={{ objectFit: 'cover', filter: 'grayscale(100%) brightness(0.8)' }} className={styles.zoomImage} />
+                <Image src="/hero-bg.jpg" alt="Director" fill style={{ objectFit: 'cover', filter: 'grayscale(100%) brightness(0.8)' }} className={styles.zoomImage}  sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
               <h3 className="font-serif" style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Julian Sterling</h3>
               <p style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.9rem', marginBottom: '1rem' }}>Director of Estate Management</p>
@@ -205,6 +226,9 @@ export default function AboutClient() {
           </div>
         </div>
       </section>
+
+        </div>
+      </div> {/* END CONTENT WRAPPER */}
 
     </div>
   )
