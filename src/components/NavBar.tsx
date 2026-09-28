@@ -24,26 +24,25 @@ export default function NavBar() {
   return (
     <div className={styles.navWrapper}>
       <nav className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}>
-        <div className={`container ${styles.navContainer}`}>
+        <div className={`${styles.navContainer}`}>
 
           {/* Logo */}
           <Link href="/" className={styles.logo}>
-            <Image src="/logo.png" alt="L'Atelier Maison Logo" width={140} height={40} style={{ objectFit: 'contain' }} priority />
+            <Image src="/logo.png" alt="L'Atelier Maison Logo" width={60} height={60} style={{ objectFit: 'contain' }} priority />
           </Link>
 
           {/* Desktop Links */}
           <div className={styles.desktopLinks}>
-            <Link href="/" className={styles.navLink}>HOME</Link>
+            <Link href="/services/housecleaning" className={styles.navLink}>HOUSE CLEANING</Link>
 
             <div className={styles.navDropdownGroup}>
-              <span className={styles.navLink} style={{ cursor: 'pointer' }}>RESIDENTIAL</span>
+              <Link href="/services" className={styles.navLink}>HOME SERVICES</Link>
               <div className={styles.dropdownMenu}>
-                <Link href="/services/new-construction" className={styles.dropdownItem}>NEW CONSTRUCTION</Link>
-                <Link href="/services/remodeling" className={styles.dropdownItem}>REMODELING</Link>
+                <Link href="/services/remodeling" className={styles.dropdownItem}>HOME REMODELING</Link>
+                <Link href="/services/painting" className={styles.dropdownItem}>PAINTING</Link>
+                <Link href="/services/tv-mounting" className={styles.dropdownItem}>TV MOUNTING</Link>
               </div>
             </div>
-
-            <Link href="/services" className={styles.navLink}>HOME SERVICES</Link>
 
             <Link href="/portfolio" className={styles.navLink}>PORTFOLIO</Link>
 
@@ -69,17 +68,16 @@ export default function NavBar() {
 
         {/* Mobile Menu Dropdown */}
         <div className={`${styles.mobileMenu} ${mobileMenuOpen ? styles.mobileMenuOpen : ''}`}>
-          <Link href="/" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>HOME</Link>
+          <Link href="/services/housecleaning" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>HOUSE CLEANING</Link>
 
-          <div className={styles.mobileLinkGroup}>RESIDENTIAL</div>
-          <Link href="/services/new-construction" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- NEW CONSTRUCTION</Link>
-          <Link href="/services/remodeling" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- REMODELING</Link>
-
-          <Link href="/services" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>HOME SERVICES</Link>
+          <Link href="/services" className={styles.mobileLinkGroup} onClick={() => setMobileMenuOpen(false)} style={{ textDecoration: 'none', color: 'inherit' }}>HOME SERVICES</Link>
+          <Link href="/services/remodeling" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- HOME REMODELING</Link>
+          <Link href="/services/painting" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- PAINTING</Link>
+          <Link href="/services/tv-mounting" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- TV MOUNTING</Link>
 
           <Link href="/portfolio" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>PORTFOLIO</Link>
 
-          <Link href="/locations" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)} style={{ marginTop: '1rem' }}>CONTACT</Link>
+          <Link href="/locations" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>CONTACT</Link>
         </div>
       </nav>
     </div>

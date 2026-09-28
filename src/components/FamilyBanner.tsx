@@ -12,10 +12,10 @@ export default function FamilyBanner({ prefix, suffix, content }: FamilyBannerPr
   return (
     <section style={{ padding: '4rem 5%', backgroundColor: '#1e3a8a', color: '#ffffff' }}>
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', alignItems: 'center' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', alignItems: 'center' }}>
           
           {/* Left: Tiny SVG & Title */}
-          <div className="reveal-up" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div className="reveal-up" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: '1 1 300px' }}>
             <svg className="intro-svg" width="60" height="60" viewBox="0 0 100 100" fill="none" stroke="#d97706" strokeWidth="2" style={{ flexShrink: 0 }}>
               <rect className="draw-path" pathLength="100" x="10" y="10" width="80" height="80" />
               <path className="draw-path" pathLength="100" d="M50 10 L10 50 L50 90 L90 50 Z" />
@@ -31,7 +31,7 @@ export default function FamilyBanner({ prefix, suffix, content }: FamilyBannerPr
           </div>
 
           {/* Right: Content */}
-          <div className="reveal-up" style={{ gridColumn: 'span 2' }}>
+          <div className="reveal-up" style={{ flex: '2 1 400px' }}>
             <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1rem', fontWeight: 400, lineHeight: 1.6, color: 'rgba(255,255,255,0.85)', margin: 0 }}>
               {content}
             </p>

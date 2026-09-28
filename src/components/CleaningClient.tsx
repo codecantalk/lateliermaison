@@ -23,6 +23,17 @@ const faqs = [
 export default function CleaningClient() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [isHeroHovered, setIsHeroHovered] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  // Scroll Detection for Hero Blur
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -80,16 +91,44 @@ export default function CleaningClient() {
           <div className={styles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at top left, rgba(255, 220, 150, 0.15) 0%, transparent 60%)' }}></div>
         </div>
         
-        {/* Ambient White Glow strictly behind the text to ensure absolute legibility of the Navy font */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '50%', background: 'linear-gradient(to top, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.4) 40%, rgba(255,255,255,0) 100%)', zIndex: 3 }}></div>
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', height: '60%', background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%)', zIndex: 3 }}></div>
 
-        <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', textAlign: 'right', paddingBottom: '4rem' }}>
-          <div className="reveal-up">
-            <h1 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2rem, 5vw, 4rem)', color: '#1e3a8a', letterSpacing: '0.02em', margin: '0 0 1rem 0' }}>
-              <span style={{ fontStyle: 'italic', fontWeight: 300 }}>House</span><br/>
-              keeping.
-            </h1>
+        <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', paddingBottom: '6rem' }}>
+          
+          <div 
+            onMouseEnter={() => setIsHeroHovered(true)}
+            onMouseLeave={() => setIsHeroHovered(false)}
+            style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+              gap: '2rem', 
+              alignItems: 'flex-end', 
+              padding: '2rem', 
+              background: (isHeroHovered || isScrolled) ? 'rgba(255, 255, 255, 0.15)' : 'transparent', 
+              backdropFilter: (isHeroHovered || isScrolled) ? 'blur(12px)' : 'none', 
+              WebkitBackdropFilter: (isHeroHovered || isScrolled) ? 'blur(12px)' : 'none', 
+              borderRadius: '20px',
+              transition: 'all 0.6s cubic-bezier(0.25, 1, 0.5, 1)'
+            }}>
+            
+            {/* Left: Philosophy Text */}
+            <div className="reveal-up">
+              <h4 style={{ textTransform: 'uppercase', letterSpacing: '0.15em', color: '#d97706', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', marginBottom: '1rem', fontWeight: 700 }}>Our Philosophy</h4>
+              <h2 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(1.2rem, 4vw, 2.25rem)', fontWeight: 400, lineHeight: 1.2, color: '#1e3a8a', margin: '0 0 1rem 0' }}>
+                The devil is in the <span style={{ fontStyle: 'italic' }}>details</span>, <br/>but so are we...
+              </h2>
+              <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 'clamp(0.95rem, 3vw, 1.1rem)', fontWeight: 600, lineHeight: 1.6, color: '#1e3a8a', maxWidth: '400px' }}>
+                You’re in control of every detail, we’re here to execute. Live on your terms!
+              </p>
+            </div>
+
+            {/* Right: Main Hero Title */}
+            <div className="reveal-up" style={{ textAlign: 'right' }}>
+              <h1 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2rem, 8vw, 4.5rem)', color: '#1e3a8a', letterSpacing: '0.02em', margin: 0, textShadow: '0 0 15px rgba(255,255,255,0.5)' }}>
+                <span style={{ fontStyle: 'italic', fontWeight: 300 }}>House</span><br/>
+                Cleaning.
+              </h1>
+            </div>
+
           </div>
         </div>
       </section>
@@ -99,9 +138,10 @@ export default function CleaningClient() {
         <FamilyBanner 
           prefix="YOUR" 
           suffix="Sanctuary." 
-          content="At MAISON ATELIER, your comfort is our priority. As a family-driven company, we recognize the importance of a clean, healthy, and welcoming environment. Our housekeeping services are designed to give you peace of mind, meticulously maintaining your home so you can focus on what matters most."
+          content="At Atelier Maison, your comfort is our priority. As a family-driven company, we recognize the importance of a clean, healthy, and welcoming environment. Our House Cleaning services are designed to give you peace of mind, meticulously maintaining your home so you can focus on what matters most."
         />
-        <div style={{ paddingTop: '4rem' }}>
+
+        <div style={{ paddingTop: '0rem' }}>
 
       {/* 3. Services (Premium Bento Layout) */}
       <section style={{ padding: '4rem 5% 4rem 5%', backgroundColor: '#fcfaf8' }}>
@@ -115,44 +155,44 @@ export default function CleaningClient() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', gridAutoRows: 'minmax(350px, auto)' }}>
             
             {/* Card 1 */}
-            <div className="reveal-up parallax-img-container" style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden', gridColumn: '1 / -1' }}>
+            <Link href="/estimate" className="reveal-up parallax-img-container" style={{ display: 'block', position: 'relative', borderRadius: '24px', overflow: 'hidden', gridColumn: '1 / -1', textDecoration: 'none' }}>
               <img src="/award-bg.jpg" alt="Recurring Cleaning" style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%', objectFit: 'cover' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10, 20, 40, 0.95) 0%, rgba(10, 20, 40, 0.2) 100%)' }}></div>
               <div style={{ position: 'relative', zIndex: 2, padding: '3rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', color: '#fff' }}>
                 <h3 style={{ fontFamily: '"ivyprestige-headline", serif', fontSize: '2.5rem', marginBottom: '1rem', color: '#fff' }}>Recurring Cleaning</h3>
                 <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.2rem', opacity: 0.9, maxWidth: '600px', color: '#fff' }}>Perfect for maintaining your home's pristine condition. Book us weekly, bi-weekly, or monthly.</p>
               </div>
-            </div>
+            </Link>
 
             {/* Card 2 */}
-            <div className="reveal-up parallax-img-container" style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden' }}>
+            <Link href="/estimate" className="reveal-up parallax-img-container" style={{ display: 'block', position: 'relative', borderRadius: '24px', overflow: 'hidden', textDecoration: 'none' }}>
               <img src="/luxury-bathroom.jpg" alt="Deep Cleaning" style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%', objectFit: 'cover' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10, 20, 40, 0.95) 0%, rgba(10, 20, 40, 0.2) 100%)' }}></div>
               <div style={{ position: 'relative', zIndex: 2, padding: '2rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', color: '#fff' }}>
                 <h3 style={{ fontFamily: '"ivyprestige-headline", serif', fontSize: '1.8rem', marginBottom: '1rem', color: '#fff' }}>Deep Cleaning</h3>
                 <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1rem', opacity: 0.9, color: '#fff' }}>A rigorous, top-to-bottom clean focusing on every detail.</p>
               </div>
-            </div>
+            </Link>
 
             {/* Card 3 */}
-            <div className="reveal-up parallax-img-container" style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden' }}>
+            <Link href="/estimate" className="reveal-up parallax-img-container" style={{ display: 'block', position: 'relative', borderRadius: '24px', overflow: 'hidden', textDecoration: 'none' }}>
               <img src="/latelier-images/residential/kitchen.jpg" alt="Move In Out" style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%', objectFit: 'cover' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(20, 10, 5, 0.95) 0%, rgba(20, 10, 5, 0.2) 100%)' }}></div>
               <div style={{ position: 'relative', zIndex: 2, padding: '2rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', color: '#fff' }}>
                 <h3 style={{ fontFamily: '"ivyprestige-headline", serif', fontSize: '1.8rem', marginBottom: '1rem', color: '#fff' }}>Move In / Out</h3>
                 <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1rem', opacity: 0.9, color: '#fff' }}>Ensure a flawless transition into or out of your home.</p>
               </div>
-            </div>
+            </Link>
 
             {/* Card 4 */}
-            <div className="reveal-up parallax-img-container" style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden', gridColumn: '1 / -1' }}>
+            <Link href="/estimate" className="reveal-up parallax-img-container" style={{ display: 'block', position: 'relative', borderRadius: '24px', overflow: 'hidden', gridColumn: '1 / -1', textDecoration: 'none' }}>
               <img src="/consultation-bg.jpg" alt="Specialty Cleans" style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%', objectFit: 'cover' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10, 20, 40, 0.95) 0%, rgba(10, 20, 40, 0.2) 100%)' }}></div>
               <div style={{ position: 'relative', zIndex: 2, padding: '3rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', color: '#fff' }}>
                 <h3 style={{ fontFamily: '"ivyprestige-headline", serif', fontSize: '2.5rem', marginBottom: '1rem', color: '#fff' }}>Specialty Cleans</h3>
                 <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.2rem', opacity: 0.9, maxWidth: '600px', color: '#fff' }}>Post-construction fine-dust removal, seasonal resets, or event preparation.</p>
               </div>
-            </div>
+            </Link>
 
           </div>
         </div>

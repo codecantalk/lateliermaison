@@ -104,9 +104,6 @@ export default function ServicesClient() {
           <div className={styles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at top left, rgba(255, 220, 150, 0.15) 0%, transparent 60%)' }}></div>
         </div>
         
-        {/* Ambient White Glow strictly behind the text to ensure absolute legibility of the Navy font */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '50%', background: 'linear-gradient(to top, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.4) 40%, rgba(255,255,255,0) 100%)', zIndex: 3 }}></div>
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', height: '60%', background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%)', zIndex: 3 }}></div>
 
         <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', textAlign: 'right', paddingBottom: '4rem' }}>
           <div className="reveal-up">
@@ -154,20 +151,20 @@ export default function ServicesClient() {
             ))}
           </div>
 
-          {/* Section 1: House Keeping */}
+          {/* Section 1: House Cleaning */}
           <div className="container service-feature-section" style={{ paddingBottom: '8rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '4rem' }}>
             <div style={{ flex: '1 1 400px', position: 'relative', height: '500px', borderRadius: '12px', overflow: 'hidden' }}>
                <div className="service-parallax-img" style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%' }}>
-                  <Image src="/hero-bg.jpg" alt="House Keeping" fill className={styles.objectCover} sizes="(max-width: 768px) 100vw, 50vw" />
+                  <Image src="/hero-bg.jpg" alt="House Cleaning" fill className={styles.objectCover} sizes="(max-width: 768px) 100vw, 50vw" />
                </div>
             </div>
             <div className="reveal-up" style={{ flex: '1 1 400px' }}>
-               <h3 style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.875rem', marginBottom: '1rem' }}>HOUSE KEEPING</h3>
+               <h3 style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.875rem', marginBottom: '1rem' }}>House Cleaning</h3>
                <h2 className="font-serif" style={{ fontSize: '3rem', marginBottom: '1.5rem', lineHeight: 1.2, color: '#1e3a8a' }}>The L'Atelier Reset.</h2>
                <p style={{ fontSize: '1.125rem', lineHeight: 1.8, color: '#4b5563', marginBottom: '2rem' }}>
-                  At MAISON ATELIER, your comfort is our priority. As a family-driven company, we recognize the importance of a clean, healthy, and welcoming environment. Our housekeeping services are designed to give you peace of mind, meticulously maintaining your home so you can focus on what matters most.
+                  At Atelier Maison, your comfort is our priority. As a family-driven company, we recognize the importance of a clean, healthy, and welcoming environment. Our House Cleaning services are designed to give you peace of mind, meticulously maintaining your home so you can focus on what matters most.
                </p>
-               <Link href="/services/housekeeping" className={`btn btn-outline ${styles.ctaBtn}`}>Explore Housekeeping</Link>
+               <Link href="/services/housecleaning" className={`btn btn-outline ${styles.ctaBtn}`}>Explore House Cleaning</Link>
             </div>
           </div>
 

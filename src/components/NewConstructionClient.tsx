@@ -69,9 +69,6 @@ export default function NewConstructionClient() {
           <div className={landingStyles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at top left, rgba(255, 220, 150, 0.15) 0%, transparent 60%)' }}></div>
         </div>
         
-        {/* Ambient White Glow strictly behind the text to ensure absolute legibility of the Navy font */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '50%', background: 'linear-gradient(to top, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.4) 40%, rgba(255,255,255,0) 100%)', zIndex: 3 }}></div>
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', height: '60%', background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%)', zIndex: 3 }}></div>
 
         <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', textAlign: 'right', paddingBottom: '4rem' }}>
           <div className="reveal-up">
@@ -88,7 +85,7 @@ export default function NewConstructionClient() {
         <FamilyBanner 
           prefix="YOUR" 
           suffix="Vision." 
-          content="At MAISON ATELIER, building your dream home is our greatest privilege. Our family is dedicated to constructing enduring, luxurious new builds from the ground up. With uncompromising attention to detail and a commitment to architectural excellence, we create the perfect foundation for your family's future."
+          content="At Atelier Maison, building your dream home is our greatest privilege. Our family is dedicated to constructing enduring, luxurious new builds from the ground up. With uncompromising attention to detail and a commitment to architectural excellence, we create the perfect foundation for your family's future."
         />
         <div style={{ paddingTop: '4rem' }}>
 

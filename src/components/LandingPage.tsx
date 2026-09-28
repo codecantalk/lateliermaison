@@ -29,6 +29,8 @@ const heroSlides = [
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [isHeroHovered, setIsHeroHovered] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
 
   // Revolution Slider Autoplay
   useEffect(() => {
@@ -36,6 +38,15 @@ export default function LandingPage() {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
     }, 6000) // 6 seconds per slide
     return () => clearInterval(interval)
+  }, [])
+
+  // Scroll Detection for Hero Blur
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   useEffect(() => {
@@ -162,28 +173,40 @@ export default function LandingPage() {
           <div className={styles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at top left, rgba(255, 220, 150, 0.25) 0%, transparent 60%)' }}></div>
         </div>
         
-        {/* Ambient White Glow strictly behind the text to ensure dark text legibility without a full overlay */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '50%', background: 'radial-gradient(ellipse at bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 40%, transparent 80%)', zIndex: 5, pointerEvents: 'none' }}></div>
         
         <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', paddingBottom: '6rem' }}>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'flex-end' }}>
+          <div 
+            onMouseEnter={() => setIsHeroHovered(true)}
+            onMouseLeave={() => setIsHeroHovered(false)}
+            style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+              gap: '2rem', 
+              alignItems: 'flex-end', 
+              padding: '1.5rem', 
+              background: (isHeroHovered || isScrolled) ? 'rgba(255, 255, 255, 0.15)' : 'transparent', 
+              backdropFilter: (isHeroHovered || isScrolled) ? 'blur(12px)' : 'none', 
+              WebkitBackdropFilter: (isHeroHovered || isScrolled) ? 'blur(12px)' : 'none',
+              borderRadius: '20px',
+              transition: 'all 0.6s cubic-bezier(0.25, 1, 0.5, 1)'
+            }}>
             
             {/* Left Column: Title */}
             <div>
-              <h1 className="hero-anim" style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2rem, 4vw, 3.5rem)', lineHeight: 1.1, color: '#1e3a8a', letterSpacing: '-0.02em', textShadow: '0 4px 20px rgba(255,255,255,0.8), 0 0 10px rgba(255,255,255,1)', margin: 0 }}>
+              <h1 className="hero-anim" style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2rem, 8vw, 4rem)', lineHeight: 1.1, color: '#1e3a8a', letterSpacing: '-0.02em', margin: 0, textShadow: '0 0 15px rgba(255,255,255,0.8)' }}>
                 Keeping Your <span style={{ fontStyle: 'italic' }}>House</span> <br/>in Order.
               </h1>
             </div>
 
             {/* Right Column: Description & Buttons */}
             <div>
-              <p className="hero-anim" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', lineHeight: 1.7, color: '#1e3a8a', fontWeight: 400, letterSpacing: '0.05em', marginBottom: '2rem', textShadow: '0 2px 10px rgba(255,255,255,0.9), 0 0 5px rgba(255,255,255,1)', maxWidth: '550px' }}>
-                Our Home Improvement and Housekeeping services include home cleaning and housekeeping, home remodeling, and interior and exterior painting. We’re your home’s best friend.
+              <p className="hero-anim" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 'clamp(0.95rem, 3vw, 1.125rem)', lineHeight: 1.7, color: '#1e3a8a', fontWeight: 500, letterSpacing: '0.05em', marginBottom: '2rem', maxWidth: '100%', textShadow: '0 0 10px rgba(255,255,255,0.9)' }}>
+                Our Home Improvement and House Cleaning services include home cleaning and housekeeping, home remodeling, and interior and exterior painting. We’re your home’s best friend.
               </p>
-              <div className="hero-anim" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                <Link href="/services/housekeeping" className="btn btn-primary" style={{ border: '1px solid transparent', backgroundColor: '#d97706', color: '#fff' }}>House Keeping</Link>
-                <Link href="/services/remodeling" className="btn" style={{ background: 'transparent', border: '1px solid #1e3a8a', color: '#1e3a8a' }}>Home Remodeling</Link>
+              <div className="hero-anim" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', paddingTop: '0.5rem' }}>
+                <Link href="/services/housecleaning" className="btn btn-primary" style={{ border: '1px solid transparent', backgroundColor: '#d97706', color: '#fff', flex: '1 1 auto', textAlign: 'center', padding: 'clamp(0.5rem, 2vw, 0.6rem) clamp(1rem, 3vw, 1.25rem)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', whiteSpace: 'nowrap' }}>House Cleaning</Link>
+                <Link href="/services/remodeling" className="btn" style={{ background: 'transparent', border: '1px solid #1e3a8a', color: '#1e3a8a', flex: '1 1 auto', textAlign: 'center', padding: 'clamp(0.5rem, 2vw, 0.6rem) clamp(1rem, 3vw, 1.25rem)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', whiteSpace: 'nowrap' }}>Home Remodeling</Link>
               </div>
             </div>
           </div>
@@ -217,7 +240,7 @@ export default function LandingPage() {
             {/* Middle: Compact Text */}
             <div className="reveal-up">
               <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '0.95rem', fontWeight: 400, lineHeight: 1.6, color: 'rgba(255,255,255,0.85)', margin: 0, paddingRight: '1rem' }}>
-                At <strong style={{ color: '#d97706' }}>MAISON ATELIER</strong>, we prioritize YOU. As a family-oriented company, we are dedicated to creating homes for families, built on a foundation of passion and commitment to your satisfaction. Whether you're planning a small renovation or building your dream home, we are the trusted contractors to bring your vision to life. Your home should reflect who you are, and we guarantee it will. <span style={{ fontStyle: 'italic', color: '#fff', fontWeight: 600 }}>Maison—where your vision becomes home.</span>
+                At <strong style={{ color: '#d97706' }}>Atelier Maison</strong>, we prioritize YOU. As a family-oriented company, we are dedicated to creating homes for families, built on a foundation of passion and commitment to your satisfaction. Whether you're planning a small renovation or building your dream home, we are the trusted contractors to bring your vision to life. Your home should reflect who you are, and we guarantee it will. <span style={{ fontStyle: 'italic', color: '#fff', fontWeight: 600 }}>Maison—where your vision becomes home.</span>
               </p>
             </div>
 
@@ -234,34 +257,7 @@ export default function LandingPage() {
 
       {/* --- MAIDBRIGHT STYLED ALTERNATING LAYOUT --- */}
 
-      {/* 2. Philosophy - Text Left, Image Right */}
-      <section style={{ padding: '8rem 5%', backgroundColor: '#ffffff' }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '6rem', alignItems: 'center' }}>
-            
-            {/* Text (Left) */}
-            <div className="reveal-up" style={{ paddingRight: '2rem' }}>
-              <h4 style={{ textTransform: 'uppercase', letterSpacing: '0.15em', color: '#d97706', fontSize: '0.85rem', marginBottom: '2rem', fontWeight: 600 }}>Our Philosophy</h4>
-              <h2 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: '3rem', fontWeight: 400, lineHeight: 1.2, color: '#1e3a8a', margin: 0, marginBottom: '2rem' }}>
-                The devil is in the <span style={{ fontStyle: 'italic', color: '#1e3a8a' }}>details</span>, <br/>but so are we...
-              </h2>
-              <div style={{ borderTop: '1px solid #eaeaea', paddingTop: '2rem' }}>
-                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', fontWeight: 400, lineHeight: 1.8, color: '#4b5563' }}>
-                  You’re in control of every detail, we’re here to execute. Live on your terms!
-                </p>
-              </div>
-            </div>
 
-            {/* Image (Right) */}
-            <div className="reveal-up" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden', borderRadius: '8px' }}>
-              <div className="consult-parallax-img" style={{ position: 'absolute', top: '-10%', left: 0, width: '100%', height: '120%' }}>
-                <Image src="/IMG_8185.webp" alt="Details" fill className={styles.objectCover}  sizes="(max-width: 768px) 100vw, 50vw" />
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
 
       {/* 3. Preparation - Image Left, Text Right */}
       <section style={{ padding: '8rem 5%', backgroundColor: '#f8fafc' }}>

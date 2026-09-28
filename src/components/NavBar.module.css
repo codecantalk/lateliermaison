@@ -5,7 +5,7 @@
   left: 0;
   width: 100%;
   z-index: 1000;
-  padding: 20px;
+  padding: 10px 0;
   display: flex;
   justify-content: center;
   transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
@@ -23,21 +23,23 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: 1400px;
+  max-width: 100%;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(65, 105, 225, 0.15) 100%);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  border-radius: 4px;
-  padding: 12px 24px;
+  border: none;
+  border-radius: 0;
+  padding: 8px 8px;
   transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-  box-shadow: 0 8px 30px rgba(65, 105, 225, 0.1); /* Subtle blue shadow */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.05);
+  /* Premium shadow */
 }
 
 .scrolled {
   background: linear-gradient(135deg, #FFFFFF 0%, #E6EDFB 100%);
-  padding: 8px 24px;
-  box-shadow: 0 12px 40px rgba(65, 105, 225, 0.15);
+  padding: 5px 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 20px rgba(0, 0, 0, 0.08);
+  /* Elevated premium shadow */
 }
 
 .navContainer {
@@ -49,13 +51,17 @@
 
 /* Logo (Dark Text on White Crystal) */
 .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: var(--font-serif);
   font-size: 1.35rem;
   color: var(--color-secondary);
   text-decoration: none;
   transition: opacity var(--transition-fast);
   white-space: nowrap;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.05); /* Ensure it's clear over BG */
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  /* Ensure it's clear over BG */
 }
 
 .logo:hover {
@@ -79,7 +85,8 @@
   font-weight: 500;
   font-size: 0.85rem;
   letter-spacing: 0.05em;
-  color: var(--color-secondary); /* Dark Espresso */
+  color: var(--color-secondary);
+  /* Dark Espresso */
   text-decoration: none;
   padding: 8px 16px;
   border-radius: 30px;
@@ -87,8 +94,10 @@
 }
 
 .navLink:hover {
-  color: var(--color-primary); /* Brass on hover */
-  background: rgba(0, 0, 0, 0.04); /* Subtle darkening for hover state on white */
+  color: var(--color-primary);
+  /* Brass on hover */
+  background: rgba(0, 0, 0, 0.04);
+  /* Subtle darkening for hover state on white */
 }
 
 /* Services Dropdown (Premium White Crystal Card) */
@@ -103,17 +112,19 @@
   top: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%) translateY(15px);
-  background: rgba(255, 255, 255, 0.95); /* More opaque for readability */
+  background: rgba(255, 255, 255, 0.95);
+  /* More opaque for readability */
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 1);
-  border-radius: 16px; /* Modern rounded corners */
+  border-radius: 16px;
+  /* Modern rounded corners */
   padding: 12px;
   min-width: 280px;
   opacity: 0;
   visibility: hidden;
   transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-  box-shadow: 0 24px 50px rgba(0,0,0,0.15);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -149,9 +160,11 @@
 }
 
 .dropdownItem:hover {
-  background: rgba(65, 105, 225, 0.08); /* Subtle warm brass tint */
+  background: rgba(65, 105, 225, 0.08);
+  /* Subtle warm brass tint */
   color: var(--color-primary);
-  transform: translateX(6px); /* Premium slide effect */
+  transform: translateX(6px);
+  /* Premium slide effect */
 }
 
 /* Actions */
@@ -194,15 +207,24 @@
 .line {
   width: 24px;
   height: 2px;
-  background: var(--color-secondary); /* Dark Espresso */
+  background: var(--color-secondary);
+  /* Dark Espresso */
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   position: relative;
   transform-origin: 1px;
 }
 
-.line1Open { transform: rotate(45deg); }
-.line2Open { opacity: 0; }
-.line3Open { transform: rotate(-45deg); }
+.line1Open {
+  transform: rotate(45deg);
+}
+
+.line2Open {
+  opacity: 0;
+}
+
+.line3Open {
+  transform: rotate(-45deg);
+}
 
 /* Mobile Menu (White Crystal Overlay) */
 .mobileMenu {

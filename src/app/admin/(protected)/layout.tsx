@@ -13,7 +13,7 @@ export default function AdminLayout({
     <div className={styles.adminLayout}>
       <aside className={styles.sidebar}>
         <div className={styles.logo} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1.5rem' }}>
-          <Image src="/logo.png" alt="L'Atelier Admin Logo" width={140} height={40} style={{ objectFit: 'contain' }} />
+          <Image src="/logo.png" alt="L'Atelier Admin Logo" width={60} height={60} style={{ objectFit: 'contain' }} />
         </div>
         <nav className={styles.nav}>
           <Link href="/admin" className={styles.navLink}>

@@ -3,7 +3,7 @@ import styles from './page.module.css'
 
 export const metadata = {
   title: 'Free Estimate | L\'Atelier Maison',
-  description: 'Get an instant online quote for housekeeping and remodeling services in Atlanta.',
+  description: 'Get an instant online quote for House Cleaning and remodeling services in Atlanta.',
 }
 
 export default function EstimatePage() {

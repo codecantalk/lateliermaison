@@ -85,9 +85,6 @@ export default function LocationsClient() {
           <div className={styles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at top left, rgba(255, 220, 150, 0.15) 0%, transparent 60%)' }}></div>
         </div>
         
-        {/* Ambient White Glow strictly behind the text to ensure absolute legibility of the Navy font */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '50%', background: 'linear-gradient(to top, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.4) 40%, rgba(255,255,255,0) 100%)', zIndex: 3 }}></div>
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', height: '60%', background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%)', zIndex: 3 }}></div>
 
         <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', textAlign: 'right', paddingBottom: '4rem' }}>
           <div className="reveal-up">
@@ -104,7 +101,7 @@ export default function LocationsClient() {
         <FamilyBanner 
           prefix="OUR" 
           suffix="Reach." 
-          content="At MAISON ATELIER, our family spans the globe. We bring our unwavering commitment to quality and luxurious living to select prime locations. Whether you are in London, Atlanta, or Lagos, our trusted team is ready to bring your architectural vision to life."
+          content="At Atelier Maison, our family spans the globe. We bring our unwavering commitment to quality and luxurious living to select prime locations. Whether you are in London, Atlanta, or Lagos, our trusted team is ready to bring your architectural vision to life."
         />
         <div style={{ paddingTop: '4rem' }}>
         <p className="loc-title" style={{ maxWidth: '600px', margin: 'var(--spacing-md) auto 0', fontSize: '1.25rem', color: 'var(--color-text-muted)', textAlign: 'center', paddingBottom: '4rem' }}>

@@ -72,7 +72,7 @@ export default function Hero() {
             <span className={`${styles.accent} font-italic`}>Without the Stress.</span>
           </h1>
           <p className={styles.subtitle}>
-            Experience top-tier housekeeping and premium remodeling services in Atlanta. Your home should reflect who you are, and we guarantee it will.
+            Experience top-tier House Cleaning and premium remodeling services in Atlanta. Your home should reflect who you are, and we guarantee it will.
           </p>
           <div className={styles.actions}>
             <Link href="/estimate" className="btn btn-primary">

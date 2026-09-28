@@ -88,7 +88,7 @@ export default function Footer() {
           <div className={styles.footerCol}>
             <div className={styles.manifesto}>
               <div style={{ marginBottom: '1.5rem' }}>
-                <Image src="/logo.png" alt="L'Atelier Maison Logo" width={180} height={50} style={{ objectFit: 'contain' }} />
+                <Image src="/logo.png" alt="L'Atelier Maison Logo" width={80} height={80} style={{ objectFit: 'contain' }} />
               </div>
               <h3 className="font-serif">Curated Sanctuaries.</h3>
               <p>Elevating the standard of living for the most discerning clientele. We preserve the integrity and beauty of your most valuable asset.</p>
@@ -160,7 +160,7 @@ export default function Footer() {
 
       <div className={styles.footerBottom}>
         <div className={`container ${styles.footerBottomInner}`}>
-          <p>Copyright 2025 &copy; MAISON. All Rights Reserved.</p>
+          <p>Copyright 2026 &copy; MAISON. All Rights Reserved.</p>
           <div className={styles.legalLinks}>
             <Link href="/privacy">Privacy Policy</Link>
             <Link href="/terms">Terms of Service</Link>

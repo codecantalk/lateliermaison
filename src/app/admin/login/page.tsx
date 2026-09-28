@@ -51,7 +51,7 @@ export default function AdminLogin() {
     <div className={styles.container}>
       <div className={styles.card}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <Image src="/logo.png" alt="L'Atelier Admin Logo" width={160} height={50} style={{ objectFit: 'contain' }} />
+          <Image src="/logo.png" alt="L'Atelier Admin Logo" width={80} height={80} style={{ objectFit: 'contain' }} />
         </div>
         <p className={styles.subtitle}>Secure Access</p>
 

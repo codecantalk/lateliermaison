@@ -211,13 +211,13 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
     e.preventDefault();
     if (!cleaningResult) return
 
-    await saveLeadToDatabase('housekeeping', cleaningResult.total, cleanValues);
+    await saveLeadToDatabase('House Cleaning', cleaningResult.total, cleanValues);
 
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: cleaningResult.total, serviceName: `Housekeeping (${cleanValues.houseType})` }),
+        body: JSON.stringify({ amount: cleaningResult.total, serviceName: `House Cleaning (${cleanValues.houseType})` }),
       })
       const { id } = await response.json()
       const stripe: any = await stripePromise
@@ -260,7 +260,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
         </button>
         <button className={`${styles.serviceBtn} ${selectedService === 'cleaning' ? styles.activeService : ''}`} onClick={() => handleServiceSelect('cleaning')}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-          <span>Housekeeping</span>
+          <span>House Cleaning</span>
         </button>
       </div>
 
@@ -371,7 +371,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
             </form>
           )}
 
-          {/* --- NEW HOUSEKEEPING FLOW --- */}
+          {/* --- NEW House Cleaning FLOW --- */}
           {selectedService === 'cleaning' && isPricingLoading && (
             <div className={styles.emptyState}>
               <p>Loading pricing engine...</p>
@@ -501,7 +501,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
         </div>
 
         <div className={styles.resultSection}>
-          {/* Housekeeping Result Box - "Receipt" Style */}
+          {/* House Cleaning Result Box - "Receipt" Style */}
           {selectedService === 'cleaning' && cleaningResult && (
             <div className={`result-anim ${styles.receiptBox}`}>
               <div className={styles.receiptHeader}>
