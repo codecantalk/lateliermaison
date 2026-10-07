@@ -181,7 +181,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
   }
 
   const onEstateSubmit = (data: EstateData) => {
-    setRangeResult({ min: 0, max: 0, type: 'Estate Management' })
+    setRangeResult({ min: 0, max: 0, type: 'Home Services' })
     animateResult()
   }
 
@@ -241,22 +241,19 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
   return (
     <div className={styles.calculator}>
       <div className={styles.header}>
-        <h2 className="font-serif">Design Your <span className="font-italic" style={{color: 'var(--color-primary)'}}>Service</span></h2>
+        <h2 className="font-serif">Choose Your <span className="font-italic" style={{color: 'var(--color-primary)'}}>Service</span></h2>
         <p>Select a discipline to receive a transparent quote or schedule a master consultation.</p>
       </div>
 
       <div className={styles.serviceSelection}>
-        <button className={`${styles.serviceBtn} ${selectedService === 'construction' ? styles.activeService : ''}`} onClick={() => handleServiceSelect('construction')}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 21h18"/><path d="M19 21v-4"/><path d="M19 17a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v4"/><path d="M12 15V3l-3 3"/><path d="M15 6l-3-3"/></svg>
-          <span>New Construction</span>
-        </button>
+
         <button className={`${styles.serviceBtn} ${selectedService === 'remodeling' ? styles.activeService : ''}`} onClick={() => handleServiceSelect('remodeling')}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           <span>Remodeling</span>
         </button>
         <button className={`${styles.serviceBtn} ${selectedService === 'estate' ? styles.activeService : ''}`} onClick={() => handleServiceSelect('estate')}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-          <span>Estate Management</span>
+          <span>Home Services</span>
         </button>
         <button className={`${styles.serviceBtn} ${selectedService === 'cleaning' ? styles.activeService : ''}`} onClick={() => handleServiceSelect('cleaning')}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>

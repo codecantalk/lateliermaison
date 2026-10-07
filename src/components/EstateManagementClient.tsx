@@ -57,7 +57,7 @@ export default function EstateManagementClient() {
         <div className={styles.heroImageWrapper}>
           <img 
             src="/award-bg.jpg" 
-            alt="Estate Management Services"
+            alt="Home Services"
             className={styles.infiniteZoomImg}
           />
           {/* Sunny Golden Hour Overlay */}
@@ -68,9 +68,9 @@ export default function EstateManagementClient() {
 
         <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', textAlign: 'right', paddingBottom: '4rem' }}>
           <div className="reveal-up">
-            <h1 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2rem, 5vw, 4rem)', color: '#1e3a8a', letterSpacing: '0.02em', margin: '0 0 1rem 0' }}>
-              <span style={{ fontStyle: 'italic', fontWeight: 300 }}>Estate</span><br/>
-              Management.
+            <h1 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(1.75rem, 8vw, 4.5rem)', color: '#1e3a8a', letterSpacing: '0.02em', margin: '0 0 1rem 0' }}>
+              <span style={{ fontStyle: 'italic', fontWeight: 300 }}>Home</span><br/>
+              Services.
             </h1>
           </div>
         </div>
@@ -81,7 +81,7 @@ export default function EstateManagementClient() {
         <FamilyBanner 
           prefix="YOUR" 
           suffix="Legacy." 
-          content="At Atelier Maison, we safeguard what you value most. Managing your estate is an honor we take seriously. As a family-oriented firm, we provide proactive, comprehensive management to preserve the beauty, functionality, and value of your property for generations to come."
+          content="At Atelier Maison, we safeguard what you value most. Managing your home is an honor we take seriously. As a family-oriented firm, we provide proactive, comprehensive services to preserve the beauty, functionality, and value of your property for generations to come."
         />
         <div style={{ paddingTop: '4rem' }}>
 
@@ -143,7 +143,7 @@ export default function EstateManagementClient() {
           <div className={`reveal-up ${styles.consultCard}`}>
             <h2 className="font-serif">Schedule <span className="font-italic" style={{ color: 'var(--color-primary)' }}>Service</span></h2>
             <p>
-              Connect with our estate management team to address your property's immediate or long-term needs.
+              Connect with our home services team to address your property's immediate or long-term needs.
             </p>
             <Link href="/estimate" className="btn btn-secondary">Request Service Call</Link>
           </div>

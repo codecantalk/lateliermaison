@@ -14,9 +14,9 @@ if (typeof window !== 'undefined') {
 
 const locations = [
   { city: 'Atlanta, GA', desc: 'Our North American headquarters, specializing in ground-up builds and luxury remodeling.', img: '/luxury-hero.jpg' },
-  { city: 'London, UK', desc: 'European division handling historic restorations and modern estate management.', img: '/luxury-bathroom.jpg' },
+  { city: 'London, UK', desc: 'European division handling historic restorations and modern home services.', img: '/luxury-bathroom.jpg' },
   { city: 'Paris, FR', desc: 'Boutique architectural design studio focusing on uncompromising interior aesthetics.', img: '/award-bg.jpg' },
-  { city: 'Lagos, NG', desc: 'African flagship office delivering monumental new construction projects.', img: '/luxury-hero.jpg' },
+  { city: 'Lagos, NG', desc: 'African flagship office delivering monumental luxury remodeling projects.', img: '/luxury-hero.jpg' },
 ]
 
 export default function LocationsClient() {

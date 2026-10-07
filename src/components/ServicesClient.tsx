@@ -176,12 +176,12 @@ export default function ServicesClient() {
                </div>
             </div>
             <div className="reveal-up" style={{ flex: '1 1 400px' }}>
-               <h3 style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.875rem', marginBottom: '1rem' }}>ESTATE MANAGEMENT</h3>
+               <h3 style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.875rem', marginBottom: '1rem' }}>HOME SERVICES</h3>
                <h2 className="font-serif" style={{ fontSize: '3rem', marginBottom: '1.5rem', lineHeight: 1.2, color: '#1e3a8a' }}>Bespoke Curation.</h2>
                <p style={{ fontSize: '1.125rem', lineHeight: 1.8, color: '#4b5563', marginBottom: '2rem' }}>
-                  Beyond construction, we offer comprehensive estate management. From preventative maintenance and landscaping to managing specialized contractors, we ensure your property remains pristine and operates flawlessly year-round, preserving its value and your peace of mind.
+                  Beyond construction, we offer comprehensive home services. From preventative maintenance and landscaping to managing specialized contractors, we ensure your property remains pristine and operates flawlessly year-round, preserving its value and your peace of mind.
                </p>
-               <Link href="/services/estate-management" className={`btn btn-outline ${styles.ctaBtn}`}>Explore Estate Management</Link>
+               <Link href="/services/estate-management" className={`btn btn-outline ${styles.ctaBtn}`}>Explore Home Services</Link>
             </div>
           </div>
 

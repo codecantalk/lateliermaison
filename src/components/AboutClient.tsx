@@ -178,7 +178,7 @@ export default function AboutClient() {
             {[
               { year: '2010', title: 'The Foundation', desc: 'L\'Atelier Maison was founded with a singular vision: to bring uncompromising European architectural standards and rigorous attention to detail to North American luxury homes.' },
               { year: '2015', title: 'European Expansion', desc: 'Opened our boutique design studios in London and Paris, establishing our global supply chain for rare, hand-selected materials and forging relationships with master artisans.' },
-              { year: '2020', title: 'Estate Management', desc: 'Launched our exclusive estate management and concierge services, offering full-lifecycle care and maintenance for the pristine sanctuaries we curate.' },
+              { year: '2020', title: 'Home Services', desc: 'Launched our exclusive home and concierge services, offering full-lifecycle care and maintenance for the pristine sanctuaries we curate.' },
               { year: 'Present', title: 'Global Recognition', desc: 'Recognized as an industry leader in ultra-luxury builds and holistic home management, proudly serving the most discerning clientele across four continents.' }
             ].map((item, i) => (
               <div key={i} className="reveal-up" style={{ position: 'relative', paddingTop: '2rem', borderTop: '1px solid rgba(65, 105, 225, 0.3)' }}>
@@ -216,7 +216,7 @@ export default function AboutClient() {
                 <Image src="/hero-bg.jpg" alt="Director" fill style={{ objectFit: 'cover', filter: 'grayscale(100%) brightness(0.8)' }} className={styles.zoomImage}  sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
               <h3 className="font-serif" style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Julian Sterling</h3>
-              <p style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.9rem', marginBottom: '1rem' }}>Director of Estate Management</p>
+              <p style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.9rem', marginBottom: '1rem' }}>Director of Home Services</p>
               <p style={{ color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>Ensuring every L'Atelier property is meticulously maintained to the absolute highest standard of perfection.</p>
             </div>
 

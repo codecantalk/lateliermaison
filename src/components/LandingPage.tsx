@@ -13,10 +13,9 @@ if (typeof window !== 'undefined') {
 }
 
 const services = [
-  { title: 'Residential', desc: 'Crafting luxury living spaces tailored to your family.', img: '/latelier-images/home/IMG_8191.JPG', link: '/services/new-construction' },
-  { title: 'New Construction', desc: 'Ground-up builds built on a foundation of passion and commitment.', img: '/latelier-images/home/5A6BE788-BBDC-4362-83B1-50E26B74249D.JPG', link: '/services/new-construction' },
+  { title: 'House Cleaning', desc: 'Pristine cleaning tailored for your luxury sanctuary.', img: '/latelier-images/home/IMG_8191.JPG', link: '/services/housecleaning' },
   { title: 'Remodeling', desc: 'Transforming existing spaces into your dream home.', img: '/latelier-images/home/IMG_8185.JPG', link: '/services/remodeling' },
-  { title: 'Home Services', desc: 'Comprehensive property maintenance and expert care.', img: '/latelier-images/portfolio/IMG_8184.JPG', link: '/services' }
+  { title: 'Home Services', desc: 'Comprehensive property maintenance and expert care.', img: '/latelier-images/portfolio/IMG_8184.JPG', link: '/services/estate-management' }
 ]
 
 const heroSlides = [
