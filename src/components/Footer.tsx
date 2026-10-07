@@ -118,10 +118,10 @@ export default function Footer() {
                 </ul>
               </div>
               <div className={styles.linkGroup}>
-                <h4 className={styles.colTitle}>London</h4>
+                <h4 className={styles.colTitle}>Washington DC</h4>
                 <ul className={styles.contactList}>
-                  <li><p style={{ margin: 0 }}>26 Thunderer St<br/>London, UK -- E13 9HE</p></li>
-                  <li><a href="mailto:lateliermaisonldn@gmail.com" style={{ fontSize: '0.85rem' }}>lateliermaisonldn@gmail.com</a></li>
+                  <li><p style={{ margin: 0 }}>4600 Powder Mill Rd<br/>Beltsville, MD 20705<br/>United States</p></li>
+                  <li><a href="mailto:ateliermaisonatl@gmail.com" style={{ fontSize: '0.85rem' }}>ateliermaisonatl@gmail.com</a></li>
                 </ul>
               </div>
             </div>

@@ -14,7 +14,7 @@ if (typeof window !== 'undefined') {
 
 const locations = [
   { city: 'Atlanta, GA', desc: 'Our North American headquarters, specializing in ground-up builds and luxury remodeling.', img: '/luxury-hero.jpg' },
-  { city: 'London, UK', desc: 'European division handling historic restorations and modern home services.', img: '/luxury-bathroom.jpg' },
+  { city: 'Washington, DC', desc: 'Capital division handling luxury remodeling and modern home services.', img: '/luxury-bathroom.jpg' },
   { city: 'Paris, FR', desc: 'Boutique architectural design studio focusing on uncompromising interior aesthetics.', img: '/award-bg.jpg' },
 ]
 
@@ -100,7 +100,7 @@ export default function LocationsClient() {
         <FamilyBanner 
           prefix="OUR" 
           suffix="Reach." 
-          content="At Atelier Maison, our family spans the globe. We bring our unwavering commitment to quality and luxurious living to select prime locations. Whether you are in London, Atlanta, or Lagos, our trusted team is ready to bring your architectural vision to life."
+          content="At Atelier Maison, our family spans the globe. We bring our unwavering commitment to quality and luxurious living to select prime locations. Whether you are in Atlanta, Washington DC, or Paris, our trusted team is ready to bring your architectural vision to life."
         />
         <div style={{ paddingTop: '4rem' }}>
         <p className="loc-title" style={{ maxWidth: '600px', margin: 'var(--spacing-md) auto 0', fontSize: '1.25rem', color: 'var(--color-text-muted)', textAlign: 'center', paddingBottom: '4rem' }}>

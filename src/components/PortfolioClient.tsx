@@ -14,9 +14,9 @@ if (typeof window !== 'undefined') {
 
 const DEFAULT_ITEMS = [
   { img: '/latelier-images/portfolio/IMG_8183.JPG', title: 'The Glass House', location: 'Paris, FR' },
-  { img: '/latelier-images/portfolio/IMG_8184.JPG', title: 'Spa Sanctuary', location: 'London, UK' },
+  { img: '/latelier-images/portfolio/IMG_8184.JPG', title: 'Spa Sanctuary', location: 'Washington, DC' },
   { img: '/latelier-images/portfolio/IMG_8185.JPG', title: 'Modern Minimalism', location: 'Atlanta, GA' },
-  { img: '/latelier-images/portfolio/IMG_8186.JPG', title: 'Historic Restoration', location: 'Lagos, NG' },
+  { img: '/latelier-images/portfolio/IMG_8186.JPG', title: 'Historic Restoration', location: 'Miami, FL' },
   { img: '/latelier-images/portfolio/IMG_8187.JPG', title: 'Coastal Retreat', location: 'Malibu, CA' },
   { img: '/latelier-images/portfolio/IMG_8188.JPG', title: 'Urban Penthouse', location: 'New York, NY' },
   { img: '/latelier-images/portfolio/IMG_8189.JPG', title: 'Mountain Chalet', location: 'Aspen, CO' },

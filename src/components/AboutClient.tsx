@@ -177,7 +177,7 @@ export default function AboutClient() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '3rem', marginTop: '4rem' }}>
             {[
               { year: '2010', title: 'The Foundation', desc: 'L\'Atelier Maison was founded with a singular vision: to bring uncompromising European architectural standards and rigorous attention to detail to North American luxury homes.' },
-              { year: '2015', title: 'European Expansion', desc: 'Opened our boutique design studios in London and Paris, establishing our global supply chain for rare, hand-selected materials and forging relationships with master artisans.' },
+              { year: '2015', title: 'European Expansion', desc: 'Opened our boutique design studio in Paris, establishing our global supply chain for rare, hand-selected materials and forging relationships with master artisans.' },
               { year: '2020', title: 'Home Services', desc: 'Launched our exclusive home and concierge services, offering full-lifecycle care and maintenance for the pristine sanctuaries we curate.' },
               { year: 'Present', title: 'Global Recognition', desc: 'Recognized as an industry leader in ultra-luxury builds and holistic home management, proudly serving the most discerning clientele across four continents.' }
             ].map((item, i) => (
