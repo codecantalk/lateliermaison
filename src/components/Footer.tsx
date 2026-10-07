@@ -131,12 +131,7 @@ export default function Footer() {
           <div className={styles.footerCol}>
             <div className={styles.navGrid}>
               <div className={styles.linkGroup}>
-                <h4 className={styles.colTitle}>Lagos</h4>
-                <ul className={styles.contactList} style={{ marginBottom: '2rem' }}>
-                  <li><p style={{ margin: 0 }}>1 Emmanuel Keshi St<br/>Magodo GRA, Lagos</p></li>
-                  <li><a href="mailto:lateliermaisonatl@gmail.com" style={{ fontSize: '0.85rem' }}>lateliermaisonatl@gmail.com</a></li>
-                </ul>
-                
+
                 <h4 className={styles.colTitle}>Hours</h4>
                 <ul className={styles.contactList}>
                   <li><p style={{ margin: 0, fontWeight: 500 }}>Monday — Saturday</p></li>
