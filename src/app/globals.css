@@ -178,3 +178,58 @@ a {
   border-radius: 4px;
   padding: var(--spacing-xl);
 }
+
+/* --- GLOBAL MOBILE OPTIMIZATION --- */
+@media (max-width: 768px) {
+  /* 1. Global Padding & Gap Reductions for all sections/containers */
+  section, div[style*="padding"] {
+    padding-left: 5% !important;
+    padding-right: 5% !important;
+    padding-top: clamp(2rem, 8vw, 4rem) !important;
+    padding-bottom: clamp(2rem, 8vw, 4rem) !important;
+  }
+  
+  /* Exception for header/nav which needs tiny padding */
+  nav, .nav, .navWrapper {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  /* 2. Reduce massive gaps in flex/grid layouts */
+  div[style*="gap"] {
+    gap: clamp(1rem, 4vw, 2rem) !important;
+  }
+
+  /* 3. Typography Scaling */
+  h1, [style*="fontSize: 'clamp(2rem, 5vw, 4rem)'"], [style*="fontSize: '4rem'"] {
+    font-size: clamp(2rem, 8vw, 3rem) !important;
+    line-height: 1.1 !important;
+  }
+
+  h2, [style*="fontSize: '3rem'"] {
+    font-size: clamp(1.75rem, 6vw, 2.25rem) !important;
+    line-height: 1.2 !important;
+    margin-bottom: 1rem !important;
+  }
+
+  h3, [style*="fontSize: '2rem'"], [style*="fontSize: '2.5rem'"] {
+    font-size: clamp(1.25rem, 5vw, 1.75rem) !important;
+  }
+
+  h4, [style*="fontSize: '1.5rem'"] {
+    font-size: 1.1rem !important;
+  }
+
+  p, [style*="fontSize: '1.125rem'"], [style*="fontSize: '1.1rem'"], [style*="fontSize: '1.25rem'"] {
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+  }
+  
+  /* 4. Fix specific button paddings */
+  .btn {
+    padding: 0.75rem 1.25rem !important;
+    font-size: 0.8rem !important;
+    width: 100% !important; /* Make buttons full width on mobile */
+    text-align: center;
+  }
+}

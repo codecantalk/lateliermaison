@@ -5,8 +5,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { motion } from 'framer-motion'
 import styles from './LandingPage.module.css'
 import CleaningChecklist from './CleaningChecklist'
+import Testimonials from './Testimonials'
+import FAQ from './FAQ'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -193,19 +196,19 @@ export default function LandingPage() {
             
             {/* Left Column: Title */}
             <div>
-              <h1 className="hero-anim" style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2rem, 8vw, 4rem)', lineHeight: 1.1, color: '#1e3a8a', letterSpacing: '-0.02em', margin: 0, textShadow: '0 0 15px rgba(255,255,255,0.8)' }}>
-                Keeping Your <span style={{ fontStyle: 'italic' }}>House</span> <br/>in Order.
+              <h1 className="hero-anim" style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2.5rem, 5vw, 4rem)', lineHeight: 1.1, color: 'var(--color-secondary)', letterSpacing: '-0.02em', margin: 0, textShadow: '0 0 15px rgba(255,255,255,0.9)' }}>
+                Luxury Home Cleaning, <br/>Remodeling & <br/><span style={{ fontStyle: 'italic', color: 'var(--color-primary)' }}>Property Services.</span>
               </h1>
             </div>
 
             {/* Right Column: Description & Buttons */}
             <div>
-              <p className="hero-anim" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: 'clamp(0.95rem, 3vw, 1.125rem)', lineHeight: 1.7, color: '#1e3a8a', fontWeight: 500, letterSpacing: '0.05em', marginBottom: '2rem', maxWidth: '100%', textShadow: '0 0 10px rgba(255,255,255,0.9)' }}>
-                Our Home Improvement and House Cleaning services include home cleaning and housekeeping, home remodeling, and interior and exterior painting. We’re your home’s best friend.
+              <p className="hero-anim" style={{ fontFamily: 'var(--font-sans)', fontSize: 'clamp(0.95rem, 3vw, 1.125rem)', lineHeight: 1.7, color: 'var(--color-secondary)', fontWeight: 500, letterSpacing: '0.05em', marginBottom: '2rem', maxWidth: '100%', textShadow: '0 0 10px rgba(255,255,255,0.9)' }}>
+                Elevating the standard of living for the most discerning clientele. We provide absolute perfection across housekeeping, bespoke renovations, and meticulous estate management.
               </p>
               <div className="hero-anim" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', paddingTop: '0.5rem' }}>
-                <Link href="/services/housecleaning" className="btn btn-primary" style={{ border: '1px solid transparent', backgroundColor: '#d97706', color: '#fff', flex: '1 1 auto', textAlign: 'center', padding: 'clamp(0.5rem, 2vw, 0.6rem) clamp(1rem, 3vw, 1.25rem)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', whiteSpace: 'nowrap' }}>House Cleaning</Link>
-                <Link href="/services/remodeling" className="btn" style={{ background: 'transparent', border: '1px solid #1e3a8a', color: '#1e3a8a', flex: '1 1 auto', textAlign: 'center', padding: 'clamp(0.5rem, 2vw, 0.6rem) clamp(1rem, 3vw, 1.25rem)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', whiteSpace: 'nowrap' }}>Home Remodeling</Link>
+                <Link href="/estimate" className="btn btn-primary" style={{ flex: '1 1 auto', textAlign: 'center', padding: 'clamp(0.5rem, 2vw, 0.6rem) clamp(1rem, 3vw, 1.25rem)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', whiteSpace: 'nowrap' }}>Book House Cleaning</Link>
+                <Link href="/contact" className="btn btn-secondary" style={{ flex: '1 1 auto', textAlign: 'center', padding: 'clamp(0.5rem, 2vw, 0.6rem) clamp(1rem, 3vw, 1.25rem)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', whiteSpace: 'nowrap' }}>Request a Consultation</Link>
               </div>
             </div>
           </div>
@@ -215,10 +218,11 @@ export default function LandingPage() {
       {/* --- CONTENT WRAPPER FOR PARALLAX UNVEIL --- */}
       <div style={{ position: 'relative', zIndex: 5, backgroundColor: '#ffffff' }}>
 
+
       {/* 1.5 Introduction Statement - Compact Premium Banner */}
-      <section style={{ padding: '4rem 5%', backgroundColor: '#1e3a8a', color: '#ffffff' }}>
+      <section style={{ padding: 'clamp(2rem, 5vw, 4rem) 5%', backgroundColor: '#1e3a8a', color: '#ffffff' }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', alignItems: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'clamp(1rem, 3vw, 3rem)', alignItems: 'center' }}>
             
             {/* Left: Tiny SVG & Title */}
             <div className="reveal-up" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
@@ -251,6 +255,75 @@ export default function LandingPage() {
             </div>
 
           </div>
+
+          {/* 1.1 Trust Banner - Moved to inside Introduction Section */}
+          <div style={{ position: 'relative', zIndex: 10, marginTop: '4rem' }}>
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              style={{ 
+                backgroundColor: 'rgba(255, 255, 255, 0.05)', 
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                borderRadius: '12px', 
+                boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+                padding: '2.5rem 3rem',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '2.5rem',
+                alignItems: 'center',
+                border: '1px solid rgba(255, 255, 255, 0.1)'
+              }}
+            >
+              
+              <motion.div 
+                whileHover={{ y: -5 }}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: '#ffffff', textAlign: 'center', cursor: 'default' }}
+              >
+                <div style={{ display: 'flex', gap: '4px', color: '#d97706', fontSize: '1.5rem' }}>
+                  <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2, delay: 0 }}>★</motion.span>
+                  <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2, delay: 0.2 }}>★</motion.span>
+                  <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2, delay: 0.4 }}>★</motion.span>
+                  <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2, delay: 0.6 }}>★</motion.span>
+                  <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2, delay: 0.8 }}>★</motion.span>
+                </div>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#e5e7eb' }}>5.0 Google Reviews</span>
+              </motion.div>
+
+              <motion.div 
+                whileHover={{ y: -5 }}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: '#ffffff', textAlign: 'center', cursor: 'default' }}
+              >
+                <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </motion.div>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#e5e7eb' }}>Fully Insured</span>
+              </motion.div>
+
+              <motion.div 
+                whileHover={{ y: -5 }}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: '#ffffff', textAlign: 'center', cursor: 'default' }}
+              >
+                <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut', delay: 1 }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </motion.div>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#e5e7eb' }}>Master Artisans</span>
+              </motion.div>
+
+              <motion.div 
+                whileHover={{ y: -5 }}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: '#ffffff', textAlign: 'center', cursor: 'default' }}
+              >
+                <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut', delay: 2 }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </motion.div>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#e5e7eb' }}>100% Satisfaction</span>
+              </motion.div>
+
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -259,9 +332,9 @@ export default function LandingPage() {
 
 
       {/* 3. Preparation - Image Left, Text Right */}
-      <section style={{ padding: '8rem 5%', backgroundColor: '#f8fafc' }}>
+      <section style={{ padding: 'clamp(3rem, 8vw, 8rem) 5%', backgroundColor: '#f8fafc' }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '6rem', alignItems: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 'clamp(2rem, 6vw, 6rem)', alignItems: 'center' }}>
             
             {/* Image (Left) */}
             <div className="reveal-up" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden', borderRadius: '8px' }}>
@@ -291,9 +364,9 @@ export default function LandingPage() {
       </section>
 
       {/* 4. Quality - Text Left, Image Right */}
-      <section style={{ padding: '8rem 5%', backgroundColor: '#ffffff' }}>
+      <section style={{ padding: 'clamp(3rem, 8vw, 8rem) 5%', backgroundColor: '#ffffff' }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '6rem', alignItems: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 'clamp(2rem, 6vw, 6rem)', alignItems: 'center' }}>
             
             {/* Text (Left) */}
             <div className="reveal-up" style={{ paddingRight: '2rem' }}>
@@ -322,8 +395,11 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <Testimonials />
       {/* 5. Interactive Cleaning Checklist */}
       <CleaningChecklist />
+
+      <FAQ />
 
       </div> {/* END CONTENT WRAPPER */}
 

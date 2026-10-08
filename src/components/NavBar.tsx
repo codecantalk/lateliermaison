@@ -46,7 +46,7 @@ export default function NavBar() {
 
             <Link href="/portfolio" className={styles.navLink}>PORTFOLIO</Link>
 
-            <Link href="/locations" className={styles.navLink}>CONTACT</Link>
+            <Link href="/contact" className={styles.navLink}>CONTACT</Link>
           </div>
 
           {/* CTA & Mobile Toggle */}
@@ -68,16 +68,20 @@ export default function NavBar() {
 
         {/* Mobile Menu Dropdown */}
         <div className={`${styles.mobileMenu} ${mobileMenuOpen ? styles.mobileMenuOpen : ''}`}>
-          <Link href="/services/housecleaning" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>HOUSE CLEANING</Link>
+          <div className={styles.mobileMenuInner}>
+            <Link href="/services/housecleaning" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>House Cleaning</Link>
+            
+            <Link href="/services" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>Home Services</Link>
+            <div className={styles.mobileSubGroup}>
+              <Link href="/services/remodeling" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>Home Remodeling</Link>
+              <Link href="/services/painting" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>Painting</Link>
+              <Link href="/services/tv-mounting" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>TV Mounting</Link>
+            </div>
 
-          <Link href="/services" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>HOME SERVICES</Link>
-          <Link href="/services/remodeling" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- HOME REMODELING</Link>
-          <Link href="/services/painting" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- PAINTING</Link>
-          <Link href="/services/tv-mounting" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- TV MOUNTING</Link>
+            <Link href="/portfolio" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>Portfolio</Link>
 
-          <Link href="/portfolio" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>PORTFOLIO</Link>
-
-          <Link href="/locations" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>CONTACT</Link>
+            <Link href="/contact" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>Contact</Link>
+          </div>
         </div>
       </nav>
     </div>

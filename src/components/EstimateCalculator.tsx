@@ -36,7 +36,7 @@ type ConstructionData = {
 }
 
 type EstateData = {
-  trade: 'plumbing' | 'electrical' | 'painting' | 'handyman'
+  trade: 'plumbing' | 'electrical' | 'painting' | 'flooring' | 'tv mounting' | 'lighting' | 'home theater' | 'handyman'
   scope: 'diagnostic' | 'minor' | 'major'
 }
 
@@ -338,7 +338,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
               <div className={styles.stepGroup}>
                 <h3>1. Required Trade</h3>
                 <div className={styles.radioGridRow}>
-                  {['plumbing', 'electrical', 'painting', 'handyman'].map((trade) => (
+                  {['plumbing', 'electrical', 'painting', 'flooring', 'tv mounting', 'lighting', 'home theater', 'handyman'].map((trade) => (
                     <label key={trade} className={estateValues.trade === trade ? styles.activeChip : styles.chip}>
                       <input type="radio" value={trade} {...controlEstate.register('trade')} className={styles.hiddenRadio} />
                       <span style={{textTransform: 'capitalize'}}>{trade}</span>

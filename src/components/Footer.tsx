@@ -106,7 +106,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2: Locations (Atlanta & London) */}
+          {/* Column 2: Locations */}
           <div className={styles.footerCol}>
             <div className={styles.navGrid}>
               <div className={styles.linkGroup}>
@@ -114,11 +114,11 @@ export default function Footer() {
                 <ul className={styles.contactList}>
                   <li><p style={{ margin: 0 }}>Cumberland Blvd SE<br/>Vinings, GA -- 30339</p></li>
                   <li><a href="tel:3344875707">334-487-5707</a></li>
-                  <li><a href="mailto:lateliermaisonatl@gmail.com" style={{ fontSize: '0.85rem' }}>lateliermaisonatl@gmail.com</a></li>
+                  <li><a href="mailto:ateliermaisonatl@gmail.com" style={{ fontSize: '0.85rem' }}>ateliermaisonatl@gmail.com</a></li>
                 </ul>
               </div>
               <div className={styles.linkGroup}>
-                <h4 className={styles.colTitle}>Washington DC</h4>
+                <h4 className={styles.colTitle}>DMV Area</h4>
                 <ul className={styles.contactList}>
                   <li><p style={{ margin: 0 }}>4600 Powder Mill Rd<br/>Beltsville, MD 20705<br/>United States</p></li>
                   <li><a href="mailto:ateliermaisonatl@gmail.com" style={{ fontSize: '0.85rem' }}>ateliermaisonatl@gmail.com</a></li>

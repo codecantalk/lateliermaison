@@ -46,6 +46,30 @@ const checklistData = [
     ]
   },
   {
+    category: 'Bedrooms',
+    icon: '🛏️',
+    image: '/IMG_8191.webp',
+    tasks: [
+      'Make beds and change linens (if provided)',
+      'Dust nightstands, dressers, and lamps',
+      'Wipe down window sills and door frames',
+      'Vacuum carpets and sweep/mop hard floors',
+      'Empty trash bins'
+    ]
+  },
+  {
+    category: 'Deep Cleaning Add-Ons',
+    icon: '✨',
+    image: '/latelier-images/home/IMG_8185.JPG',
+    tasks: [
+      'Interior window washing',
+      'Inside oven and refrigerator cleaning',
+      'Interior cabinet wiping and organizing',
+      'Detailed baseboard and trim scrubbing',
+      'Heavy-duty post-construction cleaning'
+    ]
+  },
+  {
     category: 'Home Services',
     icon: '🛠️',
     image: '/HOME_SERVICES.jpg',

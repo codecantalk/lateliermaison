@@ -170,7 +170,7 @@ export default function PortfolioClient() {
               </div>
               
               <div className={styles.editorialText}>
-                <span className={styles.editorialNumber} style={{ fontWeight: 100 }}>0{i + 1}</span>
+                <span className={styles.editorialNumber} style={{ fontWeight: 100 }}>{i < 9 ? `0${i + 1}` : i + 1}</span>
                 <h3 className={`font-serif ${styles.editorialTitle}`}>{item.title}</h3>
                 <p className={styles.editorialLocation} style={{ fontWeight: 100 }}>{item.location}</p>
                 <div className={styles.editorialLine}></div>
