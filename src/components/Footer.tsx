@@ -90,7 +90,7 @@ export default function Footer() {
               <div style={{ marginBottom: '1.5rem' }}>
                 <Image src="/logo.png" alt="L'Atelier Maison Logo" width={80} height={80} style={{ objectFit: 'contain' }} />
               </div>
-              <h3 className="font-serif">Curated Sanctuaries.</h3>
+              <h3 className="font-serif">Curated sanctuaries.</h3>
               <p>Elevating the standard of living for the most discerning clientele. We preserve the integrity and beauty of your most valuable asset.</p>
             </div>
             <div className={styles.socials} style={{ marginTop: '2.5rem' }}>
