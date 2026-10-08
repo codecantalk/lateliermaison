@@ -250,18 +250,11 @@
   transform: translateY(0);
   opacity: 1;
   pointer-events: auto;
-}
-
-.mobileLinkGroup {
-  font-size: 1rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  margin-top: 1rem;
+  z-index: 99;
 }
 
 .mobileLink {
-  font-size: 2rem;
+  font-size: 1.25rem;
   font-family: var(--font-serif);
   color: var(--color-secondary);
   text-decoration: none;
@@ -269,7 +262,7 @@
 }
 
 .mobileSubLink {
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-family: var(--font-serif);
   color: var(--color-primary);
   text-decoration: none;

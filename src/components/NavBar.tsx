@@ -70,7 +70,7 @@ export default function NavBar() {
         <div className={`${styles.mobileMenu} ${mobileMenuOpen ? styles.mobileMenuOpen : ''}`}>
           <Link href="/services/housecleaning" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>HOUSE CLEANING</Link>
 
-          <Link href="/services" className={styles.mobileLinkGroup} onClick={() => setMobileMenuOpen(false)} style={{ textDecoration: 'none', color: 'inherit' }}>HOME SERVICES</Link>
+          <Link href="/services" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>HOME SERVICES</Link>
           <Link href="/services/remodeling" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- HOME REMODELING</Link>
           <Link href="/services/painting" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- PAINTING</Link>
           <Link href="/services/tv-mounting" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>-- TV MOUNTING</Link>
