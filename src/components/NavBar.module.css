@@ -188,7 +188,7 @@
 .hamburger {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   width: 24px;
   height: 20px;
   background: transparent;
@@ -211,11 +211,11 @@
   /* Dark Espresso */
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   position: relative;
-  transform-origin: 1px;
+  transform-origin: center;
 }
 
 .line1Open {
-  transform: rotate(45deg);
+  transform: translateY(9px) rotate(45deg);
 }
 
 .line2Open {
@@ -223,7 +223,7 @@
 }
 
 .line3Open {
-  transform: rotate(-45deg);
+  transform: translateY(-9px) rotate(-45deg);
 }
 
 /* Mobile Menu (White Crystal Overlay) */
