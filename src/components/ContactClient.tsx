@@ -1,15 +1,80 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import styles from './EstimateCalculator.module.css' // Reusing premium form styles
+import { createClient } from '@/lib/supabase/client'
 
 export default function ContactClient() {
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
+  const [fileNames, setFileNames] = useState<string[]>([])
+  const formRef = useRef<HTMLFormElement>(null)
+  const supabase = createClient()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here we would typically send the data to a backend or email service
-    setSubmitted(true)
+    setLoading(true)
+    setErrorMsg('')
+    
+    try {
+      if (!formRef.current) return;
+      const formData = new FormData(formRef.current)
+      
+      const fileInput = formRef.current.querySelector('input[type="file"]') as HTMLInputElement
+      const files = fileInput?.files
+      
+      let imageUrls: string[] = []
+      
+      // Upload Images
+      if (files && files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i]
+          const fileExt = file.name.split('.').pop()
+          const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`
+          const filePath = `contacts/${fileName}`
+
+          const { error: uploadError } = await supabase.storage
+            .from('images')
+            .upload(filePath, file)
+            
+          if (uploadError) {
+            console.error('Upload error:', uploadError)
+            throw new Error(`Upload failed: ${uploadError.message || 'Check storage configuration and policies.'}`)
+          }
+          
+          const { data } = supabase.storage.from('images').getPublicUrl(filePath)
+          imageUrls.push(data.publicUrl)
+        }
+      }
+
+      // Save to Contacts (which we will create via SQL)
+      // We will actually just save to "leads" table with a special service type, OR create "contacts" table.
+      // Let's create 'contacts' in the instruction and save to 'contacts'.
+      const { error: dbError } = await supabase.from('contacts').insert({
+        full_name: formData.get('full_name'),
+        phone: formData.get('phone'),
+        email: formData.get('email'),
+        address: formData.get('address'),
+        service: formData.get('service'),
+        budget: formData.get('budget'),
+        timeline: formData.get('timeline'),
+        details: formData.get('details'),
+        image_urls: imageUrls,
+        status: 'pending'
+      })
+
+      if (dbError) {
+        console.error('DB Insert Error:', dbError)
+        throw new Error('Failed to save contact information. ' + dbError.message)
+      }
+
+      setSubmitted(true)
+    } catch (err: any) {
+      setErrorMsg(err.message || 'An error occurred.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -27,32 +92,38 @@ export default function ContactClient() {
             <p style={{ color: 'var(--color-text-muted)', fontSize: '1.1rem' }}>Your request has been received. Our team will contact you shortly to discuss your project.</p>
           </div>
         ) : (
-          <form className={styles.form} onSubmit={handleSubmit}>
+          <form ref={formRef} className={styles.form} onSubmit={handleSubmit}>
+            {errorMsg && (
+              <div style={{ backgroundColor: '#fee2e2', color: '#b91c1c', padding: '1rem', borderRadius: '4px', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+                {errorMsg}
+              </div>
+            )}
+            
             <div className={styles.inputRow}>
               <div className={styles.inputGroup}>
                 <label>Full Name *</label>
-                <input type="text" className={styles.input} required />
+                <input name="full_name" type="text" className={styles.input} required />
               </div>
               <div className={styles.inputGroup}>
                 <label>Phone Number *</label>
-                <input type="tel" className={styles.input} required />
+                <input name="phone" type="tel" className={styles.input} required />
               </div>
             </div>
 
             <div className={styles.inputRow}>
               <div className={styles.inputGroup}>
                 <label>Email Address *</label>
-                <input type="email" className={styles.input} required />
+                <input name="email" type="email" className={styles.input} required />
               </div>
               <div className={styles.inputGroup}>
                 <label>Address / ZIP Code *</label>
-                <input type="text" className={styles.input} required />
+                <input name="address" type="text" className={styles.input} required />
               </div>
             </div>
 
             <div className={styles.stepGroup} style={{ marginTop: '1.5rem' }}>
               <label style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', fontWeight: 500, display: 'block', marginBottom: '0.5rem' }}>Service Needed *</label>
-              <select className={styles.input} required style={{ appearance: 'auto' }}>
+              <select name="service" className={styles.input} required style={{ appearance: 'auto' }}>
                 <option value="">Select a service...</option>
                 <option value="cleaning">Luxury Home Cleaning</option>
                 <option value="remodeling">Home Remodeling</option>
@@ -67,7 +138,7 @@ export default function ContactClient() {
             <div className={styles.inputRow} style={{ marginTop: '1.5rem' }}>
               <div className={styles.inputGroup}>
                 <label>Estimated Budget</label>
-                <select className={styles.input} style={{ appearance: 'auto' }}>
+                <select name="budget" className={styles.input} style={{ appearance: 'auto' }}>
                   <option value="">Select budget range...</option>
                   <option value="under-1k">Under $1,000</option>
                   <option value="1k-5k">$1,000 - $5,000</option>
@@ -77,7 +148,7 @@ export default function ContactClient() {
               </div>
               <div className={styles.inputGroup}>
                 <label>Expected Timeline</label>
-                <select className={styles.input} style={{ appearance: 'auto' }}>
+                <select name="timeline" className={styles.input} style={{ appearance: 'auto' }}>
                   <option value="">Select timeline...</option>
                   <option value="asap">As soon as possible</option>
                   <option value="1-month">Within 1 month</option>
@@ -89,17 +160,68 @@ export default function ContactClient() {
 
             <div className={styles.stepGroup} style={{ marginTop: '1.5rem' }}>
               <label style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', fontWeight: 500, display: 'block', marginBottom: '0.5rem' }}>Project Details *</label>
-              <textarea className={styles.input} rows={4} required placeholder="Please describe what you need help with..." style={{ resize: 'vertical' }}></textarea>
+              <textarea name="details" className={styles.input} rows={4} required placeholder="Please describe what you need help with..." style={{ resize: 'vertical' }}></textarea>
             </div>
 
             <div className={styles.stepGroup} style={{ marginTop: '1.5rem' }}>
               <label style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', fontWeight: 500, display: 'block', marginBottom: '0.5rem' }}>Upload Photos (Optional)</label>
-              <input type="file" className={styles.input} multiple accept="image/*" style={{ padding: '9px 16px', background: 'transparent' }} />
-              <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginTop: '0.25rem' }}>Upload pictures of the space or issues you want addressed.</p>
+              
+              <div style={{ position: 'relative' }}>
+                <input 
+                  id="photo-upload"
+                  name="photos" 
+                  type="file" 
+                  multiple 
+                  accept="image/*" 
+                  style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', borderWidth: 0 }} 
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || [])
+                    setFileNames(files.map(f => f.name))
+                  }}
+                />
+                <label 
+                  htmlFor="photo-upload" 
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    gap: '0.5rem', 
+                    padding: '0.75rem 1.5rem', 
+                    backgroundColor: '#f8fafc', 
+                    border: '1px dashed #cbd5e1', 
+                    borderRadius: '4px', 
+                    cursor: 'pointer',
+                    color: 'var(--color-primary)',
+                    fontWeight: 500,
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.borderColor = 'var(--color-primary)'}
+                  onMouseOut={(e) => e.currentTarget.style.borderColor = '#cbd5e1'}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  Choose Files
+                </label>
+              </div>
+
+              {fileNames.length > 0 && (
+                <div style={{ marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  {fileNames.map((name, idx) => (
+                    <span key={idx} style={{ background: '#e2e8f0', color: '#475569', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem' }}>
+                      {name}
+                    </span>
+                  ))}
+                </div>
+              )}
+              
+              <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginTop: '0.5rem' }}>Upload pictures of the space or issues you want addressed.</p>
             </div>
 
-            <button type="submit" className={`btn btn-primary ${styles.fullWidthBtn}`} style={{ marginTop: '2rem', padding: '16px', fontSize: '1.1rem' }}>
-              Submit Request
+            <button type="submit" className={`btn btn-primary ${styles.fullWidthBtn}`} style={{ marginTop: '2rem', padding: '16px', fontSize: '1.1rem' }} disabled={loading}>
+              {loading ? 'Submitting...' : 'Submit Request'}
             </button>
           </form>
         )}
