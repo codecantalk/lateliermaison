@@ -73,7 +73,7 @@ export default function PaintingClient() {
       <section className={landingStyles.heroSection} style={{ overflow: 'hidden' }}>
         <div className={landingStyles.heroImageWrapper}>
           <img 
-            src="/latelier-images/home/IMG_8185.JPG" 
+            src="/homeservices/painting.webp" 
             alt="Premium Painting"
             className={landingStyles.infiniteZoomImg}
           />

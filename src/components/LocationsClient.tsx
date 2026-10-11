@@ -13,9 +13,11 @@ if (typeof window !== 'undefined') {
 }
 
 const locations = [
-  { city: 'Atlanta, GA', desc: 'Our North American headquarters, specializing in ground-up builds and luxury remodeling.', img: '/luxury-hero.jpg' },
-  { city: 'DMV Area (DC, MD, VA)', desc: 'Capital division handling luxury remodeling and modern home services across DC, Maryland, and Virginia.', img: '/luxury-bathroom.jpg' },
-  { city: 'Paris, FR', desc: 'Boutique architectural design studio focusing on uncompromising interior aesthetics.', img: '/award-bg.jpg' },
+  { city: 'Atlanta, GA', slug: 'atlanta', desc: 'Our North American headquarters, specializing in ground-up builds and luxury remodeling.', img: '/luxury-hero.jpg' },
+  { city: 'Washington, DC', slug: 'washington-dc', desc: 'Capital division handling luxury remodeling and modern home services.', img: '/luxury-bathroom.jpg' },
+  { city: 'Maryland', slug: 'maryland', desc: 'Premium property care and bespoke renovations serving the entire state of Maryland.', img: '/portfolio-images/IMG_8187.JPG' },
+  { city: 'London, UK', slug: 'london', desc: 'Boutique architectural design studio focusing on uncompromising interior aesthetics and luxury flats.', img: '/award-bg.jpg' },
+  { city: 'Lagos, NG', slug: 'lagos', desc: 'Bringing world-class artisan craftsmanship and premium estate management to West Africa.', img: '/portfolio-images/IMG_8188.JPG' },
 ]
 
 export default function LocationsClient() {
@@ -115,7 +117,7 @@ export default function LocationsClient() {
               </div>
               <h3 className="font-serif" style={{ color: 'var(--color-secondary)', fontSize: '2.25rem', marginBottom: '1rem' }}>{loc.city}</h3>
               <p style={{ color: 'var(--color-text-muted)', marginBottom: '2.5rem', fontSize: '1.1rem', lineHeight: 1.6 }}>{loc.desc}</p>
-              <Link href="/estimate" className="btn btn-outline" style={{ width: '100%' }}>Contact Office</Link>
+              <Link href={`/locations/${loc.slug}`} className="btn btn-outline" style={{ width: '100%' }}>View Local Services</Link>
             </div>
           ))}
         </div>

@@ -17,47 +17,56 @@ const homeServices = [
   {
     id: 'plumbing',
     title: 'Plumbing',
-    img: '/homeservices/plumbing.webp'
+    img: '/homeservices/plumbing.webp',
+    trade: 'plumbing'
   },
   {
     id: 'electrical',
     title: 'Electrical',
-    img: '/homeservices/electrical.webp'
+    img: '/homeservices/electrical.webp',
+    trade: 'electrical'
   },
   {
     id: 'water-heater',
     title: 'Water Heater Installation & Repair',
-    img: '/homeservices/water-heater-installation-repair.webp'
+    img: '/homeservices/water-heater-installation-repair.webp',
+    trade: 'plumbing'
   },
   {
     id: 'painting',
     title: 'Painting',
-    img: '/homeservices/painting.webp'
+    img: '/homeservices/painting.webp',
+    trade: 'painting'
   },
   {
     id: 'flooring',
     title: 'Flooring Installation & Repair',
-    img: '/homeservices/flooring-installation-repair.webp'
+    img: '/homeservices/flooring-installation-repair.webp',
+    trade: 'flooring'
   },
   {
     id: 'home-theater',
     title: 'Home Theater Installation',
-    img: '/homeservices/home-theater-installation.webp'
+    img: '/homeservices/home-theater-installation.webp',
+    trade: 'home theater'
   },
   {
     id: 'tv-mounting',
     title: 'TV Mounting & Wiring',
-    img: '/homeservices/tv-mounting.webp'
+    img: '/homeservices/tv-mounting.webp',
+    trade: 'tv mounting'
   },
   {
     id: 'lighting',
     title: 'Lighting Solutions',
-    img: '/homeservices/lighting.webp'
+    img: '/homeservices/lighting.webp',
+    trade: 'lighting'
   },
   {
     id: 'handyman',
     title: 'Expert Handyman',
-    img: '/homeservices/handyman.webp'
+    img: '/homeservices/handyman.webp',
+    trade: 'handyman'
   }
 ]
 
@@ -207,7 +216,7 @@ export default function ServicesClient() {
             </div>
             <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--spacing-xl)' }}>
               {homeServices.map((svc) => (
-                <Link href="/estimate" key={svc.id} className={`service-hub-card ${styles.premiumCardWrapper}`} style={{ display: 'block', overflow: 'hidden', borderRadius: '12px', cursor: 'pointer', textDecoration: 'none' }}>
+                <Link href={`/estimate?service=estate&trade=${encodeURIComponent(svc.trade)}`} key={svc.id} className={`service-hub-card ${styles.premiumCardWrapper}`} style={{ display: 'block', overflow: 'hidden', borderRadius: '12px', cursor: 'pointer', textDecoration: 'none' }}>
                   <div className={styles.premiumCardInner} style={{ position: 'relative', height: '350px', overflow: 'hidden' }}>
                     <div className="service-parallax-img" style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%' }}>
                       <Image 

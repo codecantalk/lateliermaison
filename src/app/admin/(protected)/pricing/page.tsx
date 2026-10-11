@@ -8,11 +8,10 @@ export default async function PricingPage() {
 
   const { data, error } = await supabase
     .from('pricing_config')
-    .select('value')
-    .eq('key', 'cleaning_pricing')
-    .single();
+    .select('key, value')
+    .in('key', ['cleaning_pricing', 'remodeling_pricing', 'construction_pricing']);
 
-  if (error || !data) {
+  if (error || !data || data.length === 0) {
     return (
       <div>
         <h2>Pricing Engine Configuration</h2>
@@ -21,14 +20,20 @@ export default async function PricingPage() {
     );
   }
 
+  const pricingData = {
+    cleaning: data.find(d => d.key === 'cleaning_pricing')?.value,
+    remodeling: data.find(d => d.key === 'remodeling_pricing')?.value,
+    construction: data.find(d => d.key === 'construction_pricing')?.value,
+  };
+
   return (
     <div>
       <h2 style={{ marginBottom: '1.5rem', fontFamily: 'var(--font-serif)', fontSize: '2rem' }}>Pricing Engine Configuration</h2>
       <p style={{ marginBottom: '2rem', color: 'var(--color-text-muted)' }}>
-        Update your base rates, add-ons, and dynamic pricing rules. Changes will reflect immediately on the live calculator.
+        Update your base rates, add-ons, and dynamic pricing rules across all service lines. Changes will reflect immediately on the live calculator.
       </p>
       
-      <PricingEditor initialData={data.value} />
+      <PricingEditor initialData={pricingData} />
     </div>
   );
 }

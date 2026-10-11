@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import EstimateCalculator from '@/components/EstimateCalculator'
 import styles from './page.module.css'
 
@@ -10,7 +11,9 @@ export default function EstimatePage() {
   return (
     <div className={styles.main}>
       <div className={`container ${styles.estimateContainer}`}>
-        <EstimateCalculator />
+        <Suspense fallback={<div style={{ paddingTop: '200px', textAlign: 'center' }}>Loading...</div>}>
+          <EstimateCalculator />
+        </Suspense>
       </div>
     </div>
   )

@@ -61,7 +61,7 @@ export default function RemodelingClient() {
       <section className={landingStyles.heroSection} style={{ overflow: 'hidden' }}>
         <div className={landingStyles.heroImageWrapper}>
           <img 
-            src="/latelier-images/residential/hero_remodeling.jpg" 
+            src="/bathroom-remodeling-herosection.webp" 
             alt="Remodeling"
             className={landingStyles.infiniteZoomImg}
           />
@@ -108,7 +108,7 @@ export default function RemodelingClient() {
               </div>
               <div className="parallax-img-container" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden' }}>
                 <img 
-                  src="/latelier-images/residential/bathroom.jpg" 
+                  src="/BATHROOM REMODELING .webp" 
                   alt="Bathroom Remodeling" 
                   style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%', objectFit: 'cover' }}
                 />
@@ -119,7 +119,7 @@ export default function RemodelingClient() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'center', marginBottom: '8rem' }}>
               <div className="parallax-img-container" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden', order: 1 }}>
                 <img 
-                  src="/latelier-images/residential/kitchen.jpg" 
+                  src="/KITCHEN REMODELING.webp" 
                   alt="Kitchen Remodeling" 
                   style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%', objectFit: 'cover' }}
                 />
@@ -146,7 +146,7 @@ export default function RemodelingClient() {
               </div>
               <div className="parallax-img-container" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden' }}>
                 <img 
-                  src="/latelier-images/residential/basement.jpg" 
+                  src="/INTERIOR BASEMENTS.webp" 
                   alt="Interior Basements" 
                   style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%', objectFit: 'cover' }}
                 />

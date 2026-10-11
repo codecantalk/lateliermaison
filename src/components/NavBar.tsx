@@ -45,7 +45,7 @@ export default function NavBar() {
             </div>
 
             <Link href="/portfolio" className={styles.navLink}>PORTFOLIO</Link>
-
+            <Link href="/locations" className={styles.navLink}>LOCATIONS</Link>
             <Link href="/contact" className={styles.navLink}>CONTACT</Link>
           </div>
 
@@ -79,7 +79,7 @@ export default function NavBar() {
             </div>
 
             <Link href="/portfolio" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>Portfolio</Link>
-
+            <Link href="/locations" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>Locations</Link>
             <Link href="/contact" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>Contact</Link>
           </div>
         </div>

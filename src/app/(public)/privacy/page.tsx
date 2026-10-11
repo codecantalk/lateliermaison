@@ -2,26 +2,85 @@ import React from 'react'
 
 export const metadata = {
   title: 'Privacy Policy | L\'Atelier Maison',
-  description: 'Privacy Policy for L\'Atelier Maison.'
+  description: 'Privacy Policy for L\'Atelier Maison - Luxury Home Services.'
 }
 
 export default function PrivacyPage() {
   return (
-    <div className="container" style={{ paddingTop: '150px', paddingBottom: '100px', maxWidth: '800px' }}>
-      <h1 className="font-serif" style={{ fontSize: '3rem', marginBottom: '2rem' }}>Privacy Policy</h1>
-      <p style={{ marginBottom: '1rem' }}>Last updated: {new Date().toLocaleDateString()}</p>
-      
-      <h2 className="font-serif" style={{ fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>1. Information We Collect</h2>
-      <p style={{ marginBottom: '1rem', lineHeight: 1.8 }}>We collect information that you provide directly to us, such as when you request a consultation, fill out a form, or contact us. This may include your name, email, phone number, address, and project details.</p>
+    <div style={{ backgroundColor: '#ffffff', minHeight: '100vh', paddingTop: '160px', paddingBottom: '120px' }}>
+      <div className="container" style={{ maxWidth: '850px', margin: '0 auto', padding: '0 5%' }}>
+        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+          <h1 className="font-serif" style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: '#0f172a', marginBottom: '1rem', lineHeight: 1.1 }}>
+            Privacy Policy
+          </h1>
+          <p style={{ fontFamily: 'var(--font-sans)', color: '#64748b', fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            Effective Date: {new Date().toLocaleDateString()}
+          </p>
+        </div>
+        
+        <div style={{ fontFamily: 'var(--font-sans)', color: '#334155', fontSize: '1.1rem', lineHeight: 1.8, display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+          
+          <section>
+            <p>
+              L'Atelier Maison ("we," "our," or "us") respects your privacy and is committed to protecting the personal data of our esteemed clientele. This Privacy Policy details how we collect, use, and safeguard information when you engage with our luxury home cleaning, bespoke renovations, and estate management services.
+            </p>
+          </section>
 
-      <h2 className="font-serif" style={{ fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>2. How We Use Your Information</h2>
-      <p style={{ marginBottom: '1rem', lineHeight: 1.8 }}>We use the information we collect to provide, maintain, and improve our services, to process your transactions, and to communicate with you about products, services, and offers.</p>
+          <section>
+            <h2 className="font-serif" style={{ fontSize: '1.8rem', color: '#1e3a8a', marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>
+              1. Information We Collect
+            </h2>
+            <p style={{ marginBottom: '1rem' }}>To provide our premium property services, we may collect the following categories of information:</p>
+            <ul style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <li><strong>Contact Information:</strong> Name, phone number, primary residence address, and email addresses.</li>
+              <li><strong>Property Details:</strong> Specifications regarding your estate, square footage, security access protocols, and specific renovation or cleaning requirements.</li>
+              <li><strong>Financial Information:</strong> Billing details and payment histories for services rendered.</li>
+            </ul>
+          </section>
 
-      <h2 className="font-serif" style={{ fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>3. Information Sharing</h2>
-      <p style={{ marginBottom: '1rem', lineHeight: 1.8 }}>We do not share your personal information with third parties except as necessary to provide our services, comply with the law, or protect our rights.</p>
+          <section>
+            <h2 className="font-serif" style={{ fontSize: '1.8rem', color: '#1e3a8a', marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>
+              2. How We Use Your Information
+            </h2>
+            <p style={{ marginBottom: '1rem' }}>We utilize your personal data exclusively to deliver uncompromising service standards, specifically to:</p>
+            <ul style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <li>Execute and manage our luxury home cleaning and bespoke remodeling projects.</li>
+              <li>Coordinate estate management logistics and schedule artisan visits.</li>
+              <li>Process secure payments and issue detailed invoicing.</li>
+              <li>Communicate project updates, maintenance schedules, and tailored service offerings.</li>
+            </ul>
+          </section>
 
-      <h2 className="font-serif" style={{ fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem' }}>4. Contact Us</h2>
-      <p style={{ marginBottom: '1rem', lineHeight: 1.8 }}>If you have any questions about this Privacy Policy, please contact us at ateliermaisonatl@gmail.com.</p>
+          <section>
+            <h2 className="font-serif" style={{ fontSize: '1.8rem', color: '#1e3a8a', marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>
+              3. Client Confidentiality & Data Sharing
+            </h2>
+            <p>
+              Discretion is a core pillar of L'Atelier Maison. We do not sell, rent, or trade your personal information. We may share necessary details strictly with our vetted in-house artisans, verified contractors, or legal authorities when required by law to protect our rights and ensure the safety of your property.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="font-serif" style={{ fontSize: '1.8rem', color: '#1e3a8a', marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>
+              4. Security Protocols
+            </h2>
+            <p>
+              We employ industry-standard technical and organizational measures designed to secure your personal and property data against unauthorized access, loss, or alteration. Access to your property details is heavily restricted on a strict need-to-know basis.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="font-serif" style={{ fontSize: '1.8rem', color: '#1e3a8a', marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>
+              5. Contact Our Office
+            </h2>
+            <p>
+              For any inquiries regarding our privacy practices or to update your client profile, please contact our administrative office at: <br/><br/>
+              <strong>Email:</strong> ateliermaisonatl@gmail.com
+            </p>
+          </section>
+
+        </div>
+      </div>
     </div>
   )
 }

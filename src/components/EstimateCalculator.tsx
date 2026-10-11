@@ -12,6 +12,7 @@ import {
 import styles from './EstimateCalculator.module.css'
 
 import { useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 type ServiceType = 'cleaning' | 'remodeling' | 'construction' | 'estate' | null
@@ -54,19 +55,19 @@ const ICONS_MAP: Record<string, JSX.Element> = {
   porch: <Tent size={32} strokeWidth={1.2} />
 }
 
-const REMODELING_PRICING = {
-  scope: { cosmetic: 5000, partial: 10000, full: 20000 },
-  size: { small: -2000, medium: 0, large: 5000, master: 10000 }
-}
-
-const CONSTRUCTION_PRICING = {
-  grade: { luxury: 250, ultra: 400, monumental: 700 }
-}
+// Constants removed as they are now fetched dynamically
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 export default function EstimateCalculator({ defaultService = null }: { defaultService?: ServiceType }) {
-  const [selectedService, setSelectedService] = useState<ServiceType>(defaultService)
+  const searchParams = useSearchParams()
+  
+  // URL params can override defaults
+  const urlService = searchParams?.get('service') as ServiceType | null
+  const urlTrade = searchParams?.get('trade') as any
+  const urlScope = searchParams?.get('scope') as any
+  
+  const [selectedService, setSelectedService] = useState<ServiceType>(urlService || defaultService)
   const [pricingConfig, setPricingConfig] = useState<any>(null)
   const [isPricingLoading, setIsPricingLoading] = useState(true)
   const supabase = createClient()
@@ -75,16 +76,20 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
     async function fetchPricing() {
       const { data, error } = await supabase
         .from('pricing_config')
-        .select('value')
-        .eq('key', 'cleaning_pricing')
-        .single()
+        .select('key, value')
+        .in('key', ['cleaning_pricing', 'remodeling_pricing', 'construction_pricing'])
       
       if (error) {
         console.error('Error fetching pricing config:', error.message)
       }
 
-      if (data) {
-        setPricingConfig(data.value)
+      if (data && data.length > 0) {
+        const pricing = {
+          cleaning: data.find(d => d.key === 'cleaning_pricing')?.value,
+          remodeling: data.find(d => d.key === 'remodeling_pricing')?.value,
+          construction: data.find(d => d.key === 'construction_pricing')?.value,
+        }
+        setPricingConfig(pricing)
       } else {
         console.error('No pricing config found.')
       }
@@ -114,10 +119,23 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
   })
   const constValues = watchConst()
 
-  const { control: controlEstate, handleSubmit: handleEstateSubmit, watch: watchEstate } = useForm<EstateData>({
-    defaultValues: { trade: 'handyman', scope: 'diagnostic' }
+  const { control: controlEstate, handleSubmit: handleEstateSubmit, watch: watchEstate, setValue: setEstateValue } = useForm<EstateData>({
+    defaultValues: { trade: urlTrade || 'handyman', scope: urlScope || 'diagnostic' }
   })
   const estateValues = watchEstate()
+
+  // Sync URL parameters after hydration (Next.js App Router behavior)
+  useEffect(() => {
+    if (urlService) {
+      setSelectedService(urlService)
+    }
+    if (urlTrade) {
+      setEstateValue('trade', urlTrade)
+    }
+    if (urlScope) {
+      setEstateValue('scope', urlScope)
+    }
+  }, [urlService, urlTrade, urlScope, setEstateValue])
 
   // Handlers
   const handleServiceSelect = (service: ServiceType) => {
@@ -129,28 +147,29 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
   }
 
   const onCleanSubmit = (data: CleaningData) => {
-    if (!pricingConfig) return;
+    if (!pricingConfig || !pricingConfig.cleaning) return;
+    const config = pricingConfig.cleaning;
 
     // 1. Base Price
-    let total = pricingConfig.base[data.houseType]
+    let total = config.base[data.houseType]
 
     // 2. Room Additions (subtracting 1 because base includes 1bd/1ba)
     if (data.bedrooms > 1) {
-      total += (data.bedrooms - 1) * pricingConfig.additions.bedroom
+      total += (data.bedrooms - 1) * config.additions.bedroom
     }
     if (data.bathrooms > 1) {
-      total += (data.bathrooms - 1) * pricingConfig.additions.bathroom
+      total += (data.bathrooms - 1) * config.additions.bathroom
     }
 
     // 3. Fixed Extras
     data.extras.forEach(extra => {
-      const fixed = pricingConfig.fixedExtras[extra]
+      const fixed = config.fixedExtras[extra]
       if (fixed) total += fixed.price
     })
 
     // 4. Dynamic Extras
     data.dynamicExtras.forEach(extra => {
-      const dyn = pricingConfig.dynamicExtras[extra]
+      const dyn = config.dynamicExtras[extra]
       if (dyn && dyn.prices[data.houseType] > 0) {
         total += dyn.prices[data.houseType]
       }
@@ -169,13 +188,17 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
   }
 
   const onRemodelSubmit = (data: RemodelingData) => {
-    const base = REMODELING_PRICING.scope[data.scope] + REMODELING_PRICING.size[data.size]
+    if (!pricingConfig || !pricingConfig.remodeling) return;
+    const config = pricingConfig.remodeling;
+    const base = config.scope[data.scope] + config.size[data.size]
     setRangeResult({ min: Math.round(base * 0.9), max: Math.round(base * 1.15), type: 'Bathroom Remodeling' })
     animateResult()
   }
 
   const onConstSubmit = (data: ConstructionData) => {
-    const base = data.squareFeet * CONSTRUCTION_PRICING.grade[data.grade]
+    if (!pricingConfig || !pricingConfig.construction) return;
+    const config = pricingConfig.construction;
+    const base = data.squareFeet * config.grade[data.grade]
     setRangeResult({ min: Math.round(base * 0.9), max: Math.round(base * 1.2), type: 'New Construction' })
     animateResult()
   }
@@ -247,17 +270,29 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
 
       <div className={styles.serviceSelection}>
 
+        <button className={`${styles.serviceBtn} ${selectedService === 'cleaning' ? styles.activeService : ''}`} onClick={() => handleServiceSelect('cleaning')}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <span>House Cleaning</span>
+        </button>
         <button className={`${styles.serviceBtn} ${selectedService === 'remodeling' ? styles.activeService : ''}`} onClick={() => handleServiceSelect('remodeling')}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           <span>Remodeling</span>
         </button>
-        <button className={`${styles.serviceBtn} ${selectedService === 'estate' ? styles.activeService : ''}`} onClick={() => handleServiceSelect('estate')}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-          <span>Home Services</span>
+        <button className={`${styles.serviceBtn} ${selectedService === 'estate' && estateValues.trade === 'painting' ? styles.activeService : ''}`} onClick={() => { handleServiceSelect('estate'); setEstateValue('trade', 'painting') }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+          <span>Painting</span>
         </button>
-        <button className={`${styles.serviceBtn} ${selectedService === 'cleaning' ? styles.activeService : ''}`} onClick={() => handleServiceSelect('cleaning')}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-          <span>House Cleaning</span>
+        <button className={`${styles.serviceBtn} ${selectedService === 'estate' && estateValues.trade === 'tv mounting' ? styles.activeService : ''}`} onClick={() => { handleServiceSelect('estate'); setEstateValue('trade', 'tv mounting') }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+          <span>TV Mounting</span>
+        </button>
+        <button className={`${styles.serviceBtn} ${selectedService === 'estate' && estateValues.trade === 'flooring' ? styles.activeService : ''}`} onClick={() => { handleServiceSelect('estate'); setEstateValue('trade', 'flooring') }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          <span>Flooring</span>
+        </button>
+        <button className={`${styles.serviceBtn} ${selectedService === 'estate' && !['painting', 'tv mounting', 'flooring'].includes(estateValues.trade) ? styles.activeService : ''}`} onClick={() => { handleServiceSelect('estate'); setEstateValue('trade', 'handyman') }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          <span>Home Services</span>
         </button>
       </div>
 
@@ -428,7 +463,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
               <div className={styles.stepGroup}>
                 <h3>3. Select Add-Ons</h3>
                 <div className={styles.checkboxGrid}>
-                  {Object.entries(pricingConfig.fixedExtras).map(([key, extra]: [string, any]) => (
+                  {Object.entries(pricingConfig.cleaning.fixedExtras).map(([key, extra]: [string, any]) => (
                     <label key={key} className={cleanValues.extras.includes(key) ? styles.activeCheckboxCard : styles.checkboxCard}>
                       <input type="checkbox" value={key} {...controlClean.register('extras')} className={styles.hiddenRadio} />
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px', width: '100%', textAlign: 'center' }}>
@@ -446,7 +481,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                       </div>
                     </label>
                   ))}
-                  {Object.entries(pricingConfig.dynamicExtras).map(([key, extra]: [string, any]) => {
+                  {Object.entries(pricingConfig.cleaning.dynamicExtras).map(([key, extra]: [string, any]) => {
                     const price = extra.prices[cleanValues.houseType];
                     if (price <= 0) return null; // Don't show options that don't apply to this house type
                     return (
