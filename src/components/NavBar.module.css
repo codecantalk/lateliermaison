@@ -42,6 +42,21 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
 }
 
+/* Dark Hero variant when at top of page over dark banners */
+.darkHeroNav .navLink {
+  color: #f1f5f9;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.darkHeroNav .navLink:hover {
+  color: #c5a059;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.darkHeroNav .hamburger .line {
+  background: #ffffff;
+}
+
 .navContainer {
   display: flex;
   justify-content: space-between;

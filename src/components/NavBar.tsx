@@ -1,14 +1,17 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import styles from './NavBar.module.css'
-
 import Image from 'next/image'
 
 export default function NavBar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
+
+  const isDarkHero = !scrolled && (pathname === '/' || pathname === '/locations' || pathname?.startsWith('/locations/'))
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,7 +26,7 @@ export default function NavBar() {
 
   return (
     <div className={styles.navWrapper}>
-      <nav className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}>
+      <nav className={`${styles.nav} ${scrolled ? styles.scrolled : ''} ${isDarkHero ? styles.darkHeroNav : ''}`}>
         <div className={`${styles.navContainer}`}>
 
           {/* Logo */}

@@ -1,0 +1,514 @@
+.heroContainer {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 750px;
+  background: radial-gradient(circle at 68% 42%, #0e1c38 0%, #070f20 50%, #03060c 100%);
+  overflow: hidden;
+  perspective: 1200px;
+  perspective-origin: 58% 46%;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Ambient Background Accents */
+.ambientGlowPrimary {
+  position: absolute;
+  top: 10%;
+  right: 15%;
+  width: 550px;
+  height: 550px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(197, 160, 89, 0.14) 0%, transparent 70%);
+  filter: blur(85px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ambientGlowSecondary {
+  position: absolute;
+  bottom: 8%;
+  right: 25%;
+  width: 650px;
+  height: 650px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(30, 58, 138, 0.28) 0%, transparent 70%);
+  filter: blur(95px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cyberGrid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.65;
+}
+
+/* 3D Map Viewport - Shifted towards the right side */
+.mapViewport {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 4vw;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.map3dStage {
+  position: relative;
+  width: 82%;
+  max-width: 1200px;
+  aspect-ratio: 1000 / 580;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.svgMap {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.8));
+}
+
+/* Top Bar: Live HUD Ticker positioned on top right */
+.topBar {
+  position: relative;
+  z-index: 10;
+  padding: 100px 4% 0;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+.tickerBox {
+  pointer-events: auto;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.tickerItem {
+  background: rgba(10, 18, 36, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(14px);
+  padding: 7px 15px;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 0.82rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.tickerHighlight {
+  color: #c5a059;
+  font-weight: 600;
+}
+
+/* Bottom Content Area: Title Placed in Lower-Left, Controls below */
+.bottomSection {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 4% 2.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  pointer-events: none;
+}
+
+.titleBox {
+  max-width: 440px;
+  pointer-events: auto;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c5a059;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  background: rgba(197, 160, 89, 0.12);
+  padding: 5px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.liveDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 10px #10b981;
+  animation: liveBlink 2s infinite ease-in-out;
+}
+
+@keyframes liveBlink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.heroHeadline {
+  font-family: "ivyprestige-headline", "Playfair Display", serif;
+  font-size: clamp(2.4rem, 4.8vw, 4rem);
+  color: #ffffff;
+  line-height: 1.05;
+  margin: 0 0 0.75rem 0;
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.heroHeadline em {
+  font-style: italic;
+  font-weight: 300;
+  color: #e2e8f0;
+}
+
+.heroHeadline span {
+  background: linear-gradient(135deg, #ffffff 40%, #c5a059 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subheadline {
+  color: rgba(226, 232, 240, 0.78);
+  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+  max-width: 400px;
+  line-height: 1.55;
+  margin: 0;
+  font-weight: 300;
+}
+
+/* Controls Bar (City Tabs + 3D Toggle) */
+.controlsBar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  pointer-events: auto;
+}
+
+.cityTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: rgba(8, 14, 28, 0.82);
+  padding: 6px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.cityTabBtn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #94a3b8;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cityTabBtn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.cityTabActive {
+  background: linear-gradient(135deg, rgba(197, 160, 89, 0.3), rgba(197, 160, 89, 0.12)) !important;
+  color: #f8fafc !important;
+  border-color: rgba(197, 160, 89, 0.6) !important;
+  box-shadow: 0 0 16px rgba(197, 160, 89, 0.3);
+}
+
+.viewModeGroup {
+  display: flex;
+  gap: 8px;
+  background: rgba(8, 14, 28, 0.82);
+  padding: 6px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.viewModeBtn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  padding: 8px 14px;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.viewModeBtn:hover {
+  color: #ffffff;
+}
+
+.viewModeActive {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Tooltip / Floating Detail Card */
+.tooltipCard {
+  position: absolute;
+  z-index: 50;
+  width: 320px;
+  background: rgba(7, 13, 26, 0.94);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(197, 160, 89, 0.45);
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 30px rgba(197, 160, 89, 0.2);
+  color: #ffffff;
+  pointer-events: auto;
+  transform-style: preserve-3d;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  animation: cardFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes cardFadeIn {
+  0% { opacity: 0; transform: translateY(10px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cardPointerLeft {
+  position: absolute;
+  top: 36px;
+  left: -7px;
+  width: 14px;
+  height: 14px;
+  background: rgba(7, 13, 26, 0.94);
+  border-left: 1px solid rgba(197, 160, 89, 0.45);
+  border-bottom: 1px solid rgba(197, 160, 89, 0.45);
+  transform: rotate(45deg);
+}
+
+.cardPointerRight {
+  position: absolute;
+  top: 36px;
+  right: -7px;
+  width: 14px;
+  height: 14px;
+  background: rgba(7, 13, 26, 0.94);
+  border-right: 1px solid rgba(197, 160, 89, 0.45);
+  border-top: 1px solid rgba(197, 160, 89, 0.45);
+  transform: rotate(45deg);
+}
+
+.cardCloseBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #94a3b8;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.cardCloseBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.cardBadge {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(197, 160, 89, 0.18);
+  color: #c5a059;
+  border: 1px solid rgba(197, 160, 89, 0.35);
+  font-weight: 600;
+}
+
+.cardCoords {
+  font-family: monospace;
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.cardTitle {
+  font-family: "ivyprestige-headline", "Playfair Display", serif;
+  font-size: 1.45rem;
+  margin: 0 0 4px 0;
+  color: #ffffff;
+}
+
+.cardSubtitle {
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.cardThumb {
+  width: 100%;
+  height: 105px;
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cardDesc {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #94a3b8;
+  margin-bottom: 14px;
+}
+
+.cardLinkBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 14px;
+  background: linear-gradient(135deg, #c5a059, #ab8641);
+  color: #070d1a;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
+}
+
+.cardLinkBtn:hover {
+  background: linear-gradient(135deg, #d4af37, #b8860b);
+  box-shadow: 0 6px 20px rgba(197, 160, 89, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Animations for SVG elements */
+@keyframes radarRing {
+  0% { r: 5; opacity: 0.9; stroke-width: 1.5; }
+  100% { r: 35; opacity: 0; stroke-width: 0.5; }
+}
+
+@keyframes beaconPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 6px #c5a059); }
+  50% { transform: scale(1.25); filter: drop-shadow(0 0 16px #fbbf24); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .mapViewport {
+    justify-content: center;
+    padding-right: 0;
+  }
+  .map3dStage {
+    width: 95%;
+  }
+  .topBar {
+    padding-top: 90px;
+  }
+  .titleBox {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .heroContainer {
+    min-height: 820px;
+    height: auto;
+    padding-bottom: 2rem;
+  }
+  .topBar {
+    padding-top: 80px;
+    justify-content: flex-start;
+  }
+  .tickerBox {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .heroHeadline {
+    font-size: 2.3rem;
+  }
+  .subheadline {
+    font-size: 0.9rem;
+  }
+  .controlsBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .cityTabs {
+    justify-content: center;
+  }
+  .viewModeGroup {
+    justify-content: center;
+  }
+  .tooltipCard {
+    position: fixed;
+    bottom: 20px;
+    left: 50% !important;
+    top: auto !important;
+    transform: translateX(-50%) !important;
+    width: 90%;
+    max-width: 360px;
+    z-index: 100;
+  }
+  .cardPointerLeft, .cardPointerRight {
+    display: none;
+  }
+}

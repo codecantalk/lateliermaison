@@ -33,21 +33,18 @@ export default function RemodelingClient() {
         })
       })
 
-      // Image Parallax for Alternating Sections
-      gsap.utils.toArray('.parallax-img-container').forEach((container: any) => {
-        const img = container.querySelector('img')
-        if (img) {
-          gsap.to(img, {
-            yPercent: 15,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: container,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: true
-            }
-          })
-        }
+      // Smooth card reveal for remodeling sections
+      gsap.utils.toArray('.remodel-card-anim').forEach((card: any) => {
+        gsap.from(card, {
+          y: 40,
+          opacity: 0,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 85%'
+          }
+        })
       })
     }, containerRef)
 
@@ -92,64 +89,332 @@ export default function RemodelingClient() {
 
         {/* Intro text moved to BottomCTA */}
 
-        {/* 3. Services (Alternating Layout) */}
-        <section style={{ padding: '4rem 5% 8rem 5%', backgroundColor: '#fcfaf8' }}>
-          <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+        {/* 3. Services (Alternating Editorial Showcase Layout) */}
+        <section style={{ padding: '5rem 5% 8rem 5%', backgroundColor: '#fcfaf8' }}>
+          <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8rem' }}>
             
-            {/* Service 1 - Text Left, Image Right */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'center', marginBottom: '8rem' }}>
-              <div className="reveal-up" style={{ paddingRight: '2rem' }}>
-                <h3 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: '2.5rem', color: '#1e3a8a', marginBottom: '1.5rem', lineHeight: 1.2 }}>
-                  <span style={{ fontStyle: 'italic', color: '#d97706' }}>BATHROOM</span> <br/>REMODELING
+            {/* Service 1 - Bathroom: Text Left, Full Image Right */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+              <div className="reveal-up" style={{ paddingRight: '1rem' }}>
+                <div style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '8px', 
+                  fontSize: '0.78rem', 
+                  letterSpacing: '0.18em', 
+                  textTransform: 'uppercase', 
+                  color: '#d97706', 
+                  fontWeight: 600, 
+                  marginBottom: '1rem',
+                  background: 'rgba(217, 119, 6, 0.08)',
+                  padding: '5px 12px',
+                  borderRadius: '100px',
+                  border: '1px solid rgba(217, 119, 6, 0.2)'
+                }}>
+                  01 / Sanctuary & Spa
+                </div>
+                <h3 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2.2rem, 3.5vw, 3rem)', color: '#1e3a8a', marginBottom: '1.25rem', lineHeight: 1.15 }}>
+                  <span style={{ fontStyle: 'italic', fontWeight: 300, color: '#d97706' }}>BATHROOM</span> <br/>REMODELING
                 </h3>
-                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', lineHeight: 1.8, color: '#4b5563' }}>
-                  Elevate your daily routine with a luxurious bathroom renovation. From spa-like walk-in showers to custom vanities, we transform your bathroom into a private sanctuary of relaxation and style.
+                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.1rem', lineHeight: 1.8, color: '#4b5563', marginBottom: '2rem' }}>
+                  Elevate your daily routine with a bespoke luxury bathroom renovation. From zero-threshold walk-in rain showers with frameless architectural glass to custom double vanities and freestanding soaking tubs, we transform private suites into tranquil spa sanctuaries.
                 </p>
+
+                {/* Feature highlights */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem', marginBottom: '2.5rem' }}>
+                  {[
+                    'Frameless Glass Showers',
+                    'Freestanding Soaking Tubs',
+                    'Custom Floating Vanities',
+                    'Heated Radiant Tile Floors'
+                  ].map((feat, idx) => (
+                    <div key={idx} style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '8px', 
+                      fontSize: '0.88rem', 
+                      color: '#1e293b', 
+                      fontWeight: 500,
+                      background: '#ffffff',
+                      padding: '8px 12px',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(0, 0, 0, 0.06)'
+                    }}>
+                      <span style={{ color: '#d97706', fontSize: '1rem' }}>✓</span>
+                      <span>{feat}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Link 
+                  href="/estimate?service=remodeling&scope=full" 
+                  className="btn btn-outline" 
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                >
+                  <span>Estimate Bathroom Renovation</span>
+                  <span>→</span>
+                </Link>
               </div>
-              <div className="parallax-img-container" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden' }}>
+
+              {/* Full Image Container - Native 3:2 Aspect Ratio */}
+              <div 
+                className="remodel-card-anim"
+                style={{ 
+                  position: 'relative', 
+                  width: '100%', 
+                  aspectRatio: '3 / 2', 
+                  borderRadius: '16px', 
+                  overflow: 'hidden',
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05)',
+                  backgroundColor: '#0f172a'
+                }}
+              >
                 <img 
-                  src="/BATHROOM REMODELING .webp" 
-                  alt="Bathroom Remodeling" 
-                  style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%', objectFit: 'cover' }}
+                  src="/remodeling-bathroom-full.jpg" 
+                  alt="Full Architectural View - Bathroom Remodeling" 
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover',
+                    objectPosition: 'center',
+                    display: 'block'
+                  }}
                 />
+                <div style={{
+                  position: 'absolute',
+                  bottom: '16px',
+                  right: '16px',
+                  backgroundColor: 'rgba(15, 23, 42, 0.75)',
+                  backdropFilter: 'blur(8px)',
+                  color: '#e2e8f0',
+                  fontSize: '0.72rem',
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  padding: '6px 14px',
+                  borderRadius: '100px',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  pointerEvents: 'none',
+                  fontWeight: 500
+                }}>
+                  Full Architectural View
+                </div>
               </div>
             </div>
 
-            {/* Service 2 - Image Left, Text Right */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'center', marginBottom: '8rem' }}>
-              <div className="parallax-img-container" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden', order: 1 }}>
+            {/* Service 2 - Kitchen: Full Image Left, Text Right */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+              {/* Full Image Container - Native 3:2 Aspect Ratio */}
+              <div 
+                className="remodel-card-anim"
+                style={{ 
+                  position: 'relative', 
+                  width: '100%', 
+                  aspectRatio: '3 / 2', 
+                  borderRadius: '16px', 
+                  overflow: 'hidden',
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05)',
+                  backgroundColor: '#0f172a',
+                  order: 1
+                }}
+              >
                 <img 
-                  src="/KITCHEN REMODELING.webp" 
-                  alt="Kitchen Remodeling" 
-                  style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%', objectFit: 'cover' }}
+                  src="/remodeling-kitchen-full.jpg" 
+                  alt="Full Architectural View - Kitchen Remodeling" 
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover',
+                    objectPosition: 'center',
+                    display: 'block'
+                  }}
                 />
+                <div style={{
+                  position: 'absolute',
+                  bottom: '16px',
+                  right: '16px',
+                  backgroundColor: 'rgba(15, 23, 42, 0.75)',
+                  backdropFilter: 'blur(8px)',
+                  color: '#e2e8f0',
+                  fontSize: '0.72rem',
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  padding: '6px 14px',
+                  borderRadius: '100px',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  pointerEvents: 'none',
+                  fontWeight: 500
+                }}>
+                  Full Architectural View
+                </div>
               </div>
-              <div className="reveal-up" style={{ paddingLeft: '2rem', order: 2 }}>
-                <h3 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: '2.5rem', color: '#1e3a8a', marginBottom: '1.5rem', lineHeight: 1.2 }}>
-                  <span style={{ fontStyle: 'italic', color: '#d97706' }}>KITCHEN</span> <br/>REMODELING
+
+              <div className="reveal-up" style={{ paddingLeft: '1rem', order: 2 }}>
+                <div style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '8px', 
+                  fontSize: '0.78rem', 
+                  letterSpacing: '0.18em', 
+                  textTransform: 'uppercase', 
+                  color: '#d97706', 
+                  fontWeight: 600, 
+                  marginBottom: '1rem',
+                  background: 'rgba(217, 119, 6, 0.08)',
+                  padding: '5px 12px',
+                  borderRadius: '100px',
+                  border: '1px solid rgba(217, 119, 6, 0.2)'
+                }}>
+                  02 / Culinary Center
+                </div>
+                <h3 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2.2rem, 3.5vw, 3rem)', color: '#1e3a8a', marginBottom: '1.25rem', lineHeight: 1.15 }}>
+                  <span style={{ fontStyle: 'italic', fontWeight: 300, color: '#d97706' }}>KITCHEN</span> <br/>REMODELING
                 </h3>
-                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', lineHeight: 1.8, color: '#4b5563' }}>
-                  The heart of your home deserves to be extraordinary. We design and build kitchens that blend high-end culinary functionality with breathtaking aesthetic appeal, tailored perfectly to your lifestyle.
+                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.1rem', lineHeight: 1.8, color: '#4b5563', marginBottom: '2rem' }}>
+                  The heart of your home deserves to be extraordinary. We design and build culinary centers that blend commercial-grade appliances with handcrafted custom cabinetry, dramatic waterfall marble islands, and timeless architectural detailing tailored for grand entertaining.
                 </p>
+
+                {/* Feature highlights */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem', marginBottom: '2.5rem' }}>
+                  {[
+                    'Waterfall Marble Islands',
+                    'Custom Architectural Millwork',
+                    'Chef Range & Double Ovens',
+                    'Designer Pendant Illumination'
+                  ].map((feat, idx) => (
+                    <div key={idx} style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '8px', 
+                      fontSize: '0.88rem', 
+                      color: '#1e293b', 
+                      fontWeight: 500,
+                      background: '#ffffff',
+                      padding: '8px 12px',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(0, 0, 0, 0.06)'
+                    }}>
+                      <span style={{ color: '#d97706', fontSize: '1rem' }}>✓</span>
+                      <span>{feat}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Link 
+                  href="/estimate?service=remodeling&scope=full" 
+                  className="btn btn-outline" 
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                >
+                  <span>Estimate Kitchen Renovation</span>
+                  <span>→</span>
+                </Link>
               </div>
             </div>
 
-            {/* Service 3 - Text Left, Image Right */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'center' }}>
-              <div className="reveal-up" style={{ paddingRight: '2rem' }}>
-                <h3 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: '2.5rem', color: '#1e3a8a', marginBottom: '1.5rem', lineHeight: 1.2 }}>
-                  <span style={{ fontStyle: 'italic', color: '#d97706' }}>INTERIOR</span> <br/>BASEMENTS
+            {/* Service 3 - Basement: Text Left, Full Image Right */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+              <div className="reveal-up" style={{ paddingRight: '1rem' }}>
+                <div style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '8px', 
+                  fontSize: '0.78rem', 
+                  letterSpacing: '0.18em', 
+                  textTransform: 'uppercase', 
+                  color: '#d97706', 
+                  fontWeight: 600, 
+                  marginBottom: '1rem',
+                  background: 'rgba(217, 119, 6, 0.08)',
+                  padding: '5px 12px',
+                  borderRadius: '100px',
+                  border: '1px solid rgba(217, 119, 6, 0.2)'
+                }}>
+                  03 / Lower-Level Retreat
+                </div>
+                <h3 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2.2rem, 3.5vw, 3rem)', color: '#1e3a8a', marginBottom: '1.25rem', lineHeight: 1.15 }}>
+                  <span style={{ fontStyle: 'italic', fontWeight: 300, color: '#d97706' }}>INTERIOR</span> <br/>BASEMENTS
                 </h3>
-                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', lineHeight: 1.8, color: '#4b5563' }}>
-                  Unlock the hidden potential of your home. Whether you envision a state-of-the-art home theater, a wine cellar, or an elegant guest suite, we transform unfinished basements into exceptional living spaces.
+                <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.1rem', lineHeight: 1.8, color: '#4b5563', marginBottom: '2rem' }}>
+                  Unlock the full square footage of your estate. Whether you envision a sophisticated lounge with a wet bar and shuffleboard table, a private cinematic acoustic theater, or a temperature-controlled wine room, we transform lower levels into premier architectural living destinations.
                 </p>
+
+                {/* Feature highlights */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem', marginBottom: '2.5rem' }}>
+                  {[
+                    'Custom Lounges & Wet Bars',
+                    'Acoustic Home Theaters',
+                    'Game Rooms & Shuffleboards',
+                    'Private Luxury Guest Suites'
+                  ].map((feat, idx) => (
+                    <div key={idx} style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '8px', 
+                      fontSize: '0.88rem', 
+                      color: '#1e293b', 
+                      fontWeight: 500,
+                      background: '#ffffff',
+                      padding: '8px 12px',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(0, 0, 0, 0.06)'
+                    }}>
+                      <span style={{ color: '#d97706', fontSize: '1rem' }}>✓</span>
+                      <span>{feat}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Link 
+                  href="/estimate?service=remodeling&scope=full" 
+                  className="btn btn-outline" 
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                >
+                  <span>Estimate Basement Renovation</span>
+                  <span>→</span>
+                </Link>
               </div>
-              <div className="parallax-img-container" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden' }}>
+
+              {/* Full Image Container - Native 3:2 Aspect Ratio */}
+              <div 
+                className="remodel-card-anim"
+                style={{ 
+                  position: 'relative', 
+                  width: '100%', 
+                  aspectRatio: '3 / 2', 
+                  borderRadius: '16px', 
+                  overflow: 'hidden',
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05)',
+                  backgroundColor: '#0f172a'
+                }}
+              >
                 <img 
-                  src="/INTERIOR BASEMENTS.webp" 
-                  alt="Interior Basements" 
-                  style={{ position: 'absolute', top: '-15%', left: 0, width: '100%', height: '130%', objectFit: 'cover' }}
+                  src="/remodeling-basement-full.jpg" 
+                  alt="Full Architectural View - Interior Basements" 
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover',
+                    objectPosition: 'center',
+                    display: 'block'
+                  }}
                 />
+                <div style={{
+                  position: 'absolute',
+                  bottom: '16px',
+                  right: '16px',
+                  backgroundColor: 'rgba(15, 23, 42, 0.75)',
+                  backdropFilter: 'blur(8px)',
+                  color: '#e2e8f0',
+                  fontSize: '0.72rem',
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  padding: '6px 14px',
+                  borderRadius: '100px',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  pointerEvents: 'none',
+                  fontWeight: 500
+                }}>
+                  Full Architectural View
+                </div>
               </div>
             </div>
 

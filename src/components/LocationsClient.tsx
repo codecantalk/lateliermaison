@@ -7,6 +7,7 @@ import { gsap } from 'gsap/dist/gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import styles from './LandingPage.module.css'
 import FamilyBanner from './FamilyBanner'
+import LocationsMapHero from './LocationsMapHero'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -73,29 +74,8 @@ export default function LocationsClient() {
 
   return (
     <div ref={containerRef} className={styles.wrapper} style={{ backgroundColor: 'var(--color-bg)', position: 'relative', overflow: 'hidden' }}>
-      {/* 1. Fixed Parallax Hero */}
-      <section className={styles.heroSection} style={{ overflow: 'hidden' }}>
-        <div className={styles.heroImageWrapper}>
-          <img 
-            src="/award-bg.jpg" 
-            alt="Locations"
-            className={styles.infiniteZoomImg}
-          />
-          {/* Sunny Golden Hour Overlay */}
-          <div className={styles.heroOverlay} style={{ zIndex: 1, background: 'linear-gradient(45deg, rgba(255, 195, 113, 0.15) 0%, rgba(255, 229, 180, 0.05) 100%)', mixBlendMode: 'overlay' }}></div>
-          <div className={styles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at top left, rgba(255, 220, 150, 0.15) 0%, transparent 60%)' }}></div>
-        </div>
-        
-
-        <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', textAlign: 'right', paddingBottom: '4rem' }}>
-          <div className="reveal-up">
-            <h1 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(2rem, 5vw, 4rem)', color: '#1e3a8a', letterSpacing: '0.02em', margin: '0 0 1rem 0' }}>
-              <span style={{ fontStyle: 'italic', fontWeight: 300 }}>Our</span><br/>
-              Locations.
-            </h1>
-          </div>
-        </div>
-      </section>
+      {/* 1. Interactive 3D Animated SVG Locations Map Hero */}
+      <LocationsMapHero />
 
       {/* --- CONTENT WRAPPER FOR PARALLAX UNVEIL --- */}
       <div style={{ position: 'relative', zIndex: 5, backgroundColor: '#ffffff' }}>
