@@ -65,7 +65,7 @@ export default function PortfolioEditor({ initialItems }: { initialItems: any[] 
               <input 
                 type="text" 
                 required 
-                placeholder="e.g. Paris, FR" 
+                placeholder="e.g. Atlanta, GA" 
                 value={newItem.category}
                 onChange={e => setNewItem({...newItem, category: e.target.value})}
               />

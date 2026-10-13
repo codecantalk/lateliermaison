@@ -17,7 +17,7 @@ const faqs = [
   {
     category: 'House Cleaning',
     q: 'What is included in a deep clean vs. a standard clean?',
-    a: 'A standard clean covers all general upkeep (dusting, mopping, bathrooms, kitchens). A deep clean is more intensive, getting into baseboards, interior windows, inside appliances, and hard-to-reach areas.'
+    a: 'A Standard Clean covers routine maintenance (dusting reachable surfaces, vacuuming, mopping, bathroom sanitization, and exterior appliance wipe-downs). A Deep Clean is an intensive restorative clean that includes detailed hand-scrubbing of all baseboards, door frames, and heavy bathroom scrubbing. Specialty interior appliance detailing (inside oven, inside refrigerator) can be seamlessly added to any package via our quote calculator.'
   },
   {
     category: 'Remodeling',

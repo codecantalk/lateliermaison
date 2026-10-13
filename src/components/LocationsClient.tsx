@@ -14,11 +14,10 @@ if (typeof window !== 'undefined') {
 }
 
 const locations = [
-  { city: 'Atlanta, GA', slug: 'atlanta', desc: 'Our North American headquarters, specializing in ground-up builds and luxury remodeling.', img: '/luxury-hero.jpg' },
-  { city: 'Washington, DC', slug: 'washington-dc', desc: 'Capital division handling luxury remodeling and modern home services.', img: '/luxury-bathroom.jpg' },
-  { city: 'Maryland', slug: 'maryland', desc: 'Premium property care and bespoke renovations serving the entire state of Maryland.', img: '/portfolio-images/IMG_8187.JPG' },
-  { city: 'London, UK', slug: 'london', desc: 'Boutique architectural design studio focusing on uncompromising interior aesthetics and luxury flats.', img: '/award-bg.jpg' },
-  { city: 'Lagos, NG', slug: 'lagos', desc: 'Bringing world-class artisan craftsmanship and premium estate management to West Africa.', img: '/portfolio-images/IMG_8188.JPG' },
+  { city: 'Atlanta, GA', slug: 'atlanta', desc: 'Our flagship headquarters specializing in ground-up builds, luxury remodeling, and estate care.', img: '/luxury-hero.jpg' },
+  { city: 'Washington, DC', slug: 'washington-dc', desc: 'Capital division handling historic restorations, luxury remodeling, and modern home services.', img: '/luxury-bathroom.jpg' },
+  { city: 'Maryland', slug: 'maryland', desc: 'Dedicated team serving Bethesda, Potomac, Silver Spring, Beltsville, Annapolis, and surrounding areas.', img: '/portfolio-images/IMG_8187.JPG' },
+  { city: 'Northern Virginia', slug: 'northern-virginia', desc: 'Premier residential transformations and concierge care across Arlington, Alexandria, and McLean.', img: '/portfolio-images/IMG_8184.JPG' },
 ]
 
 export default function LocationsClient() {
@@ -82,11 +81,11 @@ export default function LocationsClient() {
         <FamilyBanner 
           prefix="OUR" 
           suffix="Reach." 
-          content="At Atelier Maison, our family spans the globe. We bring our unwavering commitment to quality and luxurious living to select prime locations. Whether you are in Atlanta, the DMV Area, or Paris, our trusted team is ready to bring your architectural vision to life."
+          content="At Atelier Maison, we bring our unwavering commitment to quality and luxurious living to our premier operating hubs in Atlanta and the DMV Area (Washington D.C., Maryland, and Northern Virginia). Our trusted team is ready to bring your architectural and home care vision to life."
         />
         <div style={{ paddingTop: '4rem' }}>
         <p className="loc-title" style={{ maxWidth: '600px', margin: 'var(--spacing-md) auto 0', fontSize: '1.25rem', color: 'var(--color-text-muted)', textAlign: 'center', paddingBottom: '4rem' }}>
-          Serving the most discerning clients across four continents with uncompromising standards.
+          Serving homeowners across Atlanta and the DMV Corridor with uncompromising artisan standards.
         </p>
       <div className="container" style={{ paddingBottom: 'var(--spacing-4xl)', position: 'relative', zIndex: 2 }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--spacing-2xl)' }}>

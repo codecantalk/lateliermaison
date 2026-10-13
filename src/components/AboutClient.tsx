@@ -176,10 +176,10 @@ export default function AboutClient() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '3rem', marginTop: '4rem' }}>
             {[
-              { year: '2010', title: 'The Foundation', desc: 'L\'Atelier Maison was founded with a singular vision: to bring uncompromising European architectural standards and rigorous attention to detail to North American luxury homes.' },
-              { year: '2015', title: 'European Expansion', desc: 'Opened our boutique design studio in Paris, establishing our global supply chain for rare, hand-selected materials and forging relationships with master artisans.' },
-              { year: '2020', title: 'Home Services', desc: 'Launched our exclusive home and concierge services, offering full-lifecycle care and maintenance for the pristine sanctuaries we curate.' },
-              { year: 'Present', title: 'Global Recognition', desc: 'Recognized as an industry leader in ultra-luxury builds and holistic home management, proudly serving the most discerning clientele across four continents.' }
+              { year: '2014', title: 'The Foundation', desc: 'L\'Atelier Maison was founded with a singular vision: to bring uncompromising architectural standards and rigorous attention to detail to residential transformations.' },
+              { year: '2018', title: 'Design Philosophy', desc: 'Refined our signature methodology, establishing direct partnerships for hand-selected materials and forging relationships with master artisans.' },
+              { year: '2021', title: 'Home Services', desc: 'Launched our dedicated house cleaning and property concierge division, offering full-lifecycle care and maintenance for homes across Atlanta and the DMV.' },
+              { year: 'Present', title: 'Regional Leadership', desc: 'Recognized as an industry leader in high-end remodeling and holistic home care, proudly serving hundreds of homeowners across Atlanta and the DMV corridor.' }
             ].map((item, i) => (
               <div key={i} className="reveal-up" style={{ position: 'relative', paddingTop: '2rem', borderTop: '1px solid rgba(65, 105, 225, 0.3)' }}>
                 <div style={{ position: 'absolute', left: '0', top: '-6px', width: '11px', height: '11px', borderRadius: '50%', backgroundColor: 'var(--color-primary)' }}></div>

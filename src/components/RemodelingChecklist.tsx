@@ -70,7 +70,7 @@ export default function RemodelingChecklist() {
             Comprehensive <span style={{ fontStyle: 'italic', color: '#1e3a8a' }}>Checklist</span>
           </h2>
           <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1rem', color: '#4b5563', maxWidth: '600px', margin: '1.5rem auto 0', lineHeight: 1.6 }}>
-            Our meticulous approach ensures no detail is overlooked. Explore our standard cleaning checklist customized for your luxury home.
+            Our meticulous approach ensures no detail is overlooked. Explore our multi-phase architectural remodeling checklist customized for your home.
           </p>
         </div>
 

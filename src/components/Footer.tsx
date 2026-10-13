@@ -18,7 +18,7 @@ export default function Footer() {
     email: 'lateliermaisonatl@gmail.com',
     phone: '334-487-5707',
     address: 'Buckhead, Atlanta GA',
-    availability: 'Available Worldwide'
+    availability: 'Serving Atlanta & DMV Area'
   });
   
   const supabase = createClient();

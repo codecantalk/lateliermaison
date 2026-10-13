@@ -207,8 +207,8 @@ export default function LandingPage() {
                 Elevating the standard of living for the most discerning clientele. We provide absolute perfection across housekeeping, bespoke renovations, and meticulous estate management.
               </p>
               <div className="hero-anim" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', paddingTop: '0.5rem' }}>
-                <Link href="/estimate" className="btn btn-primary" style={{ flex: '1 1 auto', textAlign: 'center', padding: 'clamp(0.5rem, 2vw, 0.6rem) clamp(1rem, 3vw, 1.25rem)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', whiteSpace: 'nowrap' }}>Book House Cleaning</Link>
-                <Link href="/contact" className="btn btn-secondary" style={{ flex: '1 1 auto', textAlign: 'center', padding: 'clamp(0.5rem, 2vw, 0.6rem) clamp(1rem, 3vw, 1.25rem)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', whiteSpace: 'nowrap' }}>Request a Consultation</Link>
+                <Link href="/services/housecleaning" className="btn btn-primary" style={{ flex: '1 1 auto', textAlign: 'center', padding: 'clamp(0.5rem, 2vw, 0.65rem) clamp(1rem, 3vw, 1.35rem)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', whiteSpace: 'nowrap' }}>House Cleaning Services →</Link>
+                <Link href="/services/remodeling" className="btn btn-secondary" style={{ flex: '1 1 auto', textAlign: 'center', padding: 'clamp(0.5rem, 2vw, 0.65rem) clamp(1rem, 3vw, 1.35rem)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', whiteSpace: 'nowrap' }}>Home Remodeling Services →</Link>
               </div>
             </div>
           </div>
@@ -327,9 +327,112 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* --- MAIDBRIGHT STYLED ALTERNATING LAYOUT --- */}
+      {/* 2. Clear Service Bifurcation Section (Distinct Cleaning vs Remodeling Paths) */}
+      <section style={{ padding: 'clamp(3rem, 6vw, 5rem) 5%', backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8f0' }}>
+        <div style={{ maxWidth: '1300px', margin: '0 auto' }}>
+          <div className="reveal-up" style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <span style={{ fontSize: '0.8rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#d97706', fontWeight: 700 }}>
+              Tailored Residential Solutions
+            </span>
+            <h2 className="font-serif" style={{ fontSize: 'clamp(2.2rem, 4vw, 3.2rem)', color: '#1e3a8a', marginTop: '0.5rem', marginBottom: '1rem' }}>
+              Select Your <span style={{ fontStyle: 'italic', color: '#d97706' }}>Focus</span>
+            </h2>
+            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1.05rem', color: '#64748b', maxWidth: '600px', margin: '0 auto' }}>
+              Whether you need regular house cleaning or a full-scale architectural renovation, we provide dedicated teams specialized in each discipline.
+            </p>
+          </div>
 
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '2.5rem' }}>
+            
+            {/* PATH 1: House Cleaning */}
+            <div className="reveal-up" style={{
+              background: '#f8fafc',
+              borderRadius: '20px',
+              padding: '2.5rem',
+              border: '1px solid rgba(0, 0, 0, 0.08)',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.04)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', backgroundColor: '#2563eb' }} />
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#2563eb', fontWeight: 600, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>
+                  <span>🌿</span>
+                  <span>Sanctuary Housekeeping</span>
+                </div>
+                <h3 className="font-serif" style={{ fontSize: '2.2rem', color: '#1e3a8a', marginBottom: '1rem' }}>
+                  House Cleaning
+                </h3>
+                <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', color: '#4b5563', lineHeight: 1.7, marginBottom: '1.5rem' }}>
+                  Meticulous recurring maintenance, intensive deep resets, and move-in/out cleanings. We provide trained, background-checked cleaners using premium eco-friendly supplies to keep your home spotless.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '2rem' }}>
+                  {['Recurring Upkeep', 'Deep Cleaning Resets', 'Move-In / Move-Out', 'Eco-Friendly Supplies'].map((pill, idx) => (
+                    <span key={idx} style={{ fontSize: '0.8rem', background: '#ffffff', color: '#1e293b', padding: '6px 12px', borderRadius: '100px', border: '1px solid #e2e8f0', fontWeight: 500 }}>
+                      ✓ {pill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <Link href="/services/housecleaning" className="btn btn-primary" style={{ flex: '1 1 auto', textAlign: 'center' }}>
+                  Explore Cleaning Services →
+                </Link>
+                <Link href="/estimate?service=cleaning" className="btn btn-outline" style={{ flex: '1 1 auto', textAlign: 'center' }}>
+                  Get Estimated Quote
+                </Link>
+              </div>
+            </div>
 
+            {/* PATH 2: Architectural Remodeling */}
+            <div className="reveal-up" style={{
+              background: '#f8fafc',
+              borderRadius: '20px',
+              padding: '2.5rem',
+              border: '1px solid rgba(0, 0, 0, 0.08)',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.04)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', backgroundColor: '#d97706' }} />
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#d97706', fontWeight: 600, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>
+                  <span>📐</span>
+                  <span>Bespoke Construction</span>
+                </div>
+                <h3 className="font-serif" style={{ fontSize: '2.2rem', color: '#1e3a8a', marginBottom: '1rem' }}>
+                  Home Remodeling
+                </h3>
+                <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', color: '#4b5563', lineHeight: 1.7, marginBottom: '1.5rem' }}>
+                  Complete design-build remodeling for master bathrooms, gourmet kitchens, and luxury basement suites. Hand-selected stone, custom cabinetry, architectural lighting, and master artisans.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '2rem' }}>
+                  {['Master Bathrooms', 'Chef Kitchens', 'Interior Basements', 'Full Design-Build'].map((pill, idx) => (
+                    <span key={idx} style={{ fontSize: '0.8rem', background: '#ffffff', color: '#1e293b', padding: '6px 12px', borderRadius: '100px', border: '1px solid #e2e8f0', fontWeight: 500 }}>
+                      ✓ {pill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <Link href="/services/remodeling" className="btn btn-primary" style={{ flex: '1 1 auto', textAlign: 'center', background: '#1e3a8a' }}>
+                  Explore Remodeling →
+                </Link>
+                <Link href="/estimate?service=remodeling" className="btn btn-outline" style={{ flex: '1 1 auto', textAlign: 'center' }}>
+                  Consult With Architect
+                </Link>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
 
       {/* 3. Preparation - Image Left, Text Right */}
       <section style={{ padding: 'clamp(3rem, 8vw, 8rem) 5%', backgroundColor: '#f8fafc' }}>
@@ -351,10 +454,10 @@ export default function LandingPage() {
               </h2>
               <div style={{ borderTop: '1px solid #eaeaea', paddingTop: '2rem' }}>
                 <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', fontWeight: 400, lineHeight: 1.8, color: '#4b5563', marginBottom: '1.5rem' }}>
-                  Your dream room/home is where preparation and opportunity meet. Whether it’s an old room in your home or a complex new build, we prioritize the highest quality project delivery through construction management, design-build, and subcontracting, backed by our team.
+                  Your home should be your ultimate personal sanctuary. Whether you are scheduling routine house cleaning to keep your living environment pristine and healthy, or planning a custom bathroom or kitchen transformation, we execute with meticulous care and discipline.
                 </p>
                 <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', fontWeight: 400, lineHeight: 1.8, color: '#4b5563' }}>
-                  We prepare detailed cost estimates, project scheduling, materials evaluation, conflict identification, and site utilization planning, ensuring each project is managed with precision and professionalism from start to finish.
+                  From upfront transparent estimates to background-checked professionals and white-glove respect for your property, our team ensures every home service is seamless, punctual, and executed to perfection.
                 </p>
               </div>
             </div>

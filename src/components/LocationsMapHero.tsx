@@ -64,32 +64,18 @@ export const SERVICE_LOCATIONS: ServiceLocation[] = [
     img: '/portfolio-images/IMG_8187.JPG'
   },
   {
-    id: 'london',
-    city: 'London',
-    region: 'United Kingdom',
-    badge: 'European Studio',
-    slug: 'london',
-    coordsText: '51.5074° N, 0.1278° W',
-    x: 522,
-    y: 154,
-    labelOffset: { x: 14, y: -20 },
-    desc: 'Boutique architectural design studio focusing on uncompromising interior aesthetics, Mayfair & Kensington flats, and turnkey renovations.',
-    specialties: ['Architectural Design', 'Boutique Flats', 'Turnkey Renovations'],
-    img: '/award-bg.jpg'
-  },
-  {
-    id: 'lagos',
-    city: 'Lagos',
-    region: 'Nigeria',
-    badge: 'West Africa Division',
-    slug: 'lagos',
-    coordsText: '6.5244° N, 3.3792° E',
-    x: 546,
-    y: 358,
-    labelOffset: { x: 14, y: 4 },
-    desc: 'Bringing world-class artisan craftsmanship, European precision, and private estate management to prime West African residences.',
-    specialties: ['Master Craftsmanship', 'Private Residences', 'Estate Concierge'],
-    img: '/portfolio-images/IMG_8188.JPG'
+    id: 'northern-virginia',
+    city: 'Northern Virginia',
+    region: 'DMV Corridor, USA',
+    badge: 'Virginia Division',
+    slug: 'northern-virginia',
+    coordsText: '38.8048° N, 77.0469° W',
+    x: 272,
+    y: 236,
+    labelOffset: { x: 14, y: 16 },
+    desc: 'High-end residential transformations and luxury home services serving Arlington, Alexandria, McLean, Great Falls, and Fairfax County.',
+    specialties: ['Estate Renovation', 'Artisan Finishing', 'Concierge Cleaning'],
+    img: '/portfolio-images/IMG_8184.JPG'
   }
 ]
 
@@ -409,69 +395,66 @@ export default function LocationsMapHero() {
 
             {/* ================= GEODESIC CONNECTION ARCS ================= */}
             <g id="flightArcs">
+              {/* Atlanta to Washington DC */}
               <path
-                d="M 232 260 Q 255 235, 278 226"
+                id="arc-atl-dc"
+                d="M 232 260 Q 250 232, 278 226"
                 fill="none"
                 stroke="url(#geodesicArc)"
-                strokeWidth="2"
+                strokeWidth="2.5"
+                strokeDasharray="6 6"
+              >
+                <animate 
+                  attributeName="stroke-dashoffset" 
+                  from="100" 
+                  to="0" 
+                  dur="3.5s" 
+                  repeatCount="indefinite" 
+                />
+              </path>
+
+              {/* Atlanta to Northern Virginia */}
+              <path
+                d="M 232 260 Q 248 245, 272 236"
+                fill="none"
+                stroke="rgba(197, 160, 89, 0.45)"
+                strokeWidth="1.8"
                 strokeDasharray="4 4"
               />
+
+              {/* Northern Virginia to Washington DC */}
               <path
-                d="M 278 226 Q 285 220, 292 216"
+                d="M 272 236 Q 275 231, 278 226"
                 fill="none"
                 stroke="url(#geodesicArc)"
                 strokeWidth="2"
                 strokeDasharray="3 3"
               />
 
+              {/* Washington DC to Maryland */}
               <path
-                id="arc-dc-london"
-                d="M 292 216 Q 400 110, 522 154"
+                id="arc-dc-md"
+                d="M 278 226 Q 285 220, 292 216"
                 fill="none"
                 stroke="url(#geodesicArc)"
                 strokeWidth="2.2"
-                strokeDasharray="6 6"
+                strokeDasharray="4 4"
               >
                 <animate 
                   attributeName="stroke-dashoffset" 
                   from="100" 
                   to="0" 
-                  dur="4s" 
+                  dur="3s" 
                   repeatCount="indefinite" 
                 />
               </path>
 
-              <path
-                id="arc-atl-london"
-                d="M 232 260 Q 370 140, 522 154"
-                fill="none"
-                stroke="rgba(197, 160, 89, 0.35)"
-                strokeWidth="1.5"
-                strokeDasharray="5 5"
-              />
-
-              <path
-                id="arc-london-lagos"
-                d="M 522 154 Q 560 250, 546 358"
-                fill="none"
-                stroke="url(#geodesicArc)"
-                strokeWidth="2.2"
-                strokeDasharray="6 6"
-              >
-                <animate 
-                  attributeName="stroke-dashoffset" 
-                  from="100" 
-                  to="0" 
-                  dur="5s" 
-                  repeatCount="indefinite" 
-                />
-              </path>
-
+              {/* Pulsing light beacons moving along the corridor */}
               <circle r="3.5" fill="#ffffff" filter="url(#goldGlow)">
-                <animateMotion dur="5s" repeatCount="indefinite" path="M 292 216 Q 400 110, 522 154" />
+                <animateMotion dur="3.5s" repeatCount="indefinite" path="M 232 260 Q 250 232, 278 226" />
               </circle>
-              <circle r="3.5" fill="#facc15" filter="url(#goldGlow)">
-                <animateMotion dur="4.5s" repeatCount="indefinite" path="M 522 154 Q 560 250, 546 358" />
+              <circle r="3" fill="#facc15" filter="url(#goldGlow)">
+                <animateMotion dur="2.5s" repeatCount="indefinite" path="M 278 226 Q 285 220, 292 216" />
               </circle>
             </g>
 
@@ -693,14 +676,14 @@ export default function LocationsMapHero() {
         <div className={styles.titleBox}>
           <div className={styles.eyebrow}>
             <span className={styles.liveDot} />
-            Global Architectural Presence
+            Operating Service Locations
           </div>
           <h1 className={styles.heroHeadline}>
             <em>Our</em><br />
             <span>Locations.</span>
           </h1>
           <p className={styles.subheadline}>
-            Interactive architectural cartography spanning North America, Europe, and West Africa with uncompromising artisan standards.
+            Interactive architectural cartography serving Atlanta and the DMV Corridor (Washington DC, Maryland, and Northern Virginia) with uncompromising artisan standards.
           </p>
         </div>
 

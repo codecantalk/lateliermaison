@@ -21,6 +21,11 @@ type CleaningData = {
   houseType: 'apartment' | 'townhome' | 'single'
   bedrooms: number
   bathrooms: number
+  squareFeet: number
+  floors: number
+  location: string
+  condition: 'standard' | 'moderate' | 'heavy'
+  packageType: 'standard' | 'deep' | 'move_in_out'
   isMondayTuesday: boolean
   extras: string[]
   dynamicExtras: string[]
@@ -105,7 +110,19 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
 
   // Forms
   const { control: controlClean, handleSubmit: handleCleanSubmit, watch: watchClean, setValue: setCleanValue } = useForm<CleaningData>({
-    defaultValues: { houseType: 'single', bedrooms: 1, bathrooms: 1, isMondayTuesday: false, extras: [], dynamicExtras: [] }
+    defaultValues: { 
+      houseType: 'single', 
+      bedrooms: 1, 
+      bathrooms: 1, 
+      squareFeet: 1200,
+      floors: 1,
+      location: 'Atlanta Metro',
+      condition: 'standard',
+      packageType: 'standard',
+      isMondayTuesday: false, 
+      extras: [], 
+      dynamicExtras: [] 
+    }
   })
   const cleanValues = watchClean()
 
@@ -150,32 +167,75 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
     if (!pricingConfig || !pricingConfig.cleaning) return;
     const config = pricingConfig.cleaning;
 
-    // 1. Base Price
-    let total = config.base[data.houseType]
+    // 1. Base Price with square footage calibration
+    let basePrice = config.base[data.houseType] || 189
 
-    // 2. Room Additions (subtracting 1 because base includes 1bd/1ba)
+    if (data.houseType === 'single') {
+      if (data.squareFeet <= 1000 && data.bedrooms === 1 && data.bathrooms === 1) {
+        // Calibrate 1-bed, 1-bath cottage/ADU starting rate reasonably (~$175-185)
+        basePrice = Math.round(basePrice * 0.72)
+      } else if (data.squareFeet > 2000) {
+        const extraThousands = Math.floor((data.squareFeet - 2000) / 500)
+        basePrice += extraThousands * 25
+      }
+    } else if (data.houseType === 'apartment') {
+      if (data.squareFeet > 1200) {
+        const extraThousands = Math.floor((data.squareFeet - 1200) / 400)
+        basePrice += extraThousands * 20
+      }
+    } else if (data.houseType === 'townhome') {
+      if (data.squareFeet > 1800) {
+        const extraThousands = Math.floor((data.squareFeet - 1800) / 500)
+        basePrice += extraThousands * 25
+      }
+    }
+
+    let total = basePrice
+
+    // 2. Room Additions (subtracting 1 because base covers 1bd/1ba)
     if (data.bedrooms > 1) {
-      total += (data.bedrooms - 1) * config.additions.bedroom
+      total += (data.bedrooms - 1) * (config.additions?.bedroom || 30)
     }
     if (data.bathrooms > 1) {
-      total += (data.bathrooms - 1) * config.additions.bathroom
+      total += (data.bathrooms - 1) * (config.additions?.bathroom || 35)
     }
 
-    // 3. Fixed Extras
+    // 3. Multi-floor adjustment
+    if (data.floors === 2) {
+      total += 15
+    } else if (data.floors >= 3) {
+      total += 30
+    }
+
+    // 4. Condition Multiplier
+    if (data.condition === 'moderate') {
+      total = Math.round(total * 1.15)
+    } else if (data.condition === 'heavy') {
+      total = Math.round(total * 1.30)
+    }
+
+    // 5. Package Multiplier
+    if (data.packageType === 'deep') {
+      total = Math.round(total * 1.35)
+    } else if (data.packageType === 'move_in_out') {
+      total = Math.round(total * 1.45)
+    }
+
+    // 6. Fixed Extras
     data.extras.forEach(extra => {
-      const fixed = config.fixedExtras[extra]
+      const fixed = config.fixedExtras?.[extra]
       if (fixed) total += fixed.price
     })
 
-    // 4. Dynamic Extras
+    // 7. Dynamic Extras
     data.dynamicExtras.forEach(extra => {
-      const dyn = config.dynamicExtras[extra]
-      if (dyn && dyn.prices[data.houseType] > 0) {
+      const dyn = config.dynamicExtras?.[extra]
+      if (dyn && dyn.prices?.[data.houseType] > 0) {
         total += dyn.prices[data.houseType]
       }
     })
 
-    // 5. Discount
+    // 8. Discount
     const subtotal = total
     let discount = 0
     if (data.isMondayTuesday) {
@@ -228,6 +288,20 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
     } catch (e) {
       console.error("Failed to save lead", e);
     }
+  }
+
+  const handleCleanLeadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!cleaningResult) return
+
+    await saveLeadToDatabase('House Cleaning', cleaningResult.total, {
+      ...cleanValues,
+      estimatedPrice: cleaningResult.total,
+      subtotal: cleaningResult.subtotal,
+      discount: cleaningResult.discount,
+      isEstimatedQuote: true
+    });
+    setLeadSubmitted(true)
   }
 
   const handleCheckout = async (e: React.FormEvent) => {
@@ -419,15 +493,16 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
           )}
           {selectedService === 'cleaning' && !isPricingLoading && pricingConfig && (
             <form onSubmit={handleCleanSubmit(onCleanSubmit)} className={`form-anim ${styles.form}`}>
+              {/* Step 1: Residence Architecture */}
               <div className={styles.stepGroup}>
-                <h3>1. Select House Type</h3>
+                <h3>1. Select Residence Architecture</h3>
                 <div className={styles.houseTypeGrid}>
                   <label className={cleanValues.houseType === 'apartment' ? styles.activeHouseCard : styles.houseCard}>
                     <input type="radio" value="apartment" {...controlClean.register('houseType')} className={styles.hiddenRadio} />
                     <div className={styles.imageIconWrapper}>
                       <Image src="/images/house_icons/apartment.jpg" alt="Apartment" width={100} height={100} className={styles.houseImage} />
                     </div>
-                    <span>Apartment</span>
+                    <span>Apartment / Condo</span>
                   </label>
                   <label className={cleanValues.houseType === 'townhome' ? styles.activeHouseCard : styles.houseCard}>
                     <input type="radio" value="townhome" {...controlClean.register('houseType')} className={styles.hiddenRadio} />
@@ -441,13 +516,36 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                     <div className={styles.imageIconWrapper}>
                       <Image src="/images/house_icons/single_family.jpg" alt="Single Family" width={100} height={100} className={styles.houseImage} />
                     </div>
-                    <span>Single Family</span>
+                    <span>Single Family Home</span>
                   </label>
                 </div>
               </div>
 
+              {/* Step 2: Service Package */}
               <div className={styles.stepGroup}>
-                <h3>2. Home Details</h3>
+                <h3>2. Service Package</h3>
+                <div className={styles.radioGrid}>
+                  {[
+                    { val: 'standard', title: 'Standard Maintenance', desc: 'Recurring upkeep of surfaces, bathrooms, kitchens, and floors' },
+                    { val: 'deep', title: 'Detailed Deep Clean', desc: 'Hand-scrubbed baseboards, door trims, and heavy grout cleaning' },
+                    { val: 'move_in_out', title: 'Move-In / Move-Out', desc: 'Vacant turnaround with empty cabinet & closet wipe-downs' }
+                  ].map((pkg) => (
+                    <label key={pkg.val} className={cleanValues.packageType === pkg.val ? styles.activeCard : styles.radioCard}>
+                      <input type="radio" value={pkg.val} {...controlClean.register('packageType')} className={styles.hiddenRadio} />
+                      <div className={styles.cardContent}>
+                        <h4>{pkg.title}</h4>
+                        <p>{pkg.desc}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Step 3: Property Specifications */}
+              <div className={styles.stepGroup}>
+                <h3>3. Property Specifications</h3>
+                
+                {/* Bedrooms & Bathrooms */}
                 <div className={styles.inputRow}>
                   <div className={styles.inputGroup}>
                     <label>Bedrooms</label>
@@ -458,10 +556,52 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                     <Controller name="bathrooms" control={controlClean} render={({ field }) => <input type="number" {...field} min="1" step="0.5" className={styles.input} />} />
                   </div>
                 </div>
+
+                {/* Square Footage & Floors */}
+                <div className={styles.inputRow}>
+                  <div className={styles.inputGroup}>
+                    <label>Approx. Square Footage</label>
+                    <Controller 
+                      name="squareFeet" 
+                      control={controlClean} 
+                      render={({ field }) => <input type="number" {...field} min="300" max="25000" step="100" placeholder="e.g. 1500" className={styles.input} />} 
+                    />
+                  </div>
+                  <div className={styles.inputGroup}>
+                    <label>Number of Floors / Levels</label>
+                    <select {...controlClean.register('floors', { valueAsNumber: true })} className={styles.input}>
+                      <option value={1}>1 Floor (Single Level)</option>
+                      <option value={2}>2 Floors</option>
+                      <option value={3}>3+ Floors</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Location & Condition */}
+                <div className={styles.inputRow}>
+                  <div className={styles.inputGroup}>
+                    <label>Operating Location</label>
+                    <select {...controlClean.register('location')} className={styles.input}>
+                      <option value="Atlanta Metro">Atlanta Metro (Buckhead, Midtown, Sandy Springs, Vinings, etc.)</option>
+                      <option value="Washington, DC">Washington, DC (Georgetown, Dupont, NW DC, Capitol Hill)</option>
+                      <option value="Maryland">Maryland (Bethesda, Potomac, Rockville, Annapolis, Beltsville)</option>
+                      <option value="Northern Virginia">Northern Virginia (Arlington, Alexandria, McLean, Fairfax)</option>
+                    </select>
+                  </div>
+                  <div className={styles.inputGroup}>
+                    <label>Current Home Condition</label>
+                    <select {...controlClean.register('condition')} className={styles.input}>
+                      <option value="standard">Regularly Maintained (Cleaned within past 2–3 weeks)</option>
+                      <option value="moderate">Moderate Buildup (Lived-in, needs extra attention)</option>
+                      <option value="heavy">Heavy Scrub Needed (Long overdue, first-time deep clean)</option>
+                    </select>
+                  </div>
+                </div>
               </div>
 
+              {/* Step 4: Specialty Add-Ons */}
               <div className={styles.stepGroup}>
-                <h3>3. Select Add-Ons</h3>
+                <h3>4. Specialty Add-Ons (Optional)</h3>
                 <div className={styles.checkboxGrid}>
                   {Object.entries(pricingConfig.cleaning.fixedExtras).map(([key, extra]: [string, any]) => (
                     <label key={key} className={cleanValues.extras.includes(key) ? styles.activeCheckboxCard : styles.checkboxCard}>
@@ -483,7 +623,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                   ))}
                   {Object.entries(pricingConfig.cleaning.dynamicExtras).map(([key, extra]: [string, any]) => {
                     const price = extra.prices[cleanValues.houseType];
-                    if (price <= 0) return null; // Don't show options that don't apply to this house type
+                    if (price <= 0) return null;
                     return (
                       <label key={key} className={cleanValues.dynamicExtras.includes(key) ? styles.activeCheckboxCard : styles.checkboxCard}>
                         <input type="checkbox" value={key} {...controlClean.register('dynamicExtras')} className={styles.hiddenRadio} />
@@ -506,18 +646,19 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                 </div>
               </div>
 
+              {/* Step 5: Promotional Schedule */}
               <div className={styles.stepGroup}>
-                <h3>4. Promotional Schedule</h3>
+                <h3>5. Promotional Schedule</h3>
                 <label className={cleanValues.isMondayTuesday ? styles.activeCheckboxCard : styles.checkboxCard} style={{cursor: 'pointer'}}>
                   <input type="checkbox" {...controlClean.register('isMondayTuesday')} className={styles.hiddenRadio} />
                   <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%'}}>
                     <span style={{fontWeight: 600}}>Initial Cleaning on a Monday or Tuesday</span>
-                    <span style={{color: 'var(--color-primary)', fontWeight: 600}}>10% OFF Total</span>
+                    <span style={{color: 'var(--color-primary)', fontWeight: 600}}>10% OFF Estimated Total</span>
                   </div>
                 </label>
               </div>
 
-              <button type="submit" className={`btn btn-primary ${styles.submitBtn}`}>Calculate Estimate</button>
+              <button type="submit" className={`btn btn-primary ${styles.submitBtn}`}>Calculate Estimated Price</button>
             </form>
           )}
 
@@ -537,35 +678,63 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
           {selectedService === 'cleaning' && cleaningResult && (
             <div className={`result-anim ${styles.receiptBox}`}>
               <div className={styles.receiptHeader}>
-                <h3 className="font-serif">Official Proposal</h3>
-                <p style={{textTransform: 'capitalize'}}>L'Atelier {cleanValues.houseType}</p>
+                <h3 className="font-serif">Estimated Price Summary</h3>
+                <p style={{textTransform: 'capitalize'}}>
+                  {cleanValues.packageType === 'deep' ? 'Deep Cleaning' : cleanValues.packageType === 'move_in_out' ? 'Move-In / Move-Out' : 'Standard Cleaning'} • {cleanValues.houseType}
+                </p>
               </div>
               <div className={styles.receiptBody}>
                 <div className={styles.receiptLine}>
-                  <span>Subtotal</span>
+                  <span>Base Scope ({cleanValues.bedrooms} Bed, {cleanValues.bathrooms} Bath)</span>
                   <span>${cleaningResult.subtotal}</span>
+                </div>
+                <div className={styles.receiptLine} style={{ fontSize: '0.84rem', color: '#64748b' }}>
+                  <span>Specs: {cleanValues.squareFeet} sq ft • {cleanValues.floors} {cleanValues.floors === 1 ? 'Floor' : 'Floors'} • {cleanValues.location}</span>
                 </div>
                 {cleaningResult.discount > 0 && (
                   <div className={styles.receiptLine} style={{color: 'var(--color-primary)'}}>
-                    <span>Mon/Tue Discount (10%)</span>
+                    <span>Mon/Tue Promotional Discount (10%)</span>
                     <span>-${cleaningResult.discount}</span>
                   </div>
                 )}
                 <div className={styles.receiptDivider}></div>
                 <div className={styles.receiptTotal}>
-                  <span>Total Estimate</span>
+                  <span>Estimated Price</span>
                   <span>${cleaningResult.total}</span>
                 </div>
               </div>
-              <p className={styles.disclaimer}>*This is a finalized estimate for standard home conditions.</p>
-              <form onSubmit={handleCheckout} className={styles.leadForm} style={{ marginTop: '1.5rem' }}>
-                <input type="text" placeholder="Full Name" required className={styles.input} value={customerInfo.name} onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})} />
-                <input type="email" placeholder="Email Address" required className={styles.input} value={customerInfo.email} onChange={(e) => setCustomerInfo({...customerInfo, email: e.target.value})} />
-                <input type="tel" placeholder="Phone Number" required className={styles.input} value={customerInfo.phone} onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})} />
-                <button type="submit" className={`btn btn-secondary ${styles.fullWidthBtn}`}>
-                  Secure & Book Now
-                </button>
-              </form>
+
+              {/* Explicit Estimated Price Notice */}
+              <div style={{
+                background: 'rgba(217, 119, 6, 0.08)',
+                border: '1px solid rgba(217, 119, 6, 0.25)',
+                borderRadius: '8px',
+                padding: '12px 14px',
+                margin: '14px 0 10px 0',
+                fontSize: '0.84rem',
+                color: '#92400e',
+                lineHeight: 1.5,
+                textAlign: 'left'
+              }}>
+                <strong>*Estimated Price Notice:</strong> All quotes are estimated prices. Final firm price is confirmed based on square footage, home layout, and walkthrough confirmation before service begins.
+              </div>
+
+              {!leadSubmitted ? (
+                <form onSubmit={handleCleanLeadSubmit} className={styles.leadForm} style={{ marginTop: '1rem' }}>
+                  <input type="text" placeholder="Full Name" required className={styles.input} value={customerInfo.name} onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})} />
+                  <input type="email" placeholder="Email Address" required className={styles.input} value={customerInfo.email} onChange={(e) => setCustomerInfo({...customerInfo, email: e.target.value})} />
+                  <input type="tel" placeholder="Phone Number" required className={styles.input} value={customerInfo.phone} onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})} />
+                  <button type="submit" className={`btn btn-secondary ${styles.fullWidthBtn}`}>
+                    Request Estimated Quote & Scheduling
+                  </button>
+                </form>
+              ) : (
+                <div className={styles.successMessage} style={{ marginTop: '1rem' }}>
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="1"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  <h4 className="font-serif">Estimated Quote Saved</h4>
+                  <p>Our concierge team will reach out within 2 hours to confirm your specifications and finalize scheduling.</p>
+                </div>
+              )}
             </div>
           )}
 

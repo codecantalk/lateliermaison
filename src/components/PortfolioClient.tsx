@@ -8,16 +8,16 @@ import { createClient } from '@/lib/supabase/client'
 import landingStyles from './LandingPage.module.css'
 
 const DEFAULT_ITEMS = [
-  { img: '/portfolio-images/IMG_8183.JPG', title: 'The Glass House', location: 'Paris, FR' },
-  { img: '/portfolio-images/IMG_8184.JPG', title: 'Spa Sanctuary', location: 'Washington, DC' },
-  { img: '/portfolio-images/IMG_8185.JPG', title: 'Modern Minimalism', location: 'Atlanta, GA' },
-  { img: '/portfolio-images/IMG_8186.JPG', title: 'Historic Restoration', location: 'Miami, FL' },
-  { img: '/portfolio-images/IMG_8187.JPG', title: 'Coastal Retreat', location: 'Malibu, CA' },
-  { img: '/portfolio-images/IMG_8188.JPG', title: 'Urban Penthouse', location: 'New York, NY' },
-  { img: '/portfolio-images/IMG_8189.JPG', title: 'Mountain Chalet', location: 'Aspen, CO' },
-  { img: '/portfolio-images/IMG_8190.JPG', title: 'Desert Oasis', location: 'Scottsdale, AZ' },
-  { img: '/portfolio-images/IMG_8191.JPG', title: 'Mid-Century Modern', location: 'Palm Springs, CA' },
-  { img: '/portfolio-images/5A6BE788-BBDC-4362-83B1-50E26B74249D.JPG', title: 'Lakefront Estate', location: 'Lake Tahoe, NV' },
+  { img: '/portfolio-images/IMG_8183.JPG', title: 'Buckhead Master Residence', location: 'Atlanta, GA' },
+  { img: '/portfolio-images/IMG_8184.JPG', title: 'Georgetown Historic Rowhome', location: 'Washington, DC' },
+  { img: '/portfolio-images/IMG_8185.JPG', title: 'Midtown Architectural Sanctuary', location: 'Atlanta, GA' },
+  { img: '/portfolio-images/IMG_8186.JPG', title: 'Potomac Waterfront Estate', location: 'Potomac, MD' },
+  { img: '/portfolio-images/IMG_8187.JPG', title: 'Bethesda Modern Villa', location: 'Bethesda, MD' },
+  { img: '/portfolio-images/IMG_8188.JPG', title: 'Arlington Luxury Residence', location: 'Arlington, VA' },
+  { img: '/portfolio-images/IMG_8189.JPG', title: 'McLean Designer Manor', location: 'McLean, VA' },
+  { img: '/portfolio-images/IMG_8190.JPG', title: 'Sandy Springs Contemporary', location: 'Atlanta, GA' },
+  { img: '/portfolio-images/IMG_8191.JPG', title: 'Vinings Executive Retreat', location: 'Vinings, GA' },
+  { img: '/portfolio-images/5A6BE788-BBDC-4362-83B1-50E26B74249D.JPG', title: 'Chevy Chase Custom Transformation', location: 'Chevy Chase, MD' },
 ]
 
 export default function PortfolioClient() {
@@ -286,12 +286,12 @@ export default function PortfolioClient() {
         <div className="container" style={{ maxWidth: '1000px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem', textAlign: 'center' }}>
             <div>
-              <h4 className="font-serif" style={{ fontSize: '3.5rem', color: '#1e3a8a', marginBottom: '0.5rem', margin: 0 }}>15+</h4>
-              <p style={{ color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.85rem', fontWeight: 600 }}>Years of Excellence</p>
+              <h4 className="font-serif" style={{ fontSize: '3.5rem', color: '#1e3a8a', marginBottom: '0.5rem', margin: 0 }}>10+</h4>
+              <p style={{ color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.85rem', fontWeight: 600 }}>Years Serving Customers</p>
             </div>
             <div>
-              <h4 className="font-serif" style={{ fontSize: '3.5rem', color: '#1e3a8a', marginBottom: '0.5rem', margin: 0 }}>200+</h4>
-              <p style={{ color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.85rem', fontWeight: 600 }}>Estates Transformed</p>
+              <h4 className="font-serif" style={{ fontSize: '3.5rem', color: '#1e3a8a', marginBottom: '0.5rem', margin: 0 }}>Hundreds</h4>
+              <p style={{ color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.85rem', fontWeight: 600 }}>Of Homes Served</p>
             </div>
             <div>
               <h4 className="font-serif" style={{ fontSize: '3.5rem', color: '#1e3a8a', marginBottom: '0.5rem', margin: 0 }}>100%</h4>

@@ -17,7 +17,7 @@ if (typeof window !== 'undefined') {
 const faqs = [
   { q: "Do you supply all the cleaning products?", a: "Yes! We bring all our own premium, eco-friendly cleaning supplies and equipment so you don't have to worry about a thing." },
   { q: "Will the same team clean my home every time?", a: "We make every effort to send the same dedicated cleaning team to your home to ensure consistency and familiarity with your preferences." },
-  { q: "What is the difference between a Standard and Deep Clean?", a: "A Standard Clean is perfect for recurring maintenance (dusting, vacuuming, mopping, bathrooms, kitchens). A Deep Clean goes further to include baseboards, interior windows, inside appliances, and deep scrubbing." }
+  { q: "What is the difference between a Standard and Deep Clean?", a: "A Standard Clean is perfect for recurring maintenance (dusting reachable surfaces, vacuuming, mopping, bathrooms, and exterior surfaces). A Deep Clean goes deeper to include hand-scrubbing all baseboards, door frames, and intensive grout/tile scrubbing. Interior appliances (inside oven, inside fridge) can be easily added as custom add-ons in our estimate calculator." }
 ]
 
 export default function CleaningClient() {
