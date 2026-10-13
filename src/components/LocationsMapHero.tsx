@@ -201,18 +201,18 @@ export default function LocationsMapHero() {
         <div className={styles.tickerBox}>
           <div className={styles.tickerItem}>
             <span>SERVICE HUBS:</span>
-            <span className={styles.tickerHighlight}>05 ACTIVE DIVISIONS</span>
+            <span className={styles.tickerHighlight}>{String(SERVICE_LOCATIONS.length).padStart(2, '0')} OPERATING HUBS</span>
           </div>
           <div className={styles.tickerItem}>
             <span>FOCUSED REGION:</span>
             <span className={styles.tickerHighlight}>
-              {selectedLoc ? selectedLoc.city.toUpperCase() : 'ATLANTIC CORRIDOR'}
+              {selectedLoc ? selectedLoc.city.toUpperCase() : 'ATLANTA & DMV'}
             </span>
           </div>
           <div className={styles.tickerItem}>
             <span>GPS COORDS:</span>
             <span style={{ color: '#cbd5e1' }}>
-              {selectedLoc ? selectedLoc.coordsText : '40.7128° N, 74.0060° W'}
+              {selectedLoc ? selectedLoc.coordsText : '33.7490° N, 84.3880° W'}
             </span>
           </div>
         </div>
@@ -288,8 +288,8 @@ export default function LocationsMapHero() {
             <text x="186" y="555" fill="rgba(148, 163, 184, 0.25)" fontSize="8" fontFamily="monospace">75° W</text>
             <text x="666" y="555" fill="rgba(148, 163, 184, 0.25)" fontSize="8" fontFamily="monospace">30° E</text>
 
-            {/* ================= CONTINENTS VECTOR OUTLINES ================= */}
-            <g id="continents">
+            {/* ================= VECTOR LANDMASS OUTLINES ================= */}
+            <g id="landmass">
               {/* North America */}
               <path
                 d="M 65 110 
@@ -330,67 +330,6 @@ export default function LocationsMapHero() {
                 strokeWidth="1"
               />
 
-              {/* British Isles */}
-              <path
-                d="M 505 140 
-                   C 515 130, 530 135, 535 150 
-                   C 540 165, 525 175, 515 170 
-                   C 505 165, 500 150, 505 140 Z"
-                fill="#2563eb"
-                fillOpacity="0.45"
-                stroke="#c5a059"
-                strokeWidth="1.4"
-              />
-              <path
-                d="M 490 148 C 496 142, 502 148, 500 158 C 495 162, 488 156, 490 148 Z"
-                fill="#1e3a8a"
-                fillOpacity="0.5"
-                stroke="rgba(197, 160, 89, 0.4)"
-                strokeWidth="1"
-              />
-
-              {/* Mainland Europe */}
-              <path
-                d="M 545 135
-                   C 580 120, 620 125, 660 140
-                   C 680 155, 675 175, 650 190
-                   C 630 200, 610 215, 580 210
-                   C 560 205, 545 185, 535 165
-                   C 530 150, 535 140, 545 135 Z"
-                fill="url(#landGradient)"
-                stroke="rgba(197, 160, 89, 0.35)"
-                strokeWidth="1.2"
-              />
-              <path
-                d="M 515 190 C 535 185, 545 200, 540 220 C 525 225, 510 215, 515 190 Z"
-                fill="#1e3a8a"
-                fillOpacity="0.5"
-                stroke="rgba(197, 160, 89, 0.3)"
-                strokeWidth="1"
-              />
-
-              {/* Africa */}
-              <path
-                d="M 535 235
-                   C 570 225, 630 230, 665 260
-                   C 685 285, 690 320, 670 355
-                   C 655 385, 645 425, 630 465
-                   C 615 500, 595 530, 575 510
-                   C 555 480, 545 435, 540 395
-                   C 535 365, 515 345, 505 320
-                   C 490 295, 495 265, 520 245
-                   C 525 240, 530 238, 535 235 Z"
-                fill="url(#landGradient)"
-                stroke="rgba(197, 160, 89, 0.35)"
-                strokeWidth="1.2"
-              />
-              <path
-                d="M 675 425 C 685 415, 695 435, 690 460 C 680 470, 670 450, 675 425 Z"
-                fill="#1e3a8a"
-                fillOpacity="0.4"
-                stroke="rgba(197, 160, 89, 0.3)"
-                strokeWidth="0.8"
-              />
             </g>
 
             {/* ================= GEODESIC CONNECTION ARCS ================= */}
