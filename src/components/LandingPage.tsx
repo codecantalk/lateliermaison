@@ -171,8 +171,8 @@ export default function LandingPage() {
             </div>
           ))}
           {/* Sunny Golden Hour Overlay */}
-          <div className={styles.heroOverlay} style={{ zIndex: 1, background: 'linear-gradient(45deg, rgba(255, 195, 113, 0.3) 0%, rgba(255, 229, 180, 0.1) 100%)', mixBlendMode: 'overlay' }}></div>
-          <div className={styles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at top left, rgba(255, 220, 150, 0.25) 0%, transparent 60%)' }}></div>
+          <div className={styles.heroOverlay} style={{ zIndex: 1, background: 'linear-gradient(45deg, rgba(255, 195, 113, 0.25) 0%, rgba(255, 229, 180, 0.08) 100%)', mixBlendMode: 'overlay' }}></div>
+          <div className={styles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at bottom left, rgba(255, 220, 150, 0.2) 0%, transparent 60%)' }}></div>
         </div>
         
         

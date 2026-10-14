@@ -1,3 +1,9 @@
+/* =========================================================================
+   L'ATELIER MAISON - ULTRA-PREMIUM NAVIGATION BAR
+   Glassmorphism Normal State -> Solid White on Scroll
+   3D Architectural Specular Glass Depth & High-Visibility Slate Charcoal Menu
+   ========================================================================= */
+
 /* Floating Nav Wrapper */
 .navWrapper {
   position: fixed;
@@ -5,56 +11,151 @@
   left: 0;
   width: 100%;
   z-index: 1000;
-  padding: 0;
   display: flex;
   justify-content: center;
-  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-  pointer-events: none;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.navHidden {
-  transform: translateY(-150%);
-}
-
-/* Full Width Header */
+/* Base Nav - Normal Glassmorphism with 3D Specular Depth */
 .nav {
-  pointer-events: auto;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  max-width: 100%;
-  background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border: none;
-  border-radius: 0;
-  padding: 8px 5%;
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-  box-shadow: none;
+  background: rgba(255, 255, 255, 0.22);
+  -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
+  backdrop-filter: blur(12px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+  /* 3D Multi-Layered Specular Elevation */
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.05),
+    0 4px 6px -1px rgba(0, 0, 0, 0.07),
+    0 12px 24px -4px rgba(0, 0, 0, 0.12),
+    0 24px 48px -8px rgba(0, 0, 0, 0.08);
+  padding: 13px 5%;
+  transition: background 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              padding 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.nav:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* Dark Theme State - For Dark Hero Pages (e.g. /locations) When Unscrolled */
+.darkTheme {
+  background: rgba(10, 20, 42, 0.55);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.3),
+    0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 14px 28px -4px rgba(0, 0, 0, 0.45),
+    0 24px 48px -8px rgba(0, 0, 0, 0.35);
+}
+
+.darkTheme:hover {
+  background: rgba(14, 28, 56, 0.72);
+}
+
+/* Dark Theme Logo - Bright Architectural Monogram */
+.darkTheme .logo,
+.darkTheme .logo img {
+  filter: brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+}
+
+.darkTheme .logo:hover,
+.darkTheme .logo:hover img {
+  filter: brightness(0) invert(1) drop-shadow(0 0 12px rgba(251, 191, 36, 0.7));
+  opacity: 1;
+}
+
+/* Dark Theme Nav Links - High Visibility Pure Off-White */
+.darkTheme .navLink {
+  color: #f8fafc;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+}
+
+.darkTheme .navLink:hover {
+  color: #fbbf24;
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(251, 191, 36, 0.3);
+  box-shadow: 0 2px 10px rgba(251, 191, 36, 0.18);
+}
+
+.darkTheme .dropdownCaret {
+  color: #cbd5e1;
+}
+
+.darkTheme .dropdownCaretOpen,
+.darkTheme .navDropdownGroup:hover .dropdownCaret {
+  color: #fbbf24;
+}
+
+/* Ensure Dropdown Menu Card Inside Dark Theme Maintains Dark Text on White Card */
+.darkTheme .dropdownMenu {
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.darkTheme .dropdownItem {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+
+.darkTheme .dropdownItem:hover {
+  background: rgba(180, 83, 9, 0.08) !important;
+  color: #b45309 !important;
+}
+
+/* Dark Theme Mobile Elements */
+.darkTheme .line {
+  background: #f8fafc;
+}
+
+.darkTheme .mobileMenu {
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.darkTheme .mobileLink {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+
+.darkTheme .mobileSubLink {
+  color: #475569 !important;
+  text-shadow: none !important;
+}
+
+/* Scrolled State - Solid Pure White with Enhanced 3D Depth */
 .scrolled {
-  background: rgba(253, 251, 247, 0.95); /* Matches var(--color-bg) #FDFBF7 */
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+  background: #ffffff !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 1),
+    0 4px 6px -1px rgba(0, 0, 0, 0.06),
+    0 14px 28px -4px rgba(0, 0, 0, 0.14),
+    0 28px 54px -10px rgba(0, 0, 0, 0.09) !important;
+  padding: 9px 5%;
 }
 
-/* Dark Hero variant when at top of page over dark banners */
-.darkHeroNav .navLink {
-  color: #f1f5f9;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+.scrolled .logo,
+.scrolled .logo img {
+  filter: none !important;
+  opacity: 1;
 }
 
-.darkHeroNav .navLink:hover {
-  color: #c5a059;
-  background: rgba(255, 255, 255, 0.12);
+.scrolled .navLink {
+  color: #0f172a !important;
+  text-shadow: none !important;
 }
 
-.darkHeroNav .hamburger .line {
-  background: #ffffff;
+.scrolled .dropdownCaret {
+  color: #475569 !important;
+}
+
+.scrolled .line {
+  background: #0f172a !important;
 }
 
 .navContainer {
@@ -62,60 +163,82 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
-/* Logo (Dark Text on White Crystal) */
+/* Header Logo - Icon Only */
 .logo {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-serif);
-  font-size: 1.35rem;
-  color: var(--color-secondary);
   text-decoration: none;
-  transition: opacity var(--transition-fast);
-  white-space: nowrap;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  /* Ensure it's clear over BG */
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, filter 0.25s ease;
 }
 
 .logo:hover {
-  opacity: 0.8;
+  opacity: 0.85;
+  transform: scale(1.04);
 }
 
-/* Desktop Links */
+/* Desktop Navigation Links */
 .desktopLinks {
   display: none;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 960px) {
   .desktopLinks {
     display: flex;
-    gap: 8px;
+    gap: 12px;
     align-items: center;
   }
 }
 
+/* Nav Links - High Visibility Deep Charcoal Slate (Very Visible on Glass & White) */
 .navLink {
-  font-weight: 500;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  color: var(--color-secondary);
-  /* Dark Espresso */
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #0f172a; /* Deep Charcoal Slate - 100% visible against glass and white */
   text-decoration: none;
   padding: 8px 16px;
-  border-radius: 30px;
-  transition: all 0.3s ease;
+  border-radius: 100px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
 }
 
 .navLink:hover {
-  color: var(--color-primary);
-  /* Brass on hover */
-  background: rgba(0, 0, 0, 0.04);
-  /* Subtle darkening for hover state on white */
+  color: #b45309; /* Warm luxury amber/cognac */
+  background: rgba(180, 83, 9, 0.08);
+  border-color: rgba(180, 83, 9, 0.15);
+  transform: translateY(-1px);
 }
 
-/* Services Dropdown (Premium White Crystal Card) */
+/* Dropdown Caret */
+.dropdownCaret {
+  display: inline-block;
+  font-size: 0.72rem;
+  margin-left: 2px;
+  color: #475569;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s ease;
+}
+
+.dropdownCaretOpen,
+.navDropdownGroup:hover .dropdownCaret {
+  transform: rotate(180deg);
+  color: #b45309;
+}
+
+/* Dropdown Menu Group */
 .navDropdownGroup {
   position: relative;
   display: inline-flex;
@@ -124,65 +247,70 @@
 
 .dropdownMenu {
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 6px);
   left: 50%;
-  transform: translateX(-50%) translateY(15px);
-  background: rgba(255, 255, 255, 0.95);
-  /* More opaque for readability */
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 1);
+  transform: translateX(-50%) translateY(8px);
+  background: rgba(255, 255, 255, 0.98);
+  -webkit-backdrop-filter: blur(24px) !important;
+  backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 16px;
-  /* Modern rounded corners */
-  padding: 12px;
-  min-width: 280px;
+  padding: 8px;
+  min-width: 250px;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    0 6px 14px -2px rgba(0, 0, 0, 0.06),
+    0 18px 36px -4px rgba(0, 0, 0, 0.09);
   display: flex;
   flex-direction: column;
   gap: 4px;
+  z-index: 1001;
 }
 
-/* Invisible bridge so hover doesn't break when moving mouse down */
+/* Bridge for seamless hover */
 .dropdownMenu::before {
   content: '';
   position: absolute;
-  top: -20px;
+  top: -14px;
   left: 0;
   width: 100%;
-  height: 20px;
+  height: 14px;
   background: transparent;
 }
 
-.navDropdownGroup:hover .dropdownMenu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
+.navDropdownGroup:hover .dropdownMenu,
+.dropdownMenuOpen {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateX(-50%) translateY(0) !important;
 }
 
 .dropdownItem {
   display: block;
-  padding: 14px 20px;
-  color: var(--color-secondary);
+  padding: 11px 18px;
+  color: #0f172a; /* Deep Slate Charcoal */
   text-decoration: none;
-  font-size: 0.95rem;
-  border-radius: 12px;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  font-weight: 500;
-  letter-spacing: 0.05em;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  border-radius: 10px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dropdownItem:hover {
-  background: rgba(65, 105, 225, 0.08);
-  /* Subtle warm brass tint */
-  color: var(--color-primary);
-  transform: translateX(6px);
-  /* Premium slide effect */
+  background: rgba(180, 83, 9, 0.08);
+  color: #b45309;
+  transform: translateX(4px);
 }
 
-/* Actions */
+/* Right Actions & CTA Button */
 .actions {
   display: flex;
   align-items: center;
@@ -191,20 +319,39 @@
 
 .ctaBtn {
   display: none;
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+  color: #ffffff !important;
+  font-family: var(--font-sans) !important;
+  font-weight: 600 !important;
+  font-size: 0.82rem !important;
+  letter-spacing: 0.07em !important;
+  padding: 10px 24px !important;
+  border-radius: 100px !important;
+  text-decoration: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.32) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  white-space: nowrap !important;
 }
 
-@media (min-width: 900px) {
+.ctaBtn:hover {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.45) !important;
+}
+
+@media (min-width: 960px) {
   .ctaBtn {
     display: inline-flex;
   }
 }
 
-/* Hamburger (Dark on White Crystal) */
+/* Hamburger Button for Mobile */
 .hamburger {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 24px;
+  width: 26px;
   height: 20px;
   background: transparent;
   border: none;
@@ -213,20 +360,18 @@
   z-index: 10;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 960px) {
   .hamburger {
     display: none;
   }
 }
 
 .line {
-  width: 24px;
+  width: 26px;
   height: 2px;
-  background: var(--color-secondary);
-  /* Dark Espresso */
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  position: relative;
-  transform-origin: center;
+  background: #0f172a;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 2px;
 }
 
 .line1Open {
@@ -241,24 +386,28 @@
   transform: translateY(-9px) rotate(-45deg);
 }
 
-/* Mobile Menu (Modern Floating Dropdown) */
+/* Mobile Menu Dropdown */
 .mobileMenu {
   position: absolute;
   top: calc(100% + 8px);
   right: 16px;
-  width: 260px;
+  width: 270px;
   background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  -webkit-backdrop-filter: blur(24px) !important;
+  backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    0 8px 18px -2px rgba(0, 0, 0, 0.08),
+    0 22px 42px -6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   opacity: 0;
   pointer-events: none;
   z-index: 100;
   transition: opacity 0.3s ease, transform 0.3s ease;
-  transform: translateY(-10px);
+  transform: translateY(-8px);
 }
 
 .mobileMenuOpen {
@@ -268,34 +417,48 @@
 }
 
 .mobileMenuInner {
-  padding: 24px;
+  padding: 22px;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.1rem;
 }
 
 .mobileLink {
-  font-size: 1.15rem;
+  font-size: 0.95rem;
   font-family: var(--font-sans);
-  font-weight: 500;
-  color: var(--color-secondary);
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: #0f172a;
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: color 0.2s ease;
+}
+
+.mobileLink:hover {
+  color: #b45309;
 }
 
 .mobileSubGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
-  margin-top: -0.5rem;
-  margin-bottom: 0.5rem;
+  gap: 0.65rem;
+  margin-top: -0.4rem;
+  margin-bottom: 0.4rem;
   padding-left: 1rem;
-  border-left: 2px solid rgba(0,0,0,0.05);
+  border-left: 2px solid rgba(217, 119, 6, 0.25);
 }
 
 .mobileSubLink {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-family: var(--font-sans);
-  color: var(--color-text-muted);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #475569;
   text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.mobileSubLink:hover {
+  color: #b45309;
 }

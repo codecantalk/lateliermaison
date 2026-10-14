@@ -108,8 +108,8 @@ export default function PortfolioClient() {
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
           {/* Sunny Golden Hour Overlay */}
-          <div className={landingStyles.heroOverlay} style={{ zIndex: 1, background: 'linear-gradient(45deg, rgba(255, 195, 113, 0.3) 0%, rgba(255, 229, 180, 0.1) 100%)', mixBlendMode: 'overlay' }}></div>
-          <div className={landingStyles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at top left, rgba(255, 220, 150, 0.25) 0%, transparent 60%)' }}></div>
+          <div className={landingStyles.heroOverlay} style={{ zIndex: 1, background: 'linear-gradient(45deg, rgba(255, 195, 113, 0.25) 0%, rgba(255, 229, 180, 0.08) 100%)', mixBlendMode: 'overlay' }}></div>
+          <div className={landingStyles.heroOverlay} style={{ zIndex: 2, background: 'radial-gradient(circle at bottom left, rgba(255, 220, 150, 0.2) 0%, transparent 60%)' }}></div>
         </div>
         
         <div className="container" style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', paddingBottom: '6rem' }}>

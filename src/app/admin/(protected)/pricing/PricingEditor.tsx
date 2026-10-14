@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import styles from './pricing.module.css';
 
-const ICONS_MAP: Record<string, JSX.Element> = {
+const ICONS_MAP: Record<string, React.ReactNode> = {
   fridge: <Refrigerator size={24} strokeWidth={1.5} />,
   oven: <Microwave size={24} strokeWidth={1.5} />,
   dishwashing: <UtensilsCrossed size={24} strokeWidth={1.5} />,

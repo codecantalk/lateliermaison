@@ -47,7 +47,7 @@ type EstateData = {
 }
 
 // Local mapping for icons since we can't store JSX in the database
-const ICONS_MAP: Record<string, JSX.Element> = {
+const ICONS_MAP: Record<string, React.ReactNode> = {
   fridge: <Refrigerator size={32} strokeWidth={1.2} />,
   oven: <Microwave size={32} strokeWidth={1.2} />,
   dishwashing: <UtensilsCrossed size={32} strokeWidth={1.2} />,

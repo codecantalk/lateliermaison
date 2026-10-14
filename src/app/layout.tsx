@@ -16,6 +16,16 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.lateliermaison.com'),
   title: 'L\'Atelier Maison | Premium Home Services',
   description: 'Top-rated house cleaning and bathroom remodeling services in Atlanta, GA. Book your appointment online today.',
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.png', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
   openGraph: {
     title: 'L\'Atelier Maison | Premium Home Services',
     description: 'Top-rated house cleaning and bathroom remodeling services in Atlanta, GA.',
