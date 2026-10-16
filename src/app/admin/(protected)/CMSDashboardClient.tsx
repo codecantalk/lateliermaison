@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import styles from './page.module.css'
 import { Users, Clock, ArrowUpRight, Printer, Image as ImageIcon, CreditCard, DollarSign, CheckCircle2 } from 'lucide-react'
@@ -264,7 +265,23 @@ export default function CMSDashboardClient({
       {/* Submissions Section */}
       <div className={styles.recentBookings}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-          <h3>Submissions & Bookings</h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
+            <h3 style={{ margin: 0 }}>Submissions & Bookings</h3>
+            <Link 
+              href="/admin/orders" 
+              style={{ 
+                fontSize: '0.85rem', 
+                color: '#2563eb', 
+                textDecoration: 'none', 
+                fontWeight: 600,
+                background: 'rgba(37, 99, 235, 0.08)',
+                padding: '0.35rem 0.75rem',
+                borderRadius: '6px'
+              }}
+            >
+              Open Full Orders Portal &rarr;
+            </Link>
+          </div>
           
           <div style={{ display: 'flex', gap: '0.5rem', background: '#f1f5f9', padding: '0.25rem', borderRadius: '8px' }}>
             <button 

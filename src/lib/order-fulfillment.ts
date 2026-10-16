@@ -83,7 +83,41 @@ export async function fulfillOrder(session: Stripe.Checkout.Session): Promise<Fu
   // Mark in memory early to prevent concurrent race conditions
   processedSessions.add(sessionId)
 
-  // 3. Save into orders table
+  // 3. Auto-sync customer profile
+  let customerId: string | null = null
+  if (customerEmail && customerEmail.includes('@')) {
+    try {
+      const { data: existingCust } = await supabase
+        .from('customers')
+        .select('id')
+        .eq('email', customerEmail.toLowerCase().trim())
+        .maybeSingle()
+
+      if (existingCust?.id) {
+        customerId = existingCust.id
+        // Update phone if provided
+        if (customerPhone) {
+          await supabase.from('customers').update({ phone: customerPhone, updated_at: new Date().toISOString() }).eq('id', customerId)
+        }
+      } else {
+        const { data: newCust } = await supabase
+          .from('customers')
+          .insert({
+            full_name: customerName,
+            email: customerEmail.toLowerCase().trim(),
+            phone: customerPhone || null,
+            vip_tier: amount >= 1000 ? 'estate_elite' : amount >= 500 ? 'vip' : 'standard',
+          })
+          .select('id')
+          .maybeSingle()
+        customerId = newCust?.id || null
+      }
+    } catch (custErr) {
+      console.warn('[FulfillOrder] Customer auto-sync skipped (table may not exist yet):', custErr)
+    }
+  }
+
+  // 4. Save into orders table
   try {
     await supabase.from('orders').insert({
       stripe_session_id: sessionId,
@@ -93,9 +127,10 @@ export async function fulfillOrder(session: Stripe.Checkout.Session): Promise<Fu
       service_name: serviceName,
       amount: amount,
       currency: session.currency || 'usd',
-      status: 'paid',
+      status: 'confirmed',
       details: details,
       lead_id: leadId || null,
+      customer_id: customerId || null,
     })
   } catch (dbErr) {
     console.warn('[FulfillOrder] Could not insert into orders table (check if table exists):', dbErr)

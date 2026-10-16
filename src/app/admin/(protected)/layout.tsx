@@ -1,8 +1,6 @@
 import styles from './page.module.css'
-import Link from 'next/link'
-import Image from 'next/image'
 import LogoutButton from './LogoutButton'
-import { LayoutDashboard, Settings, Image as ImageIcon, Calculator } from 'lucide-react'
+import AdminSidebar from './AdminSidebar'
 
 export default function AdminLayout({
   children,
@@ -11,29 +9,7 @@ export default function AdminLayout({
 }) {
   return (
     <div className={styles.adminLayout}>
-      <aside className={styles.sidebar}>
-        <div className={styles.logo} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1.5rem' }}>
-          <Image src="/logo.png" alt="L'Atelier Admin Logo" width={60} height={60} style={{ objectFit: 'contain' }} />
-        </div>
-        <nav className={styles.nav}>
-          <Link href="/admin" className={styles.navLink}>
-            <LayoutDashboard size={20} />
-            Dashboard
-          </Link>
-          <Link href="/admin/pricing" className={styles.navLink}>
-            <Calculator size={20} />
-            Pricing Engine
-          </Link>
-          <Link href="/admin/portfolio" className={styles.navLink}>
-            <ImageIcon size={20} />
-            Portfolio
-          </Link>
-          <Link href="/admin/settings" className={styles.navLink}>
-            <Settings size={20} />
-            Settings
-          </Link>
-        </nav>
-      </aside>
+      <AdminSidebar />
       <main className={styles.mainContent}>
         <header className={styles.topbar}>
           <h2 style={{ fontFamily: 'var(--font-serif)', letterSpacing: '0.02em' }}>Admin Portal</h2>
@@ -46,3 +22,4 @@ export default function AdminLayout({
     </div>
   )
 }
+
