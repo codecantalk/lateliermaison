@@ -108,8 +108,6 @@ export async function sendEmail({ to, toName, subject, html, replyTo, fromType =
  * Minimalist, high-end styling with the real site logo and zero unnecessary fluff.
  */
 export function wrapLuxuryEmail(content: string, preheader: string = "L'Atelier Maison"): string {
-  const logoUrl = "https://www.lateliermaison.com/logo.png"
-
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -134,15 +132,17 @@ export function wrapLuxuryEmail(content: string, preheader: string = "L'Atelier 
         <!-- Main Container -->
         <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 580px; background-color: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);">
           
-          <!-- Clean Brand Header -->
+          <!-- Clean Brand Header (Pure Typography - Zero Broken Image Icons) -->
           <tr>
-            <td style="padding: 32px 40px 24px 40px; text-align: center; border-bottom: 1px solid #f1f5f9;">
+            <td style="padding: 32px 40px 24px 40px; text-align: center; border-bottom: 1px solid #f1f5f9; background-color: #ffffff;">
               <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
                   <td align="center">
-                    <img src="${logoUrl}" alt="L'Atelier Maison" width="48" height="48" style="display: block; margin: 0 auto 12px auto; object-fit: contain; border: 0;" />
-                    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #0B132B;">
-                      L'Atelier Maison
+                    <div style="font-family: 'Playfair Display', Georgia, -apple-system, BlinkMacSystemFont, 'Segoe UI', serif; font-size: 20px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #0B132B; margin-bottom: 4px;">
+                      L'ATELIER MAISON
+                    </div>
+                    <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: #c5a059;">
+                      Executive Concierge &bull; Private Client Services
                     </div>
                   </td>
                 </tr>

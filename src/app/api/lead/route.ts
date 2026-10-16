@@ -42,11 +42,16 @@ export async function POST(req: Request) {
     const leadId = leadData?.id || null
 
     // 2. Dispatch Customer Confirmation Email
+    const quoteDisplay = details?.estimatedPriceRange 
+      ? details.estimatedPriceRange 
+      : (Number(totalPrice) > 0 ? `$${Number(totalPrice).toFixed(2)}` : 'On-Site Diagnostic & Quote')
+
+    // 2. Dispatch Customer Confirmation Email
     if (email && email.includes('@')) {
       try {
         const customerHtml = buildCustomerContactEmail({
           customerName,
-          service: `${serviceType || 'Home Service'} Estimate ($${Number(totalPrice || 0).toFixed(2)})`,
+          service: `${serviceType || 'Home Service'} Estimate (${quoteDisplay})`,
         })
 
         await sendEmail({
@@ -89,7 +94,7 @@ export async function POST(req: Request) {
           </tr>
           <tr>
             <td style="color: #64748b; font-weight: 600;">Estimated Quote:</td>
-            <td style="color: #b45309; font-weight: bold; font-size: 16px;">$${Number(totalPrice).toFixed(2)}</td>
+            <td style="color: #b45309; font-weight: bold; font-size: 16px;">${quoteDisplay}</td>
           </tr>
         </table>
 
@@ -99,7 +104,7 @@ export async function POST(req: Request) {
         </div>
 
         <div style="margin-top: 24px; text-align: center;">
-          <a href="https://lateliermaison.vercel.app/admin" style="display: inline-block; background: #0f172a; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">View in CMS Dashboard &rarr;</a>
+          <a href="https://www.lateliermaison.com/admin/estimates" style="display: inline-block; background: #0B132B; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">View in CMS Estimates Portal &rarr;</a>
         </div>
       `
 
@@ -107,7 +112,7 @@ export async function POST(req: Request) {
       await sendEmail({
         to: adminEmail,
         toName: "L'Atelier Maison Order Desk",
-        subject: `✦ [NEW ESTIMATE LEAD] $${Number(totalPrice).toFixed(2)} — ${customerName} (${serviceType})`,
+        subject: `✦ [NEW ESTIMATE LEAD] ${quoteDisplay} — ${customerName} (${serviceType})`,
         html: wrapLuxuryEmail(internalContent, `New estimate lead from ${customerName}`),
         replyTo: email,
         fromType: 'order',

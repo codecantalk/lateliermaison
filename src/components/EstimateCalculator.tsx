@@ -60,7 +60,67 @@ const ICONS_MAP: Record<string, React.ReactNode> = {
   porch: <Tent size={32} strokeWidth={1.2} />
 }
 
-// Constants removed as they are now fetched dynamically
+// Standard fallback pricing matrix in case network or pricing_config is slow
+const DEFAULT_REMODEL = {
+  scope: { cosmetic: 5000, partial: 10000, full: 20000 },
+  size: { small: -2000, medium: 0, large: 5000, master: 10000 }
+}
+
+const DEFAULT_CONST = {
+  grade: { luxury: 250, ultra: 400, monumental: 700 }
+}
+
+// Master Trade & Scope Pricing Matrix for Home Services / Estate
+const ESTATE_PRICING: Record<string, { label: string; diagnostic: [number, number]; minor: [number, number]; major: [number, number] }> = {
+  plumbing: {
+    label: 'Master Plumbing',
+    diagnostic: [195, 320],
+    minor: [450, 1200],
+    major: [2500, 8500],
+  },
+  electrical: {
+    label: 'Licensed Electrical',
+    diagnostic: [195, 350],
+    minor: [480, 1400],
+    major: [2800, 9500],
+  },
+  painting: {
+    label: 'Artisan Painting & Finishes',
+    diagnostic: [150, 250],
+    minor: [650, 1800],
+    major: [3200, 12000],
+  },
+  flooring: {
+    label: 'Custom Flooring & Hardwoods',
+    diagnostic: [150, 250],
+    minor: [800, 2200],
+    major: [4500, 15000],
+  },
+  'tv mounting': {
+    label: 'Precision TV & Audio Mounting',
+    diagnostic: [150, 220],
+    minor: [280, 580],
+    major: [1200, 2800],
+  },
+  lighting: {
+    label: 'Architectural & Smart Lighting',
+    diagnostic: [175, 300],
+    minor: [450, 1250],
+    major: [2200, 7000],
+  },
+  'home theater': {
+    label: 'Bespoke Home Theater & AV',
+    diagnostic: [250, 450],
+    minor: [850, 2400],
+    major: [5000, 18000],
+  },
+  handyman: {
+    label: 'Master Handyman Services',
+    diagnostic: [160, 260],
+    minor: [380, 950],
+    major: [1800, 5500],
+  },
+}
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
@@ -248,23 +308,32 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
   }
 
   const onRemodelSubmit = (data: RemodelingData) => {
-    if (!pricingConfig || !pricingConfig.remodeling) return;
-    const config = pricingConfig.remodeling;
-    const base = config.scope[data.scope] + config.size[data.size]
+    const config = pricingConfig?.remodeling || DEFAULT_REMODEL
+    const base = (config.scope[data.scope] || DEFAULT_REMODEL.scope[data.scope]) + 
+                 (config.size[data.size] || DEFAULT_REMODEL.size[data.size])
     setRangeResult({ min: Math.round(base * 0.9), max: Math.round(base * 1.15), type: 'Bathroom Remodeling' })
     animateResult()
   }
 
   const onConstSubmit = (data: ConstructionData) => {
-    if (!pricingConfig || !pricingConfig.construction) return;
-    const config = pricingConfig.construction;
-    const base = data.squareFeet * config.grade[data.grade]
+    const config = pricingConfig?.construction || DEFAULT_CONST
+    const rate = config.grade[data.grade] || DEFAULT_CONST.grade[data.grade] || 250
+    const base = data.squareFeet * rate
     setRangeResult({ min: Math.round(base * 0.9), max: Math.round(base * 1.2), type: 'New Construction' })
     animateResult()
   }
 
   const onEstateSubmit = (data: EstateData) => {
-    setRangeResult({ min: 0, max: 0, type: 'Home Services' })
+    const tradeKey = data.trade || 'handyman'
+    const tradeConfig = ESTATE_PRICING[tradeKey] || ESTATE_PRICING.handyman
+    const scopeKey = data.scope || 'diagnostic'
+    const [min, max] = tradeConfig[scopeKey] || [160, 260]
+    const scopeName = scopeKey === 'diagnostic' ? 'Diagnostic Evaluation' : scopeKey === 'minor' ? 'Minor Project' : 'Major Renovation'
+    setRangeResult({ 
+      min, 
+      max, 
+      type: `${tradeConfig.label} • ${scopeName}` 
+    })
     animateResult()
   }
 
@@ -358,11 +427,22 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
   const handleLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    const serviceName = selectedService || 'unknown';
-    const amount = rangeResult?.min || 0;
-    const details = selectedService === 'construction' ? constValues : selectedService === 'remodeling' ? remodelValues : estateValues;
+    const serviceName = selectedService === 'estate'
+      ? `Home Services (${rangeResult?.type || estateValues.trade})`
+      : selectedService === 'remodeling'
+      ? `Bathroom Remodeling (${rangeResult?.type || 'Remodel'})`
+      : selectedService === 'construction'
+      ? `New Construction (${rangeResult?.type || 'Custom'})`
+      : 'Estimate Consultation'
+
+    const amount = rangeResult?.min || 0
+    const details = {
+      ...(selectedService === 'construction' ? constValues : selectedService === 'remodeling' ? remodelValues : estateValues),
+      estimatedPriceRange: rangeResult && rangeResult.min > 0 ? `$${rangeResult.min.toLocaleString()} – $${rangeResult.max.toLocaleString()}` : undefined,
+      estimatedBaseline: amount,
+    }
     
-    await saveLeadToDatabase(serviceName, amount, details);
+    await saveLeadToDatabase(serviceName, amount, details)
     setLeadSubmitted(true)
   }
 
@@ -504,7 +584,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                   ))}
                 </div>
               </div>
-              <button type="submit" className={`btn btn-primary ${styles.submitBtn}`}>Request Master Artisan</button>
+              <button type="submit" className={`btn btn-primary ${styles.submitBtn}`}>Calculate Estimated Price</button>
             </form>
           )}
 
@@ -773,7 +853,9 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
           {(selectedService === 'remodeling' || selectedService === 'construction' || selectedService === 'estate') && rangeResult && (
             <div className={`result-anim ${styles.receiptBox}`}>
               <div className={styles.receiptHeader}>
-                <h3 className="font-serif">Architectural Brief</h3>
+                <h3 className="font-serif">
+                  {selectedService === 'estate' ? 'Service Estimate Brief' : 'Architectural Brief'}
+                </h3>
                 <p>{rangeResult.type}</p>
               </div>
               
@@ -790,7 +872,11 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                 </div>
               )}
               
-              <p className={styles.disclaimer} style={{marginTop: '1rem'}}>*An on-site evaluation by a lead architect is required for an exact proposal.</p>
+              <p className={styles.disclaimer} style={{marginTop: '1rem'}}>
+                {selectedService === 'estate'
+                  ? '*Exact quote is confirmed on-site based on hardware and scope before work begins.'
+                  : '*An on-site evaluation by a lead architect is required for an exact proposal.'}
+              </p>
               
               {!leadSubmitted ? (
                 <form onSubmit={handleLeadSubmit} className={styles.leadForm} style={{ marginTop: '1.5rem' }}>
@@ -798,14 +884,14 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                   <input type="email" placeholder="Email Address" required className={styles.input} value={customerInfo.email} onChange={(e) => setCustomerInfo({...customerInfo, email: e.target.value})} />
                   <input type="tel" placeholder="Phone Number" required className={styles.input} value={customerInfo.phone} onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})} />
                   <button type="submit" className={`btn btn-secondary ${styles.fullWidthBtn}`}>
-                    Request Consultation
+                    {selectedService === 'estate' ? 'Request Consultation & Schedule Call' : 'Request Consultation'}
                   </button>
                 </form>
               ) : (
                 <div className={styles.successMessage}>
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="1"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                   <h4 className="font-serif">Brief Received</h4>
-                  <p>A Lead Architect will contact you within 24 hours.</p>
+                  <p>Our concierge team will contact you within 24 hours to review your specifications.</p>
                 </div>
               )}
             </div>
