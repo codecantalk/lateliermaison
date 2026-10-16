@@ -468,47 +468,181 @@
   }
 }
 
-@media (max-width: 768px) {
+/* Mobile & Tablet Portrait: Map animation appears ON TOP, text & controls appear BELOW */
+@media (max-width: 900px) {
   .heroContainer {
-    min-height: 820px;
     height: auto;
-    padding-bottom: 2rem;
-  }
-  .topBar {
-    padding-top: 80px;
+    min-height: 100vh;
+    padding-top: 85px; /* Clear fixed navbar */
+    padding-bottom: 3.5rem;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
     justify-content: flex-start;
+    gap: 0.75rem;
   }
+
+  /* 1. Animation Stage appears on TOP - completely clear & unobstructed */
+  .mapViewport {
+    position: relative;
+    inset: auto;
+    order: 1;
+    width: 100%;
+    max-width: 580px;
+    height: auto;
+    aspect-ratio: 1000 / 580;
+    margin: 0 auto;
+    padding: 0 3%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+    z-index: 5;
+  }
+
+  .map3dStage {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    aspect-ratio: 1000 / 580;
+  }
+
+  .svgMap {
+    width: 100%;
+    height: 100%;
+    max-height: 380px;
+  }
+
+  /* 2. Top Bar HUD Ticker placed directly beneath map */
+  .topBar {
+    position: relative;
+    order: 2;
+    padding: 0 4% 0.25rem;
+    width: 100%;
+    max-width: 580px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    pointer-events: auto;
+  }
+
   .tickerBox {
-    align-items: flex-start;
-    text-align: left;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    width: 100%;
   }
+
+  .tickerItem {
+    font-size: 0.72rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    gap: 6px;
+  }
+
+  /* 3. Text & Controls placed BELLOW the animation */
+  .bottomSection {
+    position: relative;
+    order: 3;
+    padding: 0.5rem 4% 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    pointer-events: auto;
+  }
+
+  .titleBox {
+    text-align: center;
+    max-width: 520px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .eyebrow {
+    font-size: 0.72rem;
+    padding: 4px 10px;
+  }
+
   .heroHeadline {
-    font-size: 2.3rem;
+    font-size: clamp(2rem, 6.5vw, 2.75rem);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
   }
+
   .subheadline {
-    font-size: 0.9rem;
+    text-align: center;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    max-width: 440px;
+    margin: 0 auto;
   }
+
   .controlsBar {
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
+    gap: 0.85rem;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
   }
+
   .cityTabs {
+    width: 100%;
+    max-width: 480px;
     justify-content: center;
+    gap: 6px;
+    padding: 6px;
+    border-radius: 20px;
   }
+
+  .cityTabBtn {
+    padding: 7px 12px;
+    font-size: 0.78rem;
+  }
+
   .viewModeGroup {
+    width: 100%;
     justify-content: center;
+    gap: 6px;
   }
+
+  .viewModeBtn {
+    font-size: 0.76rem;
+    padding: 6px 14px;
+  }
+
+  /* Floating Tooltip Card: Docks as elegant bottom sheet modal on mobile */
   .tooltipCard {
     position: fixed;
     bottom: 20px;
     left: 50% !important;
     top: auto !important;
     transform: translateX(-50%) !important;
-    width: 90%;
+    width: 92%;
     max-width: 360px;
     z-index: 100;
   }
+
   .cardPointerLeft, .cardPointerRight {
     display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .cityTabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-radius: 16px;
+  }
+  .cityTabBtn {
+    justify-content: center;
+    text-align: center;
   }
 }

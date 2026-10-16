@@ -48,25 +48,26 @@ export default function ContactClient() {
         }
       }
 
-      // Save to Contacts (which we will create via SQL)
-      // We will actually just save to "leads" table with a special service type, OR create "contacts" table.
-      // Let's create 'contacts' in the instruction and save to 'contacts'.
-      const { error: dbError } = await supabase.from('contacts').insert({
-        full_name: formData.get('full_name'),
-        phone: formData.get('phone'),
-        email: formData.get('email'),
-        address: formData.get('address'),
-        service: formData.get('service'),
-        budget: formData.get('budget'),
-        timeline: formData.get('timeline'),
-        details: formData.get('details'),
-        image_urls: imageUrls,
-        status: 'pending'
+      // Submit to backend API which saves to DB and sends real-time emails
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: formData.get('full_name'),
+          phone: formData.get('phone'),
+          email: formData.get('email'),
+          address: formData.get('address'),
+          service: formData.get('service'),
+          budget: formData.get('budget'),
+          timeline: formData.get('timeline'),
+          details: formData.get('details'),
+          imageUrls: imageUrls,
+        }),
       })
 
-      if (dbError) {
-        console.error('DB Insert Error:', dbError)
-        throw new Error('Failed to save contact information. ' + dbError.message)
+      const resData = await response.json()
+      if (!response.ok) {
+        throw new Error(resData.error || 'Failed to submit contact request.')
       }
 
       setSubmitted(true)

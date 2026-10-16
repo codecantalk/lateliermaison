@@ -276,14 +276,17 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
 
   const saveLeadToDatabase = async (service: string, amount: number, details: any) => {
     try {
-      await supabase.from('leads').insert({
-        customer_name: customerInfo.name,
-        email: customerInfo.email,
-        phone: customerInfo.phone,
-        service_type: service,
-        total_price: amount,
-        details: details,
-        status: 'pending'
+      await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerName: customerInfo.name,
+          email: customerInfo.email,
+          phone: customerInfo.phone,
+          serviceType: service,
+          totalPrice: amount,
+          details: details,
+        }),
       });
     } catch (e) {
       console.error("Failed to save lead", e);
@@ -308,19 +311,47 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
     e.preventDefault();
     if (!cleaningResult) return
 
-    await saveLeadToDatabase('House Cleaning', cleaningResult.total, cleanValues);
+    let createdLeadId = ''
+    try {
+      const { data: leadData } = await supabase.from('leads').insert({
+        customer_name: customerInfo.name,
+        email: customerInfo.email,
+        phone: customerInfo.phone,
+        service_type: 'House Cleaning',
+        total_price: cleaningResult.total,
+        details: cleanValues,
+        status: 'pending'
+      }).select('id').single()
+      if (leadData?.id) createdLeadId = leadData.id
+    } catch (e) {
+      console.error("Failed to save lead", e);
+    }
 
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: cleaningResult.total, serviceName: `House Cleaning (${cleanValues.houseType})` }),
+        body: JSON.stringify({ 
+          amount: cleaningResult.total, 
+          serviceName: `Luxury House Cleaning (${cleanValues.houseType || 'Standard'})`,
+          customerName: customerInfo.name,
+          customerEmail: customerInfo.email,
+          customerPhone: customerInfo.phone,
+          details: cleanValues,
+          leadId: createdLeadId,
+        }),
       })
-      const { id } = await response.json()
-      const stripe: any = await stripePromise
-      await stripe?.redirectToCheckout({ sessionId: id })
-    } catch (err) {
-      alert('Failed to initiate checkout.')
+      const data = await response.json()
+      if (data.url) {
+        window.location.href = data.url
+      } else if (data.id) {
+        const stripe: any = await stripePromise
+        await stripe?.redirectToCheckout({ sessionId: data.id })
+      } else {
+        throw new Error(data.error || 'Failed to initiate checkout.')
+      }
+    } catch (err: any) {
+      alert(err.message || 'Failed to initiate checkout.')
     }
   }
 
