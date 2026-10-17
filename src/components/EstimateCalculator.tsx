@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import Image from 'next/image'
 import { useForm, Controller } from 'react-hook-form'
 import { gsap } from 'gsap'
@@ -158,18 +158,13 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
   const [selectedService, setSelectedService] = useState<ServiceType>(initialService)
   const [pricingConfig, setPricingConfig] = useState<any>(null)
   const [isPricingLoading, setIsPricingLoading] = useState(true)
-  const supabase = createClient()
+  const supabase = useMemo(() => createClient(), [])
 
   // Contact info & checkout state
   const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '', address: '' })
   const [isCheckingOut, setIsCheckingOut] = useState(false)
   const [isSubmittingQuote, setIsSubmittingQuote] = useState(false)
   const [leadSubmitted, setLeadSubmitted] = useState(false)
-
-  // Results State
-  const [cleaningResult, setCleaningResult] = useState<{total: number, subtotal: number, discount: number} | null>(null)
-  const [tvResult, setTvResult] = useState<{total: number, breakdown: string[]} | null>(null)
-  const [rangeResult, setRangeResult] = useState<{min: number, max: number, type: string} | null>(null)
 
   // 1. Cleaning Form
   const { control: controlClean, watch: watchClean } = useForm<CleaningData>({
@@ -345,59 +340,72 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
     return { total: Math.round(total), subtotal: Math.round(subtotal), discount }
   }, [])
 
-  useEffect(() => {
-    if (selectedService === 'cleaning') {
-      setCleaningResult(computeCleaning(cleanValues, pricingConfig))
+  // 1. Reactive Cleaning Calculation (Derived synchronously with useMemo - no infinite loops)
+  const cleaningResult = useMemo(() => {
+    if (selectedService !== 'cleaning') return null
+    return computeCleaning(cleanValues, pricingConfig)
+  }, [
+    selectedService,
+    computeCleaning,
+    pricingConfig,
+    cleanValues.houseType,
+    cleanValues.bedrooms,
+    cleanValues.bathrooms,
+    cleanValues.squareFeet,
+    cleanValues.floors,
+    cleanValues.condition,
+    cleanValues.packageType,
+    cleanValues.isMondayTuesday,
+    cleanValues.extras,
+    cleanValues.dynamicExtras
+  ])
+
+  // 2. Reactive TV Mounting Calculation (Derived synchronously with useMemo)
+  const tvResult = useMemo(() => {
+    if (selectedService !== 'tv') return null
+    let total = 149
+    const breakdown: string[] = []
+
+    // Size
+    if (tvValues.screenSize === 'medium') {
+      total = 179
+      breakdown.push('55" – 75" Display Base: $179')
+    } else if (tvValues.screenSize === 'large') {
+      total = 229
+      breakdown.push('75"+ Cinema Display Base: $229')
+    } else {
+      total = 149
+      breakdown.push('Under 55" Display Base: $149')
     }
-  }, [cleanValues, pricingConfig, selectedService, computeCleaning])
 
-  // Reactive TV Mounting Calculation
-  useEffect(() => {
-    if (selectedService === 'tv') {
-      let total = 149
-      const breakdown: string[] = []
-
-      // Size
-      if (tvValues.screenSize === 'medium') {
-        total = 179
-        breakdown.push('55" – 75" Display Base: $179')
-      } else if (tvValues.screenSize === 'large') {
-        total = 229
-        breakdown.push('75"+ Cinema Display Base: $229')
-      } else {
-        total = 149
-        breakdown.push('Under 55" Display Base: $149')
-      }
-
-      // Bracket
-      if (tvValues.bracketType === 'motion') {
-        total += 60
-        breakdown.push('Full-Motion Swivel Bracket (+$60)')
-      } else if (tvValues.bracketType === 'client_provided') {
-        total -= 20
-        breakdown.push('Client Provided Mount (-$20)')
-      } else {
-        breakdown.push('Tilt Mount Bracket Included')
-      }
-
-      // Wall
-      if (tvValues.wallSurface === 'brick') {
-        total += 75
-        breakdown.push('Masonry / Fireplace Anchors (+$75)')
-      }
-
-      // Wire
-      if (tvValues.wireConcealment === 'in_wall') {
-        total += 95
-        breakdown.push('In-Wall Power & Wire Kit (+$95)')
-      }
-
-      setTvResult({ total, breakdown })
+    // Bracket
+    if (tvValues.bracketType === 'motion') {
+      total += 60
+      breakdown.push('Full-Motion Swivel Bracket (+$60)')
+    } else if (tvValues.bracketType === 'client_provided') {
+      total -= 20
+      breakdown.push('Client Provided Mount (-$20)')
+    } else {
+      breakdown.push('Tilt Mount Bracket Included')
     }
-  }, [tvValues, selectedService])
 
-  // Reactive Painting Calculation
-  useEffect(() => {
+    // Wall
+    if (tvValues.wallSurface === 'brick') {
+      total += 75
+      breakdown.push('Masonry / Fireplace Anchors (+$75)')
+    }
+
+    // Wire
+    if (tvValues.wireConcealment === 'in_wall') {
+      total += 95
+      breakdown.push('In-Wall Power & Wire Kit (+$95)')
+    }
+
+    return { total, breakdown }
+  }, [selectedService, tvValues.screenSize, tvValues.bracketType, tvValues.wallSurface, tvValues.wireConcealment])
+
+  // 3. Reactive Range Calculation (Derived synchronously with useMemo)
+  const rangeResult = useMemo(() => {
     if (selectedService === 'painting') {
       const paintMap = {
         touchup: { min: 195, max: 350, label: 'Accent Wall & Touch-Up' },
@@ -406,12 +414,9 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
         exterior: { min: 3500, max: 9500, label: 'Exterior Facade & Siding' },
       }
       const cfg = paintMap[paintValues.scope] || paintMap.single_room
-      setRangeResult({ min: cfg.min, max: cfg.max, type: `Artisan Painting • ${cfg.label}` })
+      return { min: cfg.min, max: cfg.max, type: `Artisan Painting • ${cfg.label}` }
     }
-  }, [paintValues, selectedService])
 
-  // Reactive Flooring Calculation
-  useEffect(() => {
     if (selectedService === 'flooring') {
       const floorMap = {
         repair: { min: 195, max: 350, label: 'Scratch Repair & Transition' },
@@ -420,41 +425,45 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
         whole_estate: { min: 8000, max: 22000, label: 'Full Estate Installation' },
       }
       const cfg = floorMap[floorValues.scope] || floorMap.single_room
-      setRangeResult({ min: cfg.min, max: cfg.max, type: `Custom Flooring • ${cfg.label}` })
+      return { min: cfg.min, max: cfg.max, type: `Custom Flooring • ${cfg.label}` }
     }
-  }, [floorValues, selectedService])
 
-  // Reactive Remodeling Calculation
-  useEffect(() => {
     if (selectedService === 'remodeling') {
       const config = pricingConfig?.remodeling || DEFAULT_REMODEL
       const base = (config.scope[remodelValues.scope] || DEFAULT_REMODEL.scope[remodelValues.scope]) + 
                    (config.size[remodelValues.size] || DEFAULT_REMODEL.size[remodelValues.size])
-      setRangeResult({ min: Math.round(base * 0.9), max: Math.round(base * 1.15), type: 'Bathroom Remodeling' })
+      return { min: Math.round(base * 0.9), max: Math.round(base * 1.15), type: 'Bathroom Remodeling' }
     }
-  }, [remodelValues, pricingConfig, selectedService])
 
-  // Reactive Construction Calculation
-  useEffect(() => {
     if (selectedService === 'construction') {
       const config = pricingConfig?.construction || DEFAULT_CONST
       const rate = config.grade[constValues.grade] || DEFAULT_CONST.grade[constValues.grade] || 250
       const base = constValues.squareFeet * rate
-      setRangeResult({ min: Math.round(base * 0.9), max: Math.round(base * 1.2), type: 'New Construction' })
+      return { min: Math.round(base * 0.9), max: Math.round(base * 1.2), type: 'New Construction' }
     }
-  }, [constValues, pricingConfig, selectedService])
 
-  // Reactive Estate & Trades Calculation
-  useEffect(() => {
     if (selectedService === 'estate') {
       const tradeKey = estateValues.trade || 'handyman'
       const tradeConfig = ESTATE_PRICING[tradeKey] || ESTATE_PRICING.handyman
       const scopeKey = estateValues.scope || 'diagnostic'
       const [min, max] = tradeConfig[scopeKey] || [160, 260]
       const scopeName = scopeKey === 'diagnostic' ? 'Diagnostic Evaluation' : scopeKey === 'minor' ? 'Minor Project' : 'Major Renovation'
-      setRangeResult({ min, max, type: `${tradeConfig.label} • ${scopeName}` })
+      return { min, max, type: `${tradeConfig.label} • ${scopeName}` }
     }
-  }, [estateValues, selectedService])
+
+    return null
+  }, [
+    selectedService,
+    paintValues.scope,
+    floorValues.scope,
+    remodelValues.scope,
+    remodelValues.size,
+    pricingConfig,
+    constValues.grade,
+    constValues.squareFeet,
+    estateValues.trade,
+    estateValues.scope
+  ])
 
   // Handlers
   const handleServiceSelect = (service: ServiceType) => {
