@@ -1267,8 +1267,8 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                   </button>
 
                   <div className={styles.stripeSecurityNote}>
-                    <Lock size={12} color="#10b981" />
-                    <span>256-bit encrypted checkout via Stripe &bull; Card, Apple Pay, Google Pay</span>
+                    <Lock size={12} color="#10b981" className={styles.securityLockIcon} />
+                    <span>256-bit encrypted checkout via Stripe &bull; Card, Apple&nbsp;Pay, Google&nbsp;Pay</span>
                   </div>
 
                   <div className={styles.quoteDivider}>
@@ -1388,8 +1388,8 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                   </button>
 
                   <div className={styles.stripeSecurityNote}>
-                    <Lock size={12} color="#10b981" />
-                    <span>256-bit encrypted checkout via Stripe &bull; Card, Apple Pay, Google Pay</span>
+                    <Lock size={12} color="#10b981" className={styles.securityLockIcon} />
+                    <span>256-bit encrypted checkout via Stripe &bull; Card, Apple&nbsp;Pay, Google&nbsp;Pay</span>
                   </div>
 
                   <div className={styles.quoteDivider}>
@@ -1506,8 +1506,8 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                       </button>
 
                       <div className={styles.stripeSecurityNote}>
-                        <Lock size={12} color="#10b981" />
-                        <span>Secure checkout via Stripe &bull; Credit/Debit, Apple Pay</span>
+                        <Lock size={12} color="#10b981" className={styles.securityLockIcon} />
+                        <span>Secure checkout via Stripe &bull; Credit/Debit, Apple&nbsp;Pay</span>
                       </div>
 
                       <div className={styles.quoteDivider}>
