@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import { useCMSNotifications } from '@/context/CMSNotificationsContext'
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -17,12 +18,20 @@ import styles from './page.module.css'
 
 export default function AdminSidebar() {
   const pathname = usePathname()
+  const { countsByType } = useCMSNotifications()
 
   const isActive = (path: string) => {
     if (path === '/admin') {
       return pathname === '/admin'
     }
     return pathname.startsWith(path)
+  }
+
+  const getBadgeCount = (href: string) => {
+    if (href === '/admin/orders') return countsByType.orders
+    if (href === '/admin/contacts') return countsByType.contacts
+    if (href === '/admin/estimates') return countsByType.leads
+    return 0
   }
 
   const navSections = [
@@ -121,6 +130,7 @@ export default function AdminSidebar() {
               {section.items.map((item) => {
                 const active = isActive(item.href)
                 const Icon = item.icon
+                const badgeCount = getBadgeCount(item.href)
                 return (
                   <Link
                     key={item.href}
@@ -129,7 +139,7 @@ export default function AdminSidebar() {
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '0.75rem',
+                      justifyContent: 'space-between',
                       padding: '0.75rem 0.85rem',
                       borderRadius: '8px',
                       textDecoration: 'none',
@@ -141,8 +151,26 @@ export default function AdminSidebar() {
                       transition: 'all 0.15s ease',
                     }}
                   >
-                    <Icon size={18} color={active ? '#c5a059' : '#64748b'} />
-                    <span>{item.label}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <Icon size={18} color={active ? '#c5a059' : '#64748b'} />
+                      <span>{item.label}</span>
+                    </div>
+
+                    {badgeCount > 0 && (
+                      <span
+                        style={{
+                          background: item.href === '/admin/orders' ? '#0B132B' : 'rgba(197, 160, 89, 0.2)',
+                          color: item.href === '/admin/orders' ? '#c5a059' : '#0B132B',
+                          fontSize: '0.68rem',
+                          fontWeight: 700,
+                          padding: '2px 7px',
+                          borderRadius: '10px',
+                          letterSpacing: '-0.02em',
+                        }}
+                      >
+                        {badgeCount}
+                      </span>
+                    )}
                   </Link>
                 )
               })}
