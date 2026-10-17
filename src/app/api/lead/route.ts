@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { sendEmail, buildCustomerContactEmail, wrapLuxuryEmail } from '@/lib/email'
+import { sendEmail, buildCustomerContactEmail, wrapLuxuryEmail, formatSpecsTable } from '@/lib/email'
 
 export async function POST(req: Request) {
   try {
@@ -98,10 +98,7 @@ export async function POST(req: Request) {
           </tr>
         </table>
 
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-top: 16px;">
-          <div style="font-size: 12px; font-weight: bold; color: #64748b; text-transform: uppercase; margin-bottom: 8px;">Calculation Specs:</div>
-          <pre style="margin: 0; font-family: monospace; font-size: 12px; color: #334155; white-space: pre-wrap; overflow-x: auto;">${JSON.stringify(details || {}, null, 2)}</pre>
-        </div>
+        ${formatSpecsTable(details)}
 
         <div style="margin-top: 24px; text-align: center;">
           <a href="https://www.lateliermaison.com/admin/estimates" style="display: inline-block; background: #0B132B; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">View in CMS Estimates Portal &rarr;</a>

@@ -284,6 +284,241 @@ export function buildCustomerOrderEmail({
   return wrapLuxuryEmail(content, `Order Confirmed: ${serviceName} ($${amount.toFixed(2)})`)
 }
 
+const EXTRA_LABELS: Record<string, string> = {
+  fridge: 'Inside Refrigerator Scrub',
+  oven: 'Inside Oven & Range Degrease',
+  dishwashing: 'Dishwashing & Sanitization',
+  laundry: 'In-Home Laundry Wash & Fold',
+  deep: 'Deep Baseboard & Grout Scrub',
+  cabinets: 'Interior Cabinet Wipe-Down',
+  windows: 'Interior Window Glass & Sills',
+  post_construction: 'Post-Construction Dust Extraction',
+  garage: 'Garage Sweep & Detail',
+  porch: 'Exterior Porch / Patio Detail',
+}
+
+const HOUSE_TYPE_LABELS: Record<string, string> = {
+  apartment: 'Apartment / Condo',
+  townhome: 'Townhome',
+  single: 'Single Family Residence',
+}
+
+const PACKAGE_LABELS: Record<string, string> = {
+  standard: 'Standard Maintenance',
+  deep: 'Detailed Deep Clean',
+  move_in_out: 'Move-In / Move-Out Turnover',
+}
+
+const CONDITION_LABELS: Record<string, string> = {
+  standard: 'Regularly Maintained (Standard)',
+  moderate: 'Moderate Buildup (Lived-in)',
+  heavy: 'Heavy Scrub Needed (First-time deep clean)',
+}
+
+const TRADE_LABELS: Record<string, string> = {
+  plumbing: 'Master Plumbing',
+  electrical: 'Licensed Electrical',
+  painting: 'Artisan Painting & Finishes',
+  flooring: 'Custom Flooring & Hardwoods',
+  'tv mounting': 'Precision TV & Audio Mounting',
+  lighting: 'Architectural & Smart Lighting',
+  'home theater': 'Bespoke Home Theater & AV',
+  handyman: 'Master Handyman Services',
+}
+
+const SCOPE_LABELS: Record<string, string> = {
+  diagnostic: 'Diagnostic Service Call / Evaluation',
+  minor: 'Minor Project / Repair',
+  major: 'Major Renovation / Installation',
+  cosmetic: 'Cosmetic Refresh',
+  partial: 'Partial Remodel',
+  full: 'Full Gut & Custom Architecture',
+}
+
+/**
+ * Universal Formatter: Converts raw details objects into a clean luxury HTML table
+ * Eliminates raw JSON syntax completely from all client and staff emails.
+ */
+export function formatSpecsTable(details: any): string {
+  if (!details || typeof details !== 'object' || Object.keys(details).length === 0) {
+    return '<p style="margin: 0; color: #64748b; font-size: 13px;">Standard service specifications.</p>'
+  }
+
+  const rows: { label: string; value: string }[] = []
+
+  if (details.houseType) {
+    rows.push({
+      label: 'Property Architecture',
+      value: HOUSE_TYPE_LABELS[details.houseType] || String(details.houseType).toUpperCase(),
+    })
+  }
+
+  if (details.packageType) {
+    rows.push({
+      label: 'Service Package',
+      value: PACKAGE_LABELS[details.packageType] || String(details.packageType),
+    })
+  }
+
+  if (details.bedrooms !== undefined) {
+    rows.push({
+      label: 'Bedrooms',
+      value: `${details.bedrooms} ${Number(details.bedrooms) === 1 ? 'Bedroom' : 'Bedrooms'}`,
+    })
+  }
+
+  if (details.bathrooms !== undefined) {
+    rows.push({
+      label: 'Bathrooms',
+      value: `${details.bathrooms} ${Number(details.bathrooms) === 1 ? 'Bathroom' : 'Bathrooms'}`,
+    })
+  }
+
+  if (details.squareFeet) {
+    rows.push({
+      label: 'Approximate Size',
+      value: `${Number(details.squareFeet).toLocaleString()} sq ft`,
+    })
+  }
+
+  if (details.floors) {
+    rows.push({
+      label: 'Levels / Floors',
+      value: `${details.floors} ${Number(details.floors) === 1 ? 'Floor (Single Level)' : 'Floors'}`,
+    })
+  }
+
+  if (details.location) {
+    rows.push({
+      label: 'Service Location',
+      value: String(details.location),
+    })
+  }
+
+  if (details.condition) {
+    rows.push({
+      label: 'Home Condition',
+      value: CONDITION_LABELS[details.condition] || String(details.condition),
+    })
+  }
+
+  // Selected Inclusions / Add-ons
+  const extrasList: string[] = []
+  if (Array.isArray(details.extras) && details.extras.length > 0) {
+    details.extras.forEach((ext: string) => {
+      extrasList.push(EXTRA_LABELS[ext] || ext)
+    })
+  }
+  if (Array.isArray(details.dynamicExtras) && details.dynamicExtras.length > 0) {
+    details.dynamicExtras.forEach((ext: string) => {
+      extrasList.push(EXTRA_LABELS[ext] || ext)
+    })
+  }
+  if (extrasList.length > 0) {
+    rows.push({
+      label: 'Selected Add-Ons',
+      value: extrasList.join(', '),
+    })
+  }
+
+  if (details.isMondayTuesday !== undefined) {
+    rows.push({
+      label: 'Promotional Schedule',
+      value: details.isMondayTuesday
+        ? 'Monday / Tuesday Special (10% Discount Applied)'
+        : 'Regular Schedule',
+    })
+  }
+
+  if (details.trade) {
+    rows.push({
+      label: 'Required Trade',
+      value: TRADE_LABELS[details.trade] || String(details.trade),
+    })
+  }
+
+  if (details.scope) {
+    rows.push({
+      label: 'Scope of Need',
+      value: SCOPE_LABELS[details.scope] || String(details.scope),
+    })
+  }
+
+  if (details.size) {
+    rows.push({
+      label: 'Space Size',
+      value: String(details.size).charAt(0).toUpperCase() + String(details.size).slice(1),
+    })
+  }
+
+  if (details.grade) {
+    rows.push({
+      label: 'Build Grade',
+      value: details.grade === 'luxury' ? 'Luxury Build' : details.grade === 'ultra' ? 'Ultra-Luxury Custom' : 'Monumental Legacy',
+    })
+  }
+
+  if (details.estimatedPriceRange) {
+    rows.push({
+      label: 'Estimated Range',
+      value: String(details.estimatedPriceRange),
+    })
+  }
+
+  if (details.address) {
+    rows.push({
+      label: 'Service Address',
+      value: String(details.address),
+    })
+  }
+
+  // Fallback for any unexpected custom fields without raw JSON brackets
+  const knownKeys = new Set([
+    'houseType', 'packageType', 'bedrooms', 'bathrooms', 'squareFeet', 'floors',
+    'location', 'condition', 'extras', 'dynamicExtras', 'isMondayTuesday',
+    'trade', 'scope', 'size', 'grade', 'estimatedPriceRange', 'address',
+    'subtotal', 'discount', 'estimatedPrice', 'isEstimatedQuote', 'estimatedBaseline'
+  ])
+
+  Object.entries(details).forEach(([key, val]) => {
+    if (!knownKeys.has(key) && val !== null && val !== undefined && typeof val !== 'object') {
+      const cleanLabel = key.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ')
+      rows.push({
+        label: cleanLabel.charAt(0).toUpperCase() + cleanLabel.slice(1),
+        value: String(val),
+      })
+    }
+  })
+
+  if (rows.length === 0) {
+    return '<p style="margin: 0; color: #64748b; font-size: 13px;">Standard service specifications recorded.</p>'
+  }
+
+  return `
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; font-size: 13px; background-color: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; overflow: hidden; margin-top: 14px;">
+      <thead>
+        <tr style="background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+          <th colspan="2" align="left" style="padding: 10px 14px; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em;">
+            Order Specifications & Scope
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map((row, idx) => `
+          <tr style="${idx < rows.length - 1 ? 'border-bottom: 1px solid #f1f5f9;' : ''}">
+            <td width="38%" style="padding: 9px 14px; color: #64748b; font-weight: 600; vertical-align: top;">
+              ${row.label}:
+            </td>
+            <td style="padding: 9px 14px; color: #0f172a; font-weight: 500; vertical-align: top;">
+              ${row.value}
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `
+}
+
 /**
  * Template: Internal Alert to order@lateliermaison.com for Paid Orders
  */
@@ -304,6 +539,8 @@ export function buildInternalOrderEmail({
   amount: number
   details?: any
 }) {
+  const specsHtml = formatSpecsTable(details)
+
   const content = `
     <div style="margin-bottom: 20px;">
       <div style="font-size: 12px; font-weight: 700; color: #16a34a; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">New Paid Booking</div>
@@ -337,10 +574,7 @@ export function buildInternalOrderEmail({
       </tr>
     </table>
 
-    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-top: 16px;">
-      <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px;">Specifications Payload:</div>
-      <pre style="margin: 0; font-family: monospace; font-size: 12px; color: #334155; white-space: pre-wrap; overflow-x: auto;">${JSON.stringify(details || {}, null, 2)}</pre>
-    </div>
+    ${specsHtml}
 
     <div style="margin-top: 24px; text-align: center;">
       <a href="https://www.lateliermaison.com/admin/orders" style="display: inline-block; background: #0B132B; color: #ffffff; text-decoration: none; padding: 11px 24px; border-radius: 6px; font-size: 13px; font-weight: 600; letter-spacing: 0.04em;">View in CMS Orders Portal &rarr;</a>
