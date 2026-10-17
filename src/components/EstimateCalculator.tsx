@@ -8,13 +8,14 @@ import { loadStripe } from '@stripe/stripe-js'
 import { 
   Refrigerator, Microwave, UtensilsCrossed, Shirt, 
   Sparkles, Archive, LayoutGrid, Hammer, CarFront, Tent,
-  CreditCard, ShieldCheck, CheckCircle2, Lock, ArrowRight, Loader2
+  CreditCard, CheckCircle2, Lock, ArrowRight, Loader2,
+  Tv, Paintbrush, Layers, Wrench
 } from 'lucide-react'
 import styles from './EstimateCalculator.module.css'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-type ServiceType = 'cleaning' | 'remodeling' | 'construction' | 'estate' | null
+export type ServiceType = 'cleaning' | 'tv' | 'painting' | 'flooring' | 'remodeling' | 'estate' | 'construction' | null
 
 type CleaningData = {
   houseType: 'apartment' | 'townhome' | 'single'
@@ -30,6 +31,23 @@ type CleaningData = {
   dynamicExtras: string[]
 }
 
+type TvData = {
+  screenSize: 'small' | 'medium' | 'large'
+  bracketType: 'tilt' | 'motion' | 'client_provided'
+  wallSurface: 'drywall' | 'brick'
+  wireConcealment: 'none' | 'in_wall'
+}
+
+type PaintingData = {
+  scope: 'touchup' | 'single_room' | 'multi_room' | 'exterior'
+  condition: 'smooth' | 'prep_needed'
+}
+
+type FlooringData = {
+  scope: 'repair' | 'single_room' | 'multi_room' | 'whole_estate'
+  material: 'hardwood' | 'tile' | 'luxury_vinyl'
+}
+
 type RemodelingData = {
   scope: 'cosmetic' | 'partial' | 'full'
   size: 'small' | 'medium' | 'large' | 'master'
@@ -41,11 +59,11 @@ type ConstructionData = {
 }
 
 type EstateData = {
-  trade: 'plumbing' | 'electrical' | 'painting' | 'flooring' | 'tv mounting' | 'lighting' | 'home theater' | 'handyman'
+  trade: 'plumbing' | 'electrical' | 'lighting' | 'home theater' | 'handyman'
   scope: 'diagnostic' | 'minor' | 'major'
 }
 
-// Compact Icons mapping (20px icons for app-screen aesthetic)
+// Compact Icons mapping
 const ICONS_MAP: Record<string, React.ReactNode> = {
   fridge: <Refrigerator size={20} strokeWidth={1.5} />,
   oven: <Microwave size={20} strokeWidth={1.5} />,
@@ -59,7 +77,7 @@ const ICONS_MAP: Record<string, React.ReactNode> = {
   porch: <Tent size={20} strokeWidth={1.5} />
 }
 
-// Standard fallback pricing matrix in case network or pricing_config is slow
+// Default Fallbacks
 const DEFAULT_CLEANING = {
   base: { apartment: 169, townhome: 199, single: 229 },
   additions: { bedroom: 30, bathroom: 35 },
@@ -86,7 +104,7 @@ const DEFAULT_CONST = {
   grade: { luxury: 250, ultra: 400, monumental: 700 }
 }
 
-// Master Trade & Scope Pricing Matrix for Home Services / Estate
+// Master Trade & Scope Pricing Matrix for Home Services & Trades
 const ESTATE_PRICING: Record<string, { label: string; diagnostic: [number, number]; minor: [number, number]; major: [number, number] }> = {
   plumbing: {
     label: 'Master Plumbing',
@@ -99,24 +117,6 @@ const ESTATE_PRICING: Record<string, { label: string; diagnostic: [number, numbe
     diagnostic: [195, 350],
     minor: [480, 1400],
     major: [2800, 9500],
-  },
-  painting: {
-    label: 'Artisan Painting & Finishes',
-    diagnostic: [150, 250],
-    minor: [650, 1800],
-    major: [3200, 12000],
-  },
-  flooring: {
-    label: 'Custom Flooring & Hardwoods',
-    diagnostic: [150, 250],
-    minor: [800, 2200],
-    major: [4500, 15000],
-  },
-  'tv mounting': {
-    label: 'Precision TV & Audio Mounting',
-    diagnostic: [150, 220],
-    minor: [280, 580],
-    major: [1200, 2800],
   },
   lighting: {
     label: 'Architectural & Smart Lighting',
@@ -143,12 +143,19 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 export default function EstimateCalculator({ defaultService = null }: { defaultService?: ServiceType }) {
   const searchParams = useSearchParams()
   
-  // URL params can override defaults
-  const urlService = searchParams?.get('service') as ServiceType | null
-  const urlTrade = searchParams?.get('trade') as any
-  const urlScope = searchParams?.get('scope') as any
+  // URL params mapping
+  const rawService = searchParams?.get('service')
+  const rawTrade = searchParams?.get('trade')
+  let initialService: ServiceType = defaultService || 'cleaning'
+  if (rawService === 'tv-mounting' || rawService === 'tv' || rawTrade === 'tv mounting' || rawTrade === 'tv') initialService = 'tv'
+  else if (rawService === 'painting' || rawTrade === 'painting') initialService = 'painting'
+  else if (rawService === 'flooring' || rawTrade === 'flooring') initialService = 'flooring'
+  else if (rawService === 'remodeling') initialService = 'remodeling'
+  else if (rawService === 'construction') initialService = 'construction'
+  else if (rawService === 'estate') initialService = 'estate'
+  else if (rawService === 'cleaning' || rawService === 'housecleaning') initialService = 'cleaning'
   
-  const [selectedService, setSelectedService] = useState<ServiceType>(urlService || defaultService || 'cleaning')
+  const [selectedService, setSelectedService] = useState<ServiceType>(initialService)
   const [pricingConfig, setPricingConfig] = useState<any>(null)
   const [isPricingLoading, setIsPricingLoading] = useState(true)
   const supabase = createClient()
@@ -161,10 +168,11 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
 
   // Results State
   const [cleaningResult, setCleaningResult] = useState<{total: number, subtotal: number, discount: number} | null>(null)
+  const [tvResult, setTvResult] = useState<{total: number, breakdown: string[]} | null>(null)
   const [rangeResult, setRangeResult] = useState<{min: number, max: number, type: string} | null>(null)
 
-  // Forms
-  const { control: controlClean, handleSubmit: handleCleanSubmit, watch: watchClean, setValue: setCleanValue } = useForm<CleaningData>({
+  // 1. Cleaning Form
+  const { control: controlClean, watch: watchClean } = useForm<CleaningData>({
     defaultValues: { 
       houseType: 'apartment', 
       bedrooms: 2, 
@@ -181,37 +189,65 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
   })
   const cleanValues = watchClean()
 
-  const { control: controlRemodel, handleSubmit: handleRemodelSubmit, watch: watchRemodel } = useForm<RemodelingData>({
+  // 2. TV Mounting Form
+  const { control: controlTv, watch: watchTv } = useForm<TvData>({
+    defaultValues: {
+      screenSize: 'medium',
+      bracketType: 'tilt',
+      wallSurface: 'drywall',
+      wireConcealment: 'none'
+    }
+  })
+  const tvValues = watchTv()
+
+  // 3. Painting Form
+  const { control: controlPaint, watch: watchPaint } = useForm<PaintingData>({
+    defaultValues: { scope: 'single_room', condition: 'smooth' }
+  })
+  const paintValues = watchPaint()
+
+  // 4. Flooring Form
+  const { control: controlFloor, watch: watchFloor } = useForm<FlooringData>({
+    defaultValues: { scope: 'single_room', material: 'hardwood' }
+  })
+  const floorValues = watchFloor()
+
+  // 5. Remodeling Form
+  const { control: controlRemodel, watch: watchRemodel } = useForm<RemodelingData>({
     defaultValues: { scope: 'partial', size: 'medium' }
   })
   const remodelValues = watchRemodel()
 
-  const { control: controlConst, handleSubmit: handleConstSubmit, watch: watchConst } = useForm<ConstructionData>({
+  // 6. Construction Form
+  const { control: controlConst, watch: watchConst } = useForm<ConstructionData>({
     defaultValues: { squareFeet: 3500, grade: 'luxury' }
   })
   const constValues = watchConst()
 
-  const { control: controlEstate, handleSubmit: handleEstateSubmit, watch: watchEstate, setValue: setEstateValue } = useForm<EstateData>({
-    defaultValues: { trade: urlTrade || 'handyman', scope: urlScope || 'diagnostic' }
+  // 7. Estate & Trades Form
+  const { control: controlEstate, watch: watchEstate, setValue: setEstateValue } = useForm<EstateData>({
+    defaultValues: { 
+      trade: (rawTrade && ['handyman', 'plumbing', 'electrical', 'lighting', 'home theater'].includes(rawTrade) ? rawTrade : 'handyman') as any, 
+      scope: 'diagnostic' 
+    }
   })
   const estateValues = watchEstate()
 
-  // Fetch dynamic pricing
+  // Load pricing configuration
   useEffect(() => {
     async function fetchPricing() {
       try {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from('pricing_config')
           .select('key, value')
           .in('key', ['cleaning_pricing', 'remodeling_pricing', 'construction_pricing'])
         
         if (data && data.length > 0) {
-          const pricing = {
+          setPricingConfig({
             cleaning: data.find(d => d.key === 'cleaning_pricing')?.value || DEFAULT_CLEANING,
             remodeling: data.find(d => d.key === 'remodeling_pricing')?.value || DEFAULT_REMODEL,
             construction: data.find(d => d.key === 'construction_pricing')?.value || DEFAULT_CONST,
-          }
-          setPricingConfig(pricing)
+          })
         } else {
           setPricingConfig({
             cleaning: DEFAULT_CLEANING,
@@ -232,14 +268,20 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
     fetchPricing()
   }, [supabase])
 
-  // Sync URL parameters after hydration
+  // Sync URL parameters
   useEffect(() => {
-    if (urlService) setSelectedService(urlService)
-    if (urlTrade) setEstateValue('trade', urlTrade)
-    if (urlScope) setEstateValue('scope', urlScope)
-  }, [urlService, urlTrade, urlScope, setEstateValue])
+    if (rawService) {
+      if (rawService === 'tv-mounting' || rawService === 'tv') setSelectedService('tv')
+      else if (rawService === 'painting') setSelectedService('painting')
+      else if (rawService === 'flooring') setSelectedService('flooring')
+      else if (rawService === 'remodeling') setSelectedService('remodeling')
+      else if (rawService === 'construction') setSelectedService('construction')
+      else if (rawService === 'estate') setSelectedService('estate')
+      else if (rawService === 'cleaning') setSelectedService('cleaning')
+    }
+  }, [rawService])
 
-  // Pure Calculation function for House Cleaning
+  // Reactive Cleaning Calculation
   const computeCleaning = useCallback((data: CleaningData, config: any) => {
     const cfg = config?.cleaning || DEFAULT_CLEANING
     let basePrice = cfg.base?.[data.houseType] || 169
@@ -272,23 +314,14 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
       total += (data.bathrooms - 1) * (cfg.additions?.bathroom || 35)
     }
 
-    if (data.floors === 2) {
-      total += 15
-    } else if (data.floors >= 3) {
-      total += 30
-    }
+    if (data.floors === 2) total += 15
+    else if (data.floors >= 3) total += 30
 
-    if (data.condition === 'moderate') {
-      total = Math.round(total * 1.15)
-    } else if (data.condition === 'heavy') {
-      total = Math.round(total * 1.30)
-    }
+    if (data.condition === 'moderate') total = Math.round(total * 1.15)
+    else if (data.condition === 'heavy') total = Math.round(total * 1.30)
 
-    if (data.packageType === 'deep') {
-      total = Math.round(total * 1.35)
-    } else if (data.packageType === 'move_in_out') {
-      total = Math.round(total * 1.45)
-    }
+    if (data.packageType === 'deep') total = Math.round(total * 1.35)
+    else if (data.packageType === 'move_in_out') total = Math.round(total * 1.45)
 
     data.extras?.forEach(extra => {
       const fixed = cfg.fixedExtras?.[extra]
@@ -312,15 +345,106 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
     return { total: Math.round(total), subtotal: Math.round(subtotal), discount }
   }, [])
 
-  // Auto-recalculate cleaning reactively for modern instant-feedback app feel
   useEffect(() => {
     if (selectedService === 'cleaning') {
-      const res = computeCleaning(cleanValues, pricingConfig)
-      setCleaningResult(res)
+      setCleaningResult(computeCleaning(cleanValues, pricingConfig))
     }
   }, [cleanValues, pricingConfig, selectedService, computeCleaning])
 
-  // Auto-calculate Estate / Home Services baseline reactively
+  // Reactive TV Mounting Calculation
+  useEffect(() => {
+    if (selectedService === 'tv') {
+      let total = 149
+      const breakdown: string[] = []
+
+      // Size
+      if (tvValues.screenSize === 'medium') {
+        total = 179
+        breakdown.push('55" – 75" Display Base: $179')
+      } else if (tvValues.screenSize === 'large') {
+        total = 229
+        breakdown.push('75"+ Cinema Display Base: $229')
+      } else {
+        total = 149
+        breakdown.push('Under 55" Display Base: $149')
+      }
+
+      // Bracket
+      if (tvValues.bracketType === 'motion') {
+        total += 60
+        breakdown.push('Full-Motion Swivel Bracket (+$60)')
+      } else if (tvValues.bracketType === 'client_provided') {
+        total -= 20
+        breakdown.push('Client Provided Mount (-$20)')
+      } else {
+        breakdown.push('Tilt Mount Bracket Included')
+      }
+
+      // Wall
+      if (tvValues.wallSurface === 'brick') {
+        total += 75
+        breakdown.push('Masonry / Fireplace Anchors (+$75)')
+      }
+
+      // Wire
+      if (tvValues.wireConcealment === 'in_wall') {
+        total += 95
+        breakdown.push('In-Wall Power & Wire Kit (+$95)')
+      }
+
+      setTvResult({ total, breakdown })
+    }
+  }, [tvValues, selectedService])
+
+  // Reactive Painting Calculation
+  useEffect(() => {
+    if (selectedService === 'painting') {
+      const paintMap = {
+        touchup: { min: 195, max: 350, label: 'Accent Wall & Touch-Up' },
+        single_room: { min: 550, max: 950, label: 'Single Room (Walls & Trim)' },
+        multi_room: { min: 1800, max: 4500, label: 'Multiple Rooms / Interior' },
+        exterior: { min: 3500, max: 9500, label: 'Exterior Facade & Siding' },
+      }
+      const cfg = paintMap[paintValues.scope] || paintMap.single_room
+      setRangeResult({ min: cfg.min, max: cfg.max, type: `Artisan Painting • ${cfg.label}` })
+    }
+  }, [paintValues, selectedService])
+
+  // Reactive Flooring Calculation
+  useEffect(() => {
+    if (selectedService === 'flooring') {
+      const floorMap = {
+        repair: { min: 195, max: 350, label: 'Scratch Repair & Transition' },
+        single_room: { min: 900, max: 2200, label: 'Single Room Installation' },
+        multi_room: { min: 3500, max: 8500, label: 'Multi-Room Hardwood / Tile' },
+        whole_estate: { min: 8000, max: 22000, label: 'Full Estate Installation' },
+      }
+      const cfg = floorMap[floorValues.scope] || floorMap.single_room
+      setRangeResult({ min: cfg.min, max: cfg.max, type: `Custom Flooring • ${cfg.label}` })
+    }
+  }, [floorValues, selectedService])
+
+  // Reactive Remodeling Calculation
+  useEffect(() => {
+    if (selectedService === 'remodeling') {
+      const config = pricingConfig?.remodeling || DEFAULT_REMODEL
+      const base = (config.scope[remodelValues.scope] || DEFAULT_REMODEL.scope[remodelValues.scope]) + 
+                   (config.size[remodelValues.size] || DEFAULT_REMODEL.size[remodelValues.size])
+      setRangeResult({ min: Math.round(base * 0.9), max: Math.round(base * 1.15), type: 'Bathroom Remodeling' })
+    }
+  }, [remodelValues, pricingConfig, selectedService])
+
+  // Reactive Construction Calculation
+  useEffect(() => {
+    if (selectedService === 'construction') {
+      const config = pricingConfig?.construction || DEFAULT_CONST
+      const rate = config.grade[constValues.grade] || DEFAULT_CONST.grade[constValues.grade] || 250
+      const base = constValues.squareFeet * rate
+      setRangeResult({ min: Math.round(base * 0.9), max: Math.round(base * 1.2), type: 'New Construction' })
+    }
+  }, [constValues, pricingConfig, selectedService])
+
+  // Reactive Estate & Trades Calculation
   useEffect(() => {
     if (selectedService === 'estate') {
       const tradeKey = estateValues.trade || 'handyman'
@@ -337,29 +461,6 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
     setSelectedService(service)
     setLeadSubmitted(false)
     gsap.fromTo('.form-anim', { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power2.out' })
-  }
-
-  const onRemodelSubmit = (data: RemodelingData) => {
-    const config = pricingConfig?.remodeling || DEFAULT_REMODEL
-    const base = (config.scope[data.scope] || DEFAULT_REMODEL.scope[data.scope]) + 
-                 (config.size[data.size] || DEFAULT_REMODEL.size[data.size])
-    setRangeResult({ min: Math.round(base * 0.9), max: Math.round(base * 1.15), type: 'Bathroom Remodeling' })
-  }
-
-  const onConstSubmit = (data: ConstructionData) => {
-    const config = pricingConfig?.construction || DEFAULT_CONST
-    const rate = config.grade[data.grade] || DEFAULT_CONST.grade[data.grade] || 250
-    const base = data.squareFeet * rate
-    setRangeResult({ min: Math.round(base * 0.9), max: Math.round(base * 1.2), type: 'New Construction' })
-  }
-
-  const onEstateSubmit = (data: EstateData) => {
-    const tradeKey = data.trade || 'handyman'
-    const tradeConfig = ESTATE_PRICING[tradeKey] || ESTATE_PRICING.handyman
-    const scopeKey = data.scope || 'diagnostic'
-    const [min, max] = tradeConfig[scopeKey] || [160, 260]
-    const scopeName = scopeKey === 'diagnostic' ? 'Diagnostic Evaluation' : scopeKey === 'minor' ? 'Minor Project' : 'Major Renovation'
-    setRangeResult({ min, max, type: `${tradeConfig.label} • ${scopeName}` })
   }
 
   const saveLeadToDatabase = async (service: string, amount: number, details: any) => {
@@ -381,7 +482,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
     }
   }
 
-  // 1. Direct Stripe Checkout Flow (When user clicks Pay & Book Now)
+  // 1. Direct Checkout Flow (When user clicks Pay & Book)
   const handleStripeCheckout = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!customerInfo.name || !customerInfo.email || !customerInfo.phone) {
@@ -391,25 +492,34 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
 
     setIsCheckingOut(true)
 
-    const totalAmount = selectedService === 'cleaning'
-      ? (cleaningResult?.total || 0)
-      : (rangeResult?.min || 0)
+    let totalAmount = 0
+    let serviceLabel = "L'Atelier Maison Home Service"
+    let detailsPayload: any = {}
+
+    if (selectedService === 'cleaning') {
+      totalAmount = cleaningResult?.total || 0
+      serviceLabel = `House Cleaning (${cleanValues.packageType === 'deep' ? 'Deep Clean' : cleanValues.packageType === 'move_in_out' ? 'Move-Out Turnover' : 'Standard Maintenance'})`
+      detailsPayload = { ...cleanValues, ...customerInfo, estimatedPrice: totalAmount, isStripeCheckout: true }
+    } else if (selectedService === 'tv') {
+      totalAmount = tvResult?.total || 179
+      serviceLabel = `Precision TV Mounting (${tvValues.screenSize === 'large' ? '75"+ Screen' : tvValues.screenSize === 'medium' ? '55"-75" Screen' : 'Under 55" Screen'})`
+      detailsPayload = { ...tvValues, ...customerInfo, estimatedPrice: totalAmount, isStripeCheckout: true }
+    } else {
+      totalAmount = rangeResult?.min || 0
+      serviceLabel = `${selectedService ? selectedService.toUpperCase() : 'Home Service'} Reservation`
+      detailsPayload = { 
+        ...(selectedService === 'painting' ? paintValues : selectedService === 'flooring' ? floorValues : selectedService === 'remodeling' ? remodelValues : selectedService === 'construction' ? constValues : estateValues),
+        ...customerInfo, 
+        estimatedPrice: totalAmount, 
+        isStripeCheckout: true 
+      }
+    }
 
     if (totalAmount <= 0) {
       alert('A valid service price is required for checkout.')
       setIsCheckingOut(false)
       return
     }
-
-    const serviceLabel = selectedService === 'cleaning'
-      ? `House Cleaning (${cleanValues.packageType === 'deep' ? 'Deep Clean' : cleanValues.packageType === 'move_in_out' ? 'Move-Out Turnover' : 'Standard Maintenance'})`
-      : selectedService === 'estate'
-      ? `Home Services (${rangeResult?.type || estateValues.trade})`
-      : `${selectedService ? selectedService.toUpperCase() : 'Home Service'} Reservation`
-
-    const detailsPayload = selectedService === 'cleaning'
-      ? { ...cleanValues, ...customerInfo, estimatedPrice: cleaningResult?.total, isStripeCheckout: true }
-      : { ...(selectedService === 'construction' ? constValues : selectedService === 'remodeling' ? remodelValues : estateValues), ...customerInfo, estimatedPrice: totalAmount, isStripeCheckout: true }
 
     let createdLeadId = ''
     try {
@@ -466,31 +576,37 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
 
     setIsSubmittingQuote(true)
 
-    const serviceName = selectedService === 'cleaning'
-      ? 'House Cleaning'
-      : selectedService === 'estate'
-      ? `Home Services (${rangeResult?.type || estateValues.trade})`
-      : selectedService === 'remodeling'
-      ? `Bathroom Remodeling (${rangeResult?.type || 'Remodel'})`
-      : 'New Construction'
+    let serviceName = 'Estimate Consultation'
+    let amount = 0
+    let details: any = {}
 
-    const amount = selectedService === 'cleaning'
-      ? (cleaningResult?.total || 0)
-      : (rangeResult?.min || 0)
-
-    const details = selectedService === 'cleaning'
-      ? {
-          ...cleanValues,
-          estimatedPrice: cleaningResult?.total,
-          subtotal: cleaningResult?.subtotal,
-          discount: cleaningResult?.discount,
-          isEstimatedQuote: true,
-        }
-      : {
-          ...(selectedService === 'construction' ? constValues : selectedService === 'remodeling' ? remodelValues : estateValues),
-          estimatedPriceRange: rangeResult && rangeResult.min > 0 ? `$${rangeResult.min.toLocaleString()} – $${rangeResult.max.toLocaleString()}` : undefined,
-          estimatedBaseline: amount,
-        }
+    if (selectedService === 'cleaning') {
+      serviceName = 'House Cleaning'
+      amount = cleaningResult?.total || 0
+      details = {
+        ...cleanValues,
+        estimatedPrice: amount,
+        subtotal: cleaningResult?.subtotal,
+        discount: cleaningResult?.discount,
+        isEstimatedQuote: true,
+      }
+    } else if (selectedService === 'tv') {
+      serviceName = 'TV Mounting'
+      amount = tvResult?.total || 179
+      details = {
+        ...tvValues,
+        estimatedPrice: amount,
+        isEstimatedQuote: true,
+      }
+    } else {
+      serviceName = selectedService === 'painting' ? 'Artisan Painting' : selectedService === 'flooring' ? 'Custom Flooring' : selectedService === 'remodeling' ? 'Bathroom Remodeling' : selectedService === 'construction' ? 'New Construction' : 'Home Services'
+      amount = rangeResult?.min || 0
+      details = {
+        ...(selectedService === 'painting' ? paintValues : selectedService === 'flooring' ? floorValues : selectedService === 'remodeling' ? remodelValues : selectedService === 'construction' ? constValues : estateValues),
+        estimatedPriceRange: rangeResult && rangeResult.min > 0 ? `$${rangeResult.min.toLocaleString()} – $${rangeResult.max.toLocaleString()}` : undefined,
+        estimatedBaseline: amount,
+      }
+    }
 
     await saveLeadToDatabase(serviceName, amount, details)
     setIsSubmittingQuote(false)
@@ -506,7 +622,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
         <p>Configure your property specifications for transparent pricing or immediate reservation.</p>
       </div>
 
-      {/* Modern App Segmented Ribbon */}
+      {/* Modern App Segmented Ribbon with All Services */}
       <div className={styles.serviceSelection}>
         <button 
           className={`${styles.serviceBtn} ${selectedService === 'cleaning' ? styles.activeService : ''}`} 
@@ -514,6 +630,30 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
         >
           <Sparkles size={16} />
           <span>House Cleaning</span>
+        </button>
+
+        <button 
+          className={`${styles.serviceBtn} ${selectedService === 'tv' ? styles.activeService : ''}`} 
+          onClick={() => handleServiceSelect('tv')}
+        >
+          <Tv size={16} />
+          <span>TV Mounting</span>
+        </button>
+
+        <button 
+          className={`${styles.serviceBtn} ${selectedService === 'painting' ? styles.activeService : ''}`} 
+          onClick={() => handleServiceSelect('painting')}
+        >
+          <Paintbrush size={16} />
+          <span>Painting</span>
+        </button>
+
+        <button 
+          className={`${styles.serviceBtn} ${selectedService === 'flooring' ? styles.activeService : ''}`} 
+          onClick={() => handleServiceSelect('flooring')}
+        >
+          <Layers size={16} />
+          <span>Flooring</span>
         </button>
 
         <button 
@@ -525,19 +665,19 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
         </button>
 
         <button 
+          className={`${styles.serviceBtn} ${selectedService === 'estate' ? styles.activeService : ''}`} 
+          onClick={() => handleServiceSelect('estate')}
+        >
+          <Wrench size={16} />
+          <span>Home Services</span>
+        </button>
+
+        <button 
           className={`${styles.serviceBtn} ${selectedService === 'construction' ? styles.activeService : ''}`} 
           onClick={() => handleServiceSelect('construction')}
         >
           <LayoutGrid size={16} />
           <span>New Construction</span>
-        </button>
-
-        <button 
-          className={`${styles.serviceBtn} ${selectedService === 'estate' ? styles.activeService : ''}`} 
-          onClick={() => handleServiceSelect('estate')}
-        >
-          <Archive size={16} />
-          <span>Home Services & Trades</span>
         </button>
       </div>
 
@@ -545,7 +685,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
         {/* Left Column: Interactive App Screen Inputs */}
         <div className={styles.formSection}>
           
-          {/* --- HOUSE CLEANING FLOW --- */}
+          {/* --- 1. HOUSE CLEANING FLOW --- */}
           {selectedService === 'cleaning' && (
             <div className={`form-anim ${styles.form}`}>
               {/* Step 1: Residence Architecture */}
@@ -730,9 +870,160 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
             </div>
           )}
 
-          {/* --- REMODELING FLOW --- */}
+          {/* --- 2. TV MOUNTING FLOW --- */}
+          {selectedService === 'tv' && (
+            <div className={`form-anim ${styles.form}`}>
+              {/* Step 1: Screen Size */}
+              <div className={styles.stepGroup}>
+                <div className={styles.stepHeader}>
+                  <span className={styles.stepBadge}>01</span>
+                  <h3 className={styles.stepTitle}>Display Screen Size</h3>
+                </div>
+                <div className={styles.radioGrid}>
+                  {[
+                    { val: 'small', title: 'Under 55" Screen', desc: 'Compact bedroom or office displays • Starting at $149' },
+                    { val: 'medium', title: '55" – 75" Large Screen', desc: 'Standard living room & entertainment displays • Starting at $179' },
+                    { val: 'large', title: '75" – 85"+ Cinema', desc: 'Heavy OLED, theater & oversized displays • Starting at $229' },
+                  ].map((item) => (
+                    <label key={item.val} className={tvValues.screenSize === item.val ? styles.activeCard : styles.radioCard}>
+                      <input type="radio" value={item.val} {...controlTv.register('screenSize')} className={styles.hiddenRadio} />
+                      <div className={styles.cardContent}>
+                        <h4>{item.title}</h4>
+                        <p>{item.desc}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Step 2: Bracket Type */}
+              <div className={styles.stepGroup}>
+                <div className={styles.stepHeader}>
+                  <span className={styles.stepBadge}>02</span>
+                  <h3 className={styles.stepTitle}>Mount Bracket Configuration</h3>
+                </div>
+                <div className={styles.radioGrid}>
+                  {[
+                    { val: 'tilt', title: 'Tilt Mount (Included)', desc: 'Up to 15° tilt down for glare reduction & eye-level alignment' },
+                    { val: 'motion', title: 'Full-Motion Swivel Arm', desc: 'Dual-arm articulating mount (extending, swiveling, full range) (+$60)' },
+                    { val: 'client_provided', title: 'I Have My Own Mount', desc: 'Our artisans will install your pre-purchased bracket (-$20)' },
+                  ].map((item) => (
+                    <label key={item.val} className={tvValues.bracketType === item.val ? styles.activeCard : styles.radioCard}>
+                      <input type="radio" value={item.val} {...controlTv.register('bracketType')} className={styles.hiddenRadio} />
+                      <div className={styles.cardContent}>
+                        <h4>{item.title}</h4>
+                        <p>{item.desc}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Step 3: Wall Surface */}
+              <div className={styles.stepGroup}>
+                <div className={styles.stepHeader}>
+                  <span className={styles.stepBadge}>03</span>
+                  <h3 className={styles.stepTitle}>Mounting Wall Surface</h3>
+                </div>
+                <div className={styles.radioGrid}>
+                  {[
+                    { val: 'drywall', title: 'Standard Drywall & Studs', desc: 'Standard residential drywall with wood or metal studs' },
+                    { val: 'brick', title: 'Brick, Stone or Fireplace', desc: 'Masonry drilling, specialty anchors & thermal calibration (+$75)' },
+                  ].map((item) => (
+                    <label key={item.val} className={tvValues.wallSurface === item.val ? styles.activeCard : styles.radioCard}>
+                      <input type="radio" value={item.val} {...controlTv.register('wallSurface')} className={styles.hiddenRadio} />
+                      <div className={styles.cardContent}>
+                        <h4>{item.title}</h4>
+                        <p>{item.desc}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Step 4: Wire Concealment */}
+              <div className={styles.stepGroup}>
+                <div className={styles.stepHeader}>
+                  <span className={styles.stepBadge}>04</span>
+                  <h3 className={styles.stepTitle}>Cable & Wire Concealment</h3>
+                </div>
+                <div className={styles.radioGrid}>
+                  {[
+                    { val: 'none', title: 'Standard Wire Dress', desc: 'Clean external cable management bundled neatly' },
+                    { val: 'in_wall', title: 'In-Wall Wire Concealment', desc: 'Invisible in-wall power bridge & HDMI cable routing (+$95)' },
+                  ].map((item) => (
+                    <label key={item.val} className={tvValues.wireConcealment === item.val ? styles.activeCard : styles.radioCard}>
+                      <input type="radio" value={item.val} {...controlTv.register('wireConcealment')} className={styles.hiddenRadio} />
+                      <div className={styles.cardContent}>
+                        <h4>{item.title}</h4>
+                        <p>{item.desc}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* --- 3. PAINTING FLOW --- */}
+          {selectedService === 'painting' && (
+            <div className={`form-anim ${styles.form}`}>
+              <div className={styles.stepGroup}>
+                <div className={styles.stepHeader}>
+                  <span className={styles.stepBadge}>01</span>
+                  <h3 className={styles.stepTitle}>Painting Scope & Area</h3>
+                </div>
+                <div className={styles.radioGrid}>
+                  {[
+                    { val: 'touchup', title: 'Touch-Up / Accent Wall', desc: 'Spot repair, scuff restoration, single decorative wall ($195 – $350)' },
+                    { val: 'single_room', title: 'Single Room (Walls & Trim)', desc: 'Full walls, baseboards, door casing & ceiling ($550 – $950)' },
+                    { val: 'multi_room', title: 'Multiple Rooms / Full Interior', desc: 'Multi-room overhaul, color transitions & fine finishes ($1,800 – $4,500)' },
+                    { val: 'exterior', title: 'Exterior Facade & Siding', desc: 'Power wash, scrape, primer & premium exterior coats ($3,500 – $9,500)' },
+                  ].map((item) => (
+                    <label key={item.val} className={paintValues.scope === item.val ? styles.activeCard : styles.radioCard}>
+                      <input type="radio" value={item.val} {...controlPaint.register('scope')} className={styles.hiddenRadio} />
+                      <div className={styles.cardContent}>
+                        <h4>{item.title}</h4>
+                        <p>{item.desc}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* --- 4. FLOORING FLOW --- */}
+          {selectedService === 'flooring' && (
+            <div className={`form-anim ${styles.form}`}>
+              <div className={styles.stepGroup}>
+                <div className={styles.stepHeader}>
+                  <span className={styles.stepBadge}>01</span>
+                  <h3 className={styles.stepTitle}>Flooring Scope</h3>
+                </div>
+                <div className={styles.radioGrid}>
+                  {[
+                    { val: 'repair', title: 'Plank Repair & Transitions', desc: 'Fix damaged boards, subfloor squeaks, transition thresholds ($195 – $350)' },
+                    { val: 'single_room', title: 'Single Room Installation', desc: 'Hardwood, luxury vinyl, or imported porcelain tile ($900 – $2,200)' },
+                    { val: 'multi_room', title: 'Multi-Room Living Areas', desc: 'Seamless floor transitions across major living areas ($3,500 – $8,500)' },
+                    { val: 'whole_estate', title: 'Full Estate Installation', desc: 'Complete residence hardwood sanding, staining, or new install ($8,000 – $22,000)' },
+                  ].map((item) => (
+                    <label key={item.val} className={floorValues.scope === item.val ? styles.activeCard : styles.radioCard}>
+                      <input type="radio" value={item.val} {...controlFloor.register('scope')} className={styles.hiddenRadio} />
+                      <div className={styles.cardContent}>
+                        <h4>{item.title}</h4>
+                        <p>{item.desc}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* --- 5. REMODELING FLOW --- */}
           {selectedService === 'remodeling' && (
-            <form onSubmit={handleRemodelSubmit(onRemodelSubmit)} className={`form-anim ${styles.form}`}>
+            <div className={`form-anim ${styles.form}`}>
               <div className={styles.stepGroup}>
                 <div className={styles.stepHeader}>
                   <span className={styles.stepBadge}>01</span>
@@ -740,9 +1031,9 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                 </div>
                 <div className={styles.radioGrid}>
                   {[
-                    { val: 'cosmetic', title: 'Cosmetic Refresh', desc: 'Fixtures, paint, vanity refresh, minor tile' },
-                    { val: 'partial', title: 'Partial Remodel', desc: 'New custom vanity, shower/tub rebuild' },
-                    { val: 'full', title: 'Full Gut & Custom', desc: 'Architectural re-layout, luxury stone & tile' }
+                    { val: 'cosmetic', title: 'Cosmetic Refresh', desc: 'Fixtures, paint, vanity refresh, minor tile ($4,500 – $7,000)' },
+                    { val: 'partial', title: 'Partial Remodel', desc: 'New custom vanity, shower/tub rebuild ($9,000 – $14,000)' },
+                    { val: 'full', title: 'Full Gut & Custom', desc: 'Architectural re-layout, luxury stone & tile ($18,000 – $28,000)' }
                   ].map((scope) => (
                     <label key={scope.val} className={remodelValues.scope === scope.val ? styles.activeCard : styles.radioCard}>
                       <input type="radio" value={scope.val} {...controlRemodel.register('scope')} className={styles.hiddenRadio} />
@@ -769,67 +1060,19 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                   ))}
                 </div>
               </div>
-
-              <button type="submit" className={styles.stripePayBtn}>
-                Update Estimated Investment
-              </button>
-            </form>
+            </div>
           )}
 
-          {/* --- NEW CONSTRUCTION FLOW --- */}
-          {selectedService === 'construction' && (
-            <form onSubmit={handleConstSubmit(onConstSubmit)} className={`form-anim ${styles.form}`}>
-              <div className={styles.stepGroup}>
-                <div className={styles.stepHeader}>
-                  <span className={styles.stepBadge}>01</span>
-                  <h3 className={styles.stepTitle}>Estate Size</h3>
-                </div>
-                <div className={styles.inputGroup}>
-                  <label>Approximate Square Footage</label>
-                  <Controller name="squareFeet" control={controlConst} render={({ field }) => (
-                    <input type="number" {...field} step="500" min="1000" className={styles.input} />
-                  )} />
-                </div>
-              </div>
-
-              <div className={styles.stepGroup}>
-                <div className={styles.stepHeader}>
-                  <span className={styles.stepBadge}>02</span>
-                  <h3 className={styles.stepTitle}>Build Grade</h3>
-                </div>
-                <div className={styles.radioGrid}>
-                  {[
-                    { val: 'luxury', title: 'Luxury', desc: 'Premium custom finishes & architectural framing' },
-                    { val: 'ultra', title: 'Ultra-Luxury', desc: 'Fully custom architecture & imported materials' },
-                    { val: 'monumental', title: 'Monumental', desc: 'No-compromise landmark estate building' }
-                  ].map((grade) => (
-                    <label key={grade.val} className={constValues.grade === grade.val ? styles.activeCard : styles.radioCard}>
-                      <input type="radio" value={grade.val} {...controlConst.register('grade')} className={styles.hiddenRadio} />
-                      <div className={styles.cardContent}>
-                        <h4>{grade.title}</h4>
-                        <p>{grade.desc}</p>
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <button type="submit" className={styles.stripePayBtn}>
-                Update Construction Baseline
-              </button>
-            </form>
-          )}
-
-          {/* --- ESTATE MANAGEMENT & HOME SERVICES FLOW --- */}
+          {/* --- 6. HOME SERVICES & TRADES FLOW --- */}
           {selectedService === 'estate' && (
-            <form onSubmit={handleEstateSubmit(onEstateSubmit)} className={`form-anim ${styles.form}`}>
+            <div className={`form-anim ${styles.form}`}>
               <div className={styles.stepGroup}>
                 <div className={styles.stepHeader}>
                   <span className={styles.stepBadge}>01</span>
                   <h3 className={styles.stepTitle}>Required Discipline & Trade</h3>
                 </div>
                 <div className={styles.radioGridRow}>
-                  {['plumbing', 'electrical', 'painting', 'flooring', 'tv mounting', 'lighting', 'home theater', 'handyman'].map((trade) => (
+                  {['handyman', 'plumbing', 'electrical', 'lighting', 'home theater'].map((trade) => (
                     <label key={trade} className={estateValues.trade === trade ? styles.activeChip : styles.chip}>
                       <input type="radio" value={trade} {...controlEstate.register('trade')} className={styles.hiddenRadio} />
                       <span style={{textTransform: 'capitalize'}}>{trade}</span>
@@ -859,19 +1102,55 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                   ))}
                 </div>
               </div>
+            </div>
+          )}
 
-              <button type="submit" className={styles.stripePayBtn}>
-                Calculate Estimated Baseline
-              </button>
-            </form>
+          {/* --- 7. NEW CONSTRUCTION FLOW --- */}
+          {selectedService === 'construction' && (
+            <div className={`form-anim ${styles.form}`}>
+              <div className={styles.stepGroup}>
+                <div className={styles.stepHeader}>
+                  <span className={styles.stepBadge}>01</span>
+                  <h3 className={styles.stepTitle}>Estate Size</h3>
+                </div>
+                <div className={styles.inputGroup}>
+                  <label>Approximate Square Footage</label>
+                  <Controller name="squareFeet" control={controlConst} render={({ field }) => (
+                    <input type="number" {...field} step="500" min="1000" className={styles.input} />
+                  )} />
+                </div>
+              </div>
+
+              <div className={styles.stepGroup}>
+                <div className={styles.stepHeader}>
+                  <span className={styles.stepBadge}>02</span>
+                  <h3 className={styles.stepTitle}>Build Grade</h3>
+                </div>
+                <div className={styles.radioGrid}>
+                  {[
+                    { val: 'luxury', title: 'Luxury Build', desc: 'Premium custom finishes & architectural framing' },
+                    { val: 'ultra', title: 'Ultra-Luxury Custom', desc: 'Fully custom architecture & imported materials' },
+                    { val: 'monumental', title: 'Monumental Legacy', desc: 'No-compromise landmark estate building' }
+                  ].map((grade) => (
+                    <label key={grade.val} className={constValues.grade === grade.val ? styles.activeCard : styles.radioCard}>
+                      <input type="radio" value={grade.val} {...controlConst.register('grade')} className={styles.hiddenRadio} />
+                      <div className={styles.cardContent}>
+                        <h4>{grade.title}</h4>
+                        <p>{grade.desc}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
           )}
 
         </div>
 
-        {/* Right Column: Sticky App Screen Summary & Stripe Checkout Drawer */}
+        {/* Right Column: Sticky App Screen Summary & Pay & Book Drawer */}
         <div className={styles.resultSection}>
           
-          {/* House Cleaning Summary & Stripe Checkout */}
+          {/* A. House Cleaning Summary */}
           {selectedService === 'cleaning' && cleaningResult && (
             <div className={`result-anim ${styles.receiptBox}`}>
               <div className={styles.receiptHeader}>
@@ -920,7 +1199,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                 <strong>*Walkthrough Confirmation:</strong> All quotes are estimated prices. Final firm price is confirmed during home walkthrough before service begins.
               </div>
 
-              {/* Stripe Payment & Consultation Booking Form */}
+              {/* Client Reservation & Payment Form */}
               {!leadSubmitted ? (
                 <div className={styles.checkoutForm}>
                   <div className={styles.checkoutFormTitle}>Client Reservation Details</div>
@@ -957,7 +1236,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                     onChange={(e) => setCustomerInfo({...customerInfo, address: e.target.value})} 
                   />
 
-                  {/* 1. Primary Action: Instant Stripe Checkout */}
+                  {/* 1. Primary Action: Pay & Book */}
                   <button 
                     type="button" 
                     onClick={handleStripeCheckout} 
@@ -968,12 +1247,12 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                     {isCheckingOut ? (
                       <>
                         <Loader2 size={18} className="animate-spin" />
-                        <span>Connecting to Stripe...</span>
+                        <span>Connecting to Checkout...</span>
                       </>
                     ) : (
                       <>
                         <CreditCard size={18} />
-                        <span>Pay & Book with Stripe &bull; ${cleaningResult.total.toFixed(2)}</span>
+                        <span>Pay & Book &bull; ${cleaningResult.total.toFixed(2)}</span>
                       </>
                     )}
                   </button>
@@ -1007,15 +1286,135 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
             </div>
           )}
 
-          {/* Construction / Remodeling / Home Services Summary & Action */}
-          {(selectedService === 'remodeling' || selectedService === 'construction' || selectedService === 'estate') && rangeResult && (
+          {/* B. TV Mounting Summary */}
+          {selectedService === 'tv' && tvResult && (
+            <div className={`result-anim ${styles.receiptBox}`}>
+              <div className={styles.receiptHeader}>
+                <div className={styles.liveBadge}>
+                  <span className={styles.pulseDot} />
+                  Live Calculation
+                </div>
+                <h3>Precision TV Mounting</h3>
+                <p>
+                  {tvValues.screenSize === 'large' ? '75"+ Cinema Screen' : tvValues.screenSize === 'medium' ? '55" – 75" Large Display' : 'Under 55" Display'}
+                </p>
+              </div>
+
+              <div className={styles.receiptBody}>
+                <div className={styles.receiptLine}>
+                  <span className={styles.receiptLineTitle}>Display Mounting Installation</span>
+                  <span className={styles.receiptLinePrice}>${tvResult.total.toFixed(2)}</span>
+                </div>
+                <div className={styles.receiptSubSpecs}>
+                  {tvResult.breakdown.join(' • ')}
+                </div>
+
+                <div className={styles.receiptDivider} />
+                
+                <div className={styles.receiptTotal}>
+                  <span>Estimated Total</span>
+                  <span style={{ color: '#0B132B' }}>${tvResult.total.toFixed(2)}</span>
+                </div>
+              </div>
+
+              <div className={styles.estimateNotice}>
+                <strong>*Precision Level Guaranteed:</strong> Includes laser leveling, wall reinforcement checks, and full hardware assembly.
+              </div>
+
+              {!leadSubmitted ? (
+                <div className={styles.checkoutForm}>
+                  <div className={styles.checkoutFormTitle}>Reservation Details</div>
+                  
+                  <input 
+                    type="text" 
+                    placeholder="Full Legal Name" 
+                    required 
+                    className={styles.input} 
+                    value={customerInfo.name} 
+                    onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})} 
+                  />
+                  <input 
+                    type="email" 
+                    placeholder="Email Address" 
+                    required 
+                    className={styles.input} 
+                    value={customerInfo.email} 
+                    onChange={(e) => setCustomerInfo({...customerInfo, email: e.target.value})} 
+                  />
+                  <input 
+                    type="tel" 
+                    placeholder="Mobile Phone Number" 
+                    required 
+                    className={styles.input} 
+                    value={customerInfo.phone} 
+                    onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})} 
+                  />
+                  <input 
+                    type="text" 
+                    placeholder="Service Street Address" 
+                    className={styles.input} 
+                    value={customerInfo.address} 
+                    onChange={(e) => setCustomerInfo({...customerInfo, address: e.target.value})} 
+                  />
+
+                  {/* Primary Pay & Book Button */}
+                  <button 
+                    type="button" 
+                    onClick={handleStripeCheckout} 
+                    disabled={isCheckingOut}
+                    className={styles.stripePayBtn}
+                    style={{ marginTop: '6px' }}
+                  >
+                    {isCheckingOut ? (
+                      <>
+                        <Loader2 size={18} className="animate-spin" />
+                        <span>Connecting to Checkout...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard size={18} />
+                        <span>Pay & Book &bull; ${tvResult.total.toFixed(2)}</span>
+                      </>
+                    )}
+                  </button>
+
+                  <div className={styles.stripeSecurityNote}>
+                    <Lock size={12} color="#10b981" />
+                    <span>256-bit encrypted checkout via Stripe &bull; Card, Apple Pay, Google Pay</span>
+                  </div>
+
+                  <div className={styles.quoteDivider}>
+                    <span>or pay later</span>
+                  </div>
+
+                  <button 
+                    type="button" 
+                    onClick={handleFreeQuoteSubmit} 
+                    disabled={isSubmittingQuote}
+                    className={styles.quoteOnlyBtn}
+                  >
+                    {isSubmittingQuote ? 'Sending Brief...' : 'Request Free Quote & Callback (No Charge Today)'}
+                  </button>
+                </div>
+              ) : (
+                <div className={styles.successMessage}>
+                  <CheckCircle2 size={42} />
+                  <h4 className="font-serif">Reservation Received</h4>
+                  <p>Our mounting technician will contact you within 2 hours to confirm your specifications and schedule appointment.</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* C. Construction / Remodeling / Painting / Flooring / Home Services Summary */}
+          {(selectedService === 'remodeling' || selectedService === 'construction' || selectedService === 'estate' || selectedService === 'painting' || selectedService === 'flooring') && rangeResult && (
             <div className={`result-anim ${styles.receiptBox}`}>
               <div className={styles.receiptHeader}>
                 <div className={styles.liveBadge}>
                   <span className={styles.pulseDot} />
                   Calculated Estimate
                 </div>
-                <h3>{selectedService === 'estate' ? 'Service Estimate Brief' : 'Architectural Brief'}</h3>
+                <h3>{selectedService === 'estate' ? 'Service Estimate Brief' : selectedService === 'painting' ? 'Painting Estimate Brief' : selectedService === 'flooring' ? 'Flooring Estimate Brief' : 'Architectural Brief'}</h3>
                 <p>{rangeResult.type}</p>
               </div>
 
@@ -1033,9 +1432,9 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
               )}
 
               <div className={styles.estimateNotice}>
-                {selectedService === 'estate'
-                  ? '*Exact quote is confirmed on-site based on hardware, materials, and scope before work commences.'
-                  : '*An on-site architectural evaluation by a master builder is required for an exact binding proposal.'}
+                {selectedService === 'estate' || selectedService === 'painting' || selectedService === 'flooring'
+                  ? '*Exact quote is confirmed on-site based on materials, square footage, and scope before work commences.'
+                  : '*An on-site architectural evaluation by a master builder is required for an exact proposal.'}
               </div>
 
               {!leadSubmitted ? (
@@ -1074,7 +1473,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                     onChange={(e) => setCustomerInfo({...customerInfo, address: e.target.value})} 
                   />
 
-                  {/* If Estate / Diagnostic service, offer immediate Stripe booking */}
+                  {/* If Estate Diagnostic service, offer immediate Pay & Book */}
                   {selectedService === 'estate' && rangeResult.min > 0 ? (
                     <>
                       <button 
@@ -1087,19 +1486,19 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
                         {isCheckingOut ? (
                           <>
                             <Loader2 size={18} className="animate-spin" />
-                            <span>Connecting to Stripe...</span>
+                            <span>Connecting to Checkout...</span>
                           </>
                         ) : (
                           <>
                             <CreditCard size={18} />
-                            <span>Book Diagnostic Visit &bull; ${rangeResult.min.toFixed(2)}</span>
+                            <span>Pay & Book &bull; ${rangeResult.min.toFixed(2)}</span>
                           </>
                         )}
                       </button>
 
                       <div className={styles.stripeSecurityNote}>
                         <Lock size={12} color="#10b981" />
-                        <span>Secure Stripe reservation &bull; Credit/Debit, Apple Pay</span>
+                        <span>Secure checkout via Stripe &bull; Credit/Debit, Apple Pay</span>
                       </div>
 
                       <div className={styles.quoteDivider}>

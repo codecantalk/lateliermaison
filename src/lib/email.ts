@@ -465,6 +465,52 @@ export function formatSpecsTable(details: any): string {
     })
   }
 
+  if (details.screenSize) {
+    const screenMap: Record<string, string> = {
+      small: 'Under 55" Standard Display',
+      medium: '55" – 75" Large Screen Display',
+      large: '75" – 85"+ Cinema Display',
+    }
+    rows.push({
+      label: 'Display Screen Size',
+      value: screenMap[details.screenSize] || String(details.screenSize),
+    })
+  }
+
+  if (details.bracketType) {
+    const bracketMap: Record<string, string> = {
+      tilt: 'Tilt Mount Bracket (Included)',
+      motion: 'Full-Motion Articulating Swivel Arm',
+      client_provided: 'Client Provided Mount',
+    }
+    rows.push({
+      label: 'Mount Bracket',
+      value: bracketMap[details.bracketType] || String(details.bracketType),
+    })
+  }
+
+  if (details.wallSurface) {
+    const surfaceMap: Record<string, string> = {
+      drywall: 'Drywall & Standard Studs',
+      brick: 'Brick, Stone or Fireplace Masonry',
+    }
+    rows.push({
+      label: 'Wall Surface',
+      value: surfaceMap[details.wallSurface] || String(details.wallSurface),
+    })
+  }
+
+  if (details.wireConcealment) {
+    const wireMap: Record<string, string> = {
+      none: 'Standard Wire Routing (External Channel)',
+      in_wall: 'In-Wall Power Relocation & Cable Concealment',
+    }
+    rows.push({
+      label: 'Wire Concealment',
+      value: wireMap[details.wireConcealment] || String(details.wireConcealment),
+    })
+  }
+
   if (details.address) {
     rows.push({
       label: 'Service Address',
@@ -477,7 +523,9 @@ export function formatSpecsTable(details: any): string {
     'houseType', 'packageType', 'bedrooms', 'bathrooms', 'squareFeet', 'floors',
     'location', 'condition', 'extras', 'dynamicExtras', 'isMondayTuesday',
     'trade', 'scope', 'size', 'grade', 'estimatedPriceRange', 'address',
-    'subtotal', 'discount', 'estimatedPrice', 'isEstimatedQuote', 'estimatedBaseline'
+    'screenSize', 'bracketType', 'wallSurface', 'wireConcealment',
+    'subtotal', 'discount', 'estimatedPrice', 'isEstimatedQuote', 'estimatedBaseline',
+    'isStripeCheckout'
   ])
 
   Object.entries(details).forEach(([key, val]) => {

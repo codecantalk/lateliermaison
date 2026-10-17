@@ -115,7 +115,7 @@ export default function PaintingClient() {
                   Transform the mood and aesthetic of your living spaces. We meticulously prep every surface and use ultra-premium paints to deliver perfectly smooth, durable, and luxurious walls, trims, and ceilings.
                 </p>
                 <div style={{ marginTop: '2rem' }}>
-                  <Link href="/estimate" className="btn btn-primary" style={{ backgroundColor: '#1e3a8a', border: 'none' }}>Get an Estimate</Link>
+                  <Link href="/estimate?service=painting" className="btn btn-primary" style={{ backgroundColor: '#1e3a8a', border: 'none' }}>Get an Estimate</Link>
                 </div>
               </div>
               <div className="parallax-img-container" style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden' }}>
@@ -145,7 +145,7 @@ export default function PaintingClient() {
                   Protect your home from the elements while boosting curb appeal. Our comprehensive exterior painting services ensure a pristine, long-lasting finish that stands the test of time.
                 </p>
                 <div style={{ marginTop: '2rem' }}>
-                  <Link href="/estimate" className="btn btn-primary" style={{ backgroundColor: '#1e3a8a', border: 'none' }}>Get an Estimate</Link>
+                  <Link href="/estimate?service=painting" className="btn btn-primary" style={{ backgroundColor: '#1e3a8a', border: 'none' }}>Get an Estimate</Link>
                 </div>
               </div>
             </div>

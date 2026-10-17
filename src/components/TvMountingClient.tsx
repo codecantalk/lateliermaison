@@ -145,7 +145,7 @@ export default function TvMountingClient() {
                   We securely mount TVs of all sizes to any surface—drywall, brick, stone, or over fireplaces. Our technicians use laser leveling and premium brackets to ensure a rock-solid, perfectly centered installation.
                 </p>
                 <div style={{ marginTop: '2rem' }}>
-                  <Link href="/estimate" className="btn btn-primary" style={{ backgroundColor: '#1e3a8a', border: 'none' }}>Get an Estimate</Link>
+                  <Link href="/estimate?service=tv" className="btn btn-primary" style={{ backgroundColor: '#1e3a8a', border: 'none' }}>Get an Estimate</Link>
                 </div>
               </div>
               <div style={{ position: 'relative', width: '100%', aspectRatio: '4/5', overflow: 'hidden', borderRadius: '12px', boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}>
@@ -267,7 +267,7 @@ export default function TvMountingClient() {
                   No more messy tangles of cords. We expertly hide all power cables and HDMI wires behind the wall to deliver a clean, floating aesthetic that turns your TV into a piece of art.
                 </p>
                 <div style={{ marginTop: '2rem' }}>
-                  <Link href="/estimate" className="btn btn-primary" style={{ backgroundColor: '#1e3a8a', border: 'none' }}>Get an Estimate</Link>
+                  <Link href="/estimate?service=tv" className="btn btn-primary" style={{ backgroundColor: '#1e3a8a', border: 'none' }}>Get an Estimate</Link>
                 </div>
               </div>
             </div>
