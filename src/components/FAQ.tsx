@@ -30,6 +30,16 @@ const faqs = [
     a: 'Yes! L\'Atelier Maison offers a full design-build experience. We handle architectural layout, material sourcing, permitting, and final execution.'
   },
   {
+    category: 'Painting',
+    q: 'What brand and quality of paint do you use?',
+    a: 'We use ultra-premium architectural coatings such as Benjamin Moore (Aura, Regal Select) and Sherwin-Williams (Emerald, Duration). We also accommodate bespoke specialty finishes, limewash, and low-VOC/zero-VOC preferences.'
+  },
+  {
+    category: 'Painting',
+    q: 'Do you prepare walls, repair drywall, and protect furniture?',
+    a: 'Yes. Thorough preparation is our hallmark. We mask and seal all floors and furnishings with heavy-duty drop cloths, patch drywall imperfections, caulk baseboards, and sand surfaces smooth before applying two flawless coats.'
+  },
+  {
     category: 'Home Services',
     q: 'Are your tradesmen licensed and insured?',
     a: 'Absolutely. Every artisan, plumber, electrician, and handyman dispatched by L\'Atelier Maison is fully licensed, bonded, and insured for your peace of mind.'

@@ -75,7 +75,7 @@ export default function PrivacyPage() {
             </h2>
             <p>
               For any inquiries regarding our privacy practices or to update your client profile, please contact our administrative office at: <br/><br/>
-              <strong>Email:</strong> ateliermaisonatl@gmail.com
+              <strong>Email:</strong> support@lateliermaison.com
             </p>
           </section>
 

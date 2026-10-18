@@ -207,8 +207,8 @@ export default function LandingPage() {
                 Elevating the standard of living for the most discerning clientele. We provide absolute perfection across housekeeping, bespoke renovations, and meticulous estate management.
               </p>
               <div className="hero-anim" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', paddingTop: '0.5rem' }}>
-                <Link href="/services/housecleaning" className="btn btn-primary" style={{ flex: '1 1 auto', textAlign: 'center', padding: 'clamp(0.5rem, 2vw, 0.65rem) clamp(1rem, 3vw, 1.35rem)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', whiteSpace: 'nowrap' }}>House Cleaning Services →</Link>
-                <Link href="/services/remodeling" className="btn btn-secondary" style={{ flex: '1 1 auto', textAlign: 'center', padding: 'clamp(0.5rem, 2vw, 0.65rem) clamp(1rem, 3vw, 1.35rem)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', whiteSpace: 'nowrap' }}>Home Remodeling Services →</Link>
+                <Link href="/estimate?service=cleaning" className="btn btn-primary" style={{ flex: '1 1 auto', textAlign: 'center', padding: 'clamp(0.5rem, 2vw, 0.65rem) clamp(1rem, 3vw, 1.35rem)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', whiteSpace: 'nowrap' }}>Book House Cleaning →</Link>
+                <Link href="/contact" className="btn btn-secondary" style={{ flex: '1 1 auto', textAlign: 'center', padding: 'clamp(0.5rem, 2vw, 0.65rem) clamp(1rem, 3vw, 1.35rem)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', whiteSpace: 'nowrap' }}>Request a Consultation →</Link>
               </div>
             </div>
           </div>

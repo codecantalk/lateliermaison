@@ -71,7 +71,7 @@ export default function TermsPage() {
             </h2>
             <p>
               If you have any questions about these Terms, or to discuss a specific clause related to an upcoming project, please reach out to our team: <br/><br/>
-              <strong>Email:</strong> ateliermaisonatl@gmail.com
+              <strong>Email:</strong> support@lateliermaison.com
             </p>
           </section>
 
