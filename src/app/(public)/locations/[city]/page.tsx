@@ -11,6 +11,15 @@ const formatCityName = (slug: string) => {
     .join(' ')
 }
 
+export function generateStaticParams() {
+  return [
+    { city: 'atlanta' },
+    { city: 'washington-dc' },
+    { city: 'maryland' },
+    { city: 'northern-virginia' },
+  ]
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ city: string }> }): Promise<Metadata> {
   const resolvedParams = await params;
   const cityName = formatCityName(resolvedParams.city)
@@ -19,7 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
     title: `Luxury Home Cleaning & Remodeling in ${cityName} | L'Atelier Maison`,
     description: `Top-rated luxury home cleaning, bespoke remodeling, and premium property care services in ${cityName}. Fully insured, master artisans, and a 100% satisfaction guarantee.`,
     alternates: {
-      canonical: `https://lateliermaison.vercel.app/locations/${resolvedParams.city}`,
+      canonical: `https://www.lateliermaison.com/locations/${resolvedParams.city}`,
     },
   }
 }

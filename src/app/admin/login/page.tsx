@@ -30,7 +30,14 @@ export default function AdminLogin() {
         return;
       }
 
-      if (data.user?.email !== 'arko@codecantalk.com' && data.user?.email !== 'flenjureatl@gmail.com') {
+      const envAdmins = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '')
+        .split(',')
+        .map((e) => e.trim().toLowerCase())
+        .filter(Boolean)
+      const allowed = new Set(['arko@codecantalk.com', 'flenjureatl@gmail.com', 'order@lateliermaison.com', ...envAdmins])
+      const userEmail = (data.user?.email || '').toLowerCase().trim()
+
+      if (!allowed.has(userEmail)) {
         await supabase.auth.signOut();
         setError('Access denied. Unauthorized admin account.');
         return;

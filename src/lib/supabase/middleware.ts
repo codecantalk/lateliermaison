@@ -29,9 +29,25 @@ export async function updateSession(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
+  // Admin authorization list
+  const envAdminEmails = (process.env.ADMIN_EMAILS || '')
+    .split(',')
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean)
+
+  const allowedEmails = new Set([
+    'arko@codecantalk.com',
+    'flenjureatl@gmail.com',
+    'order@lateliermaison.com',
+    ...envAdminEmails,
+  ])
+
+  const userEmail = (user?.email || '').toLowerCase().trim()
+  const isAuthorized = user && userEmail && allowedEmails.has(userEmail)
+
   // Protect /admin routes
   if (request.nextUrl.pathname.startsWith('/admin') && !request.nextUrl.pathname.startsWith('/admin/login')) {
-    if (!user || user.email !== 'arko@codecantalk.com') {
+    if (!isAuthorized) {
       const url = request.nextUrl.clone()
       url.pathname = '/admin/login'
       return NextResponse.redirect(url)
@@ -39,7 +55,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   // Redirect logged-in admin away from login page
-  if (request.nextUrl.pathname.startsWith('/admin/login') && user?.email === 'arko@codecantalk.com') {
+  if (request.nextUrl.pathname.startsWith('/admin/login') && isAuthorized) {
     const url = request.nextUrl.clone()
     url.pathname = '/admin'
     return NextResponse.redirect(url)
