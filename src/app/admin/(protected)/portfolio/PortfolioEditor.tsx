@@ -4,19 +4,40 @@ import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import styles from '../page.module.css';
+import ConfirmationModal from '@/components/admin/ConfirmationModal';
 
 export default function PortfolioEditor({ initialItems }: { initialItems: any[] }) {
   const [items, setItems] = useState(initialItems);
   const [isAdding, setIsAdding] = useState(false);
   const [newItem, setNewItem] = useState({ title: '', category: 'Architecture', image_url: '', sort_order: 0 });
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    item?: any;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+  });
   const supabase = createClient();
   const router = useRouter();
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this image?')) return;
-    
+  const requestDelete = (item: any) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Delete Portfolio Item',
+      message: `Are you sure you want to delete "${item.title}" from the portfolio gallery?`,
+      item,
+    });
+  };
+
+  const executeDelete = async () => {
+    if (!confirmModal.item) return;
+    const id = confirmModal.item.id;
     await supabase.from('portfolio_items').delete().eq('id', id);
     setItems(items.filter(item => item.id !== id));
+    setConfirmModal({ isOpen: false, title: '', message: '' });
     router.refresh();
   };
 
@@ -108,7 +129,7 @@ export default function PortfolioEditor({ initialItems }: { initialItems: any[] 
                   <td style={{ fontWeight: 600 }}>{item.title}</td>
                   <td>{item.category}</td>
                   <td>
-                    <button onClick={() => handleDelete(item.id)} className={`${styles.actionBtn} ${styles.deleteBtn}`}>
+                    <button onClick={() => requestDelete(item)} className={`${styles.actionBtn} ${styles.deleteBtn}`}>
                       Delete
                     </button>
                   </td>
@@ -118,6 +139,17 @@ export default function PortfolioEditor({ initialItems }: { initialItems: any[] 
           </table>
         )}
       </div>
+
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false, title: '', message: '' })}
+        onConfirm={executeDelete}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText="Yes, Delete"
+        variant="danger"
+        icon="delete"
+      />
     </div>
   );
 }

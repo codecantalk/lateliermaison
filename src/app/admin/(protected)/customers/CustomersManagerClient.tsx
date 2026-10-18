@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import styles from './customers.module.css'
+import ConfirmationModal from '@/components/admin/ConfirmationModal'
 import {
   Users,
   DollarSign,
@@ -44,6 +45,22 @@ export default function CustomersManagerClient({
   const [editCustomer, setEditCustomer] = useState<any | null>(null)
   const [loading, setLoading] = useState(false)
   const [alertMsg, setAlertMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean
+    title: string
+    message: string
+    confirmText?: string
+    cancelText?: string
+    variant?: 'primary' | 'danger'
+    icon?: 'convert' | 'delete'
+    details?: Array<{ label: string; value: React.ReactNode }>
+    action: () => Promise<void>
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    action: async () => {},
+  })
 
   // Form State
   const [formData, setFormData] = useState({
@@ -158,19 +175,36 @@ export default function CustomersManagerClient({
     }
   }
 
-  // Delete Customer
-  const handleDeleteCustomer = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this client profile?')) return
-
-    try {
-      const res = await fetch(`/api/admin/customers?id=${id}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error('Failed to delete client')
-      setCustomers(customers.filter((c) => c.id !== id))
-      if (inspectCustomer?.id === id) setInspectCustomer(null)
-      triggerAlert('Client deleted.')
-    } catch (err: any) {
-      triggerAlert(err.message || 'Error deleting client', 'error')
-    }
+  // Request Delete Customer (opens luxury confirmation modal)
+  const requestDeleteCustomer = (cust: any) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Delete Client Profile',
+      message: 'Are you sure you want to permanently delete this client record? Historical orders will be unlinked.',
+      confirmText: 'Yes, Delete',
+      cancelText: 'Cancel',
+      variant: 'danger',
+      icon: 'delete',
+      details: [
+        { label: 'Client', value: cust.full_name },
+        { label: 'Email', value: cust.email },
+        { label: 'Tier', value: cust.vip_tier?.toUpperCase() || 'STANDARD' },
+      ],
+      action: async () => {
+        try {
+          const res = await fetch(`/api/admin/customers?id=${cust.id}`, { method: 'DELETE' })
+          const resData = await res.json()
+          if (!res.ok) throw new Error(resData.error || 'Failed to delete client')
+          setCustomers((prev) => prev.filter((c) => c.id !== cust.id))
+          if (inspectCustomer?.id === cust.id) setInspectCustomer(null)
+          setConfirmModal((prev) => ({ ...prev, isOpen: false }))
+          triggerAlert('Client deleted.')
+        } catch (err: any) {
+          triggerAlert(err.message || 'Error deleting client', 'error')
+          throw err
+        }
+      },
+    })
   }
 
   // Filter customers
@@ -420,7 +454,7 @@ export default function CustomersManagerClient({
                             <Edit2 size={15} />
                           </button>
                           <button
-                            onClick={() => handleDeleteCustomer(cust.id)}
+                            onClick={() => requestDeleteCustomer(cust)}
                             title="Delete Profile"
                             style={{ background: '#fef2f2', border: '1px solid #fee2e2', padding: '0.45rem', borderRadius: '6px', cursor: 'pointer', color: '#ef4444' }}
                           >
@@ -661,6 +695,19 @@ export default function CustomersManagerClient({
           </div>
         </div>
       )}
+      {/* LUXURY CONFIRMATION MODAL */}
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal((prev) => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmModal.action}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText={confirmModal.confirmText}
+        cancelText={confirmModal.cancelText}
+        variant={confirmModal.variant}
+        icon={confirmModal.icon}
+        details={confirmModal.details}
+      />
     </div>
   )
 }

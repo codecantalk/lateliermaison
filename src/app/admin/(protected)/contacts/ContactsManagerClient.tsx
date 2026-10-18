@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import styles from './contacts.module.css'
+import ConfirmationModal from '@/components/admin/ConfirmationModal'
 import {
   MessageSquare,
   Clock,
@@ -26,6 +27,22 @@ export default function ContactsManagerClient({ initialContacts = [] }: { initia
   const [statusFilter, setStatusFilter] = useState('all')
   const [inspectContact, setInspectContact] = useState<any | null>(null)
   const [alertMsg, setAlertMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean
+    title: string
+    message: string
+    confirmText?: string
+    cancelText?: string
+    variant?: 'primary' | 'danger'
+    icon?: 'convert' | 'delete'
+    details?: Array<{ label: string; value: React.ReactNode }>
+    action: () => Promise<void>
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    action: async () => {},
+  })
 
   const supabase = createClient()
 
@@ -83,19 +100,36 @@ export default function ContactsManagerClient({ initialContacts = [] }: { initia
     }
   }
 
-  // Delete Contact
-  const handleDeleteContact = async (contactId: string) => {
-    if (!confirm('Are you sure you want to delete this inquiry?')) return
-
-    try {
-      const res = await fetch(`/api/admin/contacts?id=${contactId}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error('Failed to delete')
-      setContacts(contacts.filter((c) => c.id !== contactId))
-      if (inspectContact?.id === contactId) setInspectContact(null)
-      triggerAlert('Inquiry deleted.')
-    } catch (err: any) {
-      triggerAlert(err.message || 'Error deleting', 'error')
-    }
+  // Request Delete Contact (opens luxury confirmation modal)
+  const requestDeleteContact = (contact: any) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Delete Inquiry',
+      message: 'Are you sure you want to permanently delete this client inquiry? This action cannot be undone.',
+      confirmText: 'Yes, Delete',
+      cancelText: 'Cancel',
+      variant: 'danger',
+      icon: 'delete',
+      details: [
+        { label: 'Client', value: contact.full_name },
+        { label: 'Service', value: contact.service || 'General Inquiry' },
+        { label: 'Date', value: new Date(contact.created_at).toLocaleDateString() },
+      ],
+      action: async () => {
+        try {
+          const res = await fetch(`/api/admin/contacts?id=${contact.id}`, { method: 'DELETE' })
+          const resData = await res.json()
+          if (!res.ok) throw new Error(resData.error || 'Failed to delete')
+          setContacts((prev) => prev.filter((c) => c.id !== contact.id))
+          if (inspectContact?.id === contact.id) setInspectContact(null)
+          setConfirmModal((prev) => ({ ...prev, isOpen: false }))
+          triggerAlert('Inquiry deleted.')
+        } catch (err: any) {
+          triggerAlert(err.message || 'Error deleting', 'error')
+          throw err
+        }
+      },
+    })
   }
 
   // Print Consultation Brief
@@ -422,7 +456,7 @@ export default function ContactsManagerClient({ initialContacts = [] }: { initia
                           <Printer size={15} />
                         </button>
                         <button
-                          onClick={() => handleDeleteContact(contact.id)}
+                          onClick={() => requestDeleteContact(contact)}
                           title="Delete Submission"
                           style={{ background: '#fef2f2', border: '1px solid #fee2e2', padding: '0.45rem', borderRadius: '6px', cursor: 'pointer', color: '#ef4444' }}
                         >
@@ -538,6 +572,20 @@ export default function ContactsManagerClient({ initialContacts = [] }: { initia
           </div>
         </div>
       )}
+
+      {/* LUXURY CONFIRMATION MODAL */}
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal((prev) => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmModal.action}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText={confirmModal.confirmText}
+        cancelText={confirmModal.cancelText}
+        variant={confirmModal.variant}
+        icon={confirmModal.icon}
+        details={confirmModal.details}
+      />
     </div>
   )
 }

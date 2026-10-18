@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import styles from './estimates.module.css'
+import ConfirmationModal from '@/components/admin/ConfirmationModal'
 import {
   Calculator,
   Clock,
@@ -25,6 +26,22 @@ export default function EstimatesManagerClient({ initialEstimates = [] }: { init
   const [statusFilter, setStatusFilter] = useState('all')
   const [inspectEstimate, setInspectEstimate] = useState<any | null>(null)
   const [alertMsg, setAlertMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean
+    title: string
+    message: string
+    confirmText?: string
+    cancelText?: string
+    variant?: 'primary' | 'danger'
+    icon?: 'convert' | 'delete'
+    details?: Array<{ label: string; value: React.ReactNode }>
+    action: () => Promise<void>
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    action: async () => {},
+  })
 
   const supabase = createClient()
 
@@ -83,49 +100,86 @@ export default function EstimatesManagerClient({ initialEstimates = [] }: { init
     }
   }
 
-  // Convert Estimate into an Order
-  const handleConvertToOrder = async (estimate: any) => {
-    if (!confirm(`Convert this estimate ($${estimate.total_price}) into an active Booking Order?`)) return
+  // Request Convert to Order (opens luxury confirmation modal)
+  const requestConvertToOrder = (estimate: any) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Convert to Active Order',
+      message: `Convert this estimate calculation into a confirmed booking reservation in Orders & Bookings.`,
+      confirmText: 'Convert to Order',
+      cancelText: 'Cancel',
+      variant: 'primary',
+      icon: 'convert',
+      details: [
+        { label: 'Client', value: estimate.customer_name || 'Anonymous Client' },
+        { label: 'Service', value: estimate.service_type || 'Custom Service' },
+        { label: 'Calculated Price', value: `$${Number(estimate.total_price).toFixed(2)}` },
+        { label: 'Email', value: estimate.email || 'N/A' },
+      ],
+      action: async () => {
+        try {
+          const res = await fetch('/api/admin/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              leadId: estimate.id,
+              customerName: estimate.customer_name || 'Client',
+              customerEmail: estimate.email || '',
+              customerPhone: estimate.phone || '',
+              address: estimate.details?.address || '',
+              serviceName: estimate.service_type || 'Custom Service',
+              amount: estimate.total_price || 0,
+              status: 'confirmed',
+              details: estimate.details || {},
+              sendReceiptEmail: true,
+            }),
+          })
 
-    try {
-      const res = await fetch('/api/admin/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          customerName: estimate.customer_name || 'Client',
-          customerEmail: estimate.email || '',
-          customerPhone: estimate.phone || '',
-          serviceName: estimate.service_type || 'Custom Service',
-          amount: estimate.total_price || 0,
-          status: 'confirmed',
-          details: estimate.details || {},
-          sendReceiptEmail: true,
-        }),
-      })
+          const resData = await res.json()
+          if (!res.ok) throw new Error(resData.error || 'Failed to convert estimate to order')
 
-      if (!res.ok) throw new Error('Failed to convert estimate to order')
-
-      // Mark estimate as converted
-      await handleStatusChange(estimate.id, 'converted')
-      triggerAlert('✦ Successfully converted estimate into an active Booking Order!')
-    } catch (err: any) {
-      triggerAlert(err.message || 'Conversion error', 'error')
-    }
+          // Mark estimate as converted
+          await handleStatusChange(estimate.id, 'converted')
+          setConfirmModal((prev) => ({ ...prev, isOpen: false }))
+          triggerAlert('✦ Successfully converted estimate into an active Booking Order!')
+        } catch (err: any) {
+          triggerAlert(err.message || 'Conversion error', 'error')
+          throw err
+        }
+      },
+    })
   }
 
-  // Delete Estimate
-  const handleDeleteEstimate = async (estimateId: string) => {
-    if (!confirm('Are you sure you want to delete this estimate?')) return
-
-    try {
-      const res = await fetch(`/api/admin/estimates?id=${estimateId}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error('Failed to delete')
-      setEstimates(estimates.filter((e) => e.id !== estimateId))
-      if (inspectEstimate?.id === estimateId) setInspectEstimate(null)
-      triggerAlert('Estimate deleted.')
-    } catch (err: any) {
-      triggerAlert(err.message || 'Error deleting', 'error')
-    }
+  // Request Delete Estimate (opens luxury confirmation modal)
+  const requestDeleteEstimate = (estimate: any) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Delete Estimate',
+      message: 'Are you sure you want to permanently delete this estimate submission? This action cannot be undone.',
+      confirmText: 'Yes, Delete',
+      cancelText: 'Cancel',
+      variant: 'danger',
+      icon: 'delete',
+      details: [
+        { label: 'Client', value: estimate.customer_name || 'Anonymous Client' },
+        { label: 'Calculated Price', value: `$${Number(estimate.total_price).toFixed(2)}` },
+        { label: 'Submission Date', value: new Date(estimate.created_at).toLocaleDateString() },
+      ],
+      action: async () => {
+        try {
+          const res = await fetch(`/api/admin/estimates?id=${estimate.id}`, { method: 'DELETE' })
+          const resData = await res.json()
+          if (!res.ok) throw new Error(resData.error || 'Failed to delete')
+          setEstimates((prev) => prev.filter((e) => e.id !== estimate.id))
+          if (inspectEstimate?.id === estimate.id) setInspectEstimate(null)
+          setConfirmModal((prev) => ({ ...prev, isOpen: false }))
+          triggerAlert('Estimate deleted.')
+        } catch (err: any) {
+          triggerAlert(err.message || 'Error deleting', 'error')
+          throw err
+        }
+      },
+    })
   }
 
   // Print Formal Estimate Proposal
@@ -427,14 +481,14 @@ export default function EstimatesManagerClient({ initialEstimates = [] }: { init
                           <Printer size={15} />
                         </button>
                         <button
-                          onClick={() => handleConvertToOrder(estimate)}
+                          onClick={() => requestConvertToOrder(estimate)}
                           title="Convert to Active Order"
                           style={{ background: '#ecfdf5', border: '1px solid #bbf7d0', padding: '0.45rem', borderRadius: '6px', cursor: 'pointer', color: '#16a34a' }}
                         >
                           <ShoppingBag size={15} />
                         </button>
                         <button
-                          onClick={() => handleDeleteEstimate(estimate.id)}
+                          onClick={() => requestDeleteEstimate(estimate)}
                           title="Delete Estimate"
                           style={{ background: '#fef2f2', border: '1px solid #fee2e2', padding: '0.45rem', borderRadius: '6px', cursor: 'pointer', color: '#ef4444' }}
                         >
@@ -514,8 +568,9 @@ export default function EstimatesManagerClient({ initialEstimates = [] }: { init
               </button>
               <button
                 onClick={() => {
+                  const est = inspectEstimate
                   setInspectEstimate(null)
-                  handleConvertToOrder(inspectEstimate)
+                  requestConvertToOrder(est)
                 }}
                 style={{
                   display: 'inline-flex',
@@ -538,6 +593,20 @@ export default function EstimatesManagerClient({ initialEstimates = [] }: { init
           </div>
         </div>
       )}
+
+      {/* LUXURY CONFIRMATION MODAL */}
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal((prev) => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmModal.action}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText={confirmModal.confirmText}
+        cancelText={confirmModal.cancelText}
+        variant={confirmModal.variant}
+        icon={confirmModal.icon}
+        details={confirmModal.details}
+      />
     </div>
   )
 }

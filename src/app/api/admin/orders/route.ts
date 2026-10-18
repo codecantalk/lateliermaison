@@ -37,6 +37,8 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
     const {
+      leadId,
+      lead_id,
       customerName,
       customerEmail,
       customerPhone,
@@ -56,8 +58,9 @@ export async function POST(req: Request) {
 
     const supabase = createAdminClient()
     const parsedAmount = Number(amount) || 0
+    const resolvedLeadId = leadId || lead_id || null
 
-    // 1. Auto sync or create Customer
+    // 1. Auto sync or create Customer (graceful if table exists)
     let customerId: string | null = null
     if (customerEmail && customerEmail.includes('@')) {
       try {
@@ -98,31 +101,59 @@ export async function POST(req: Request) {
     // 2. Generate manual reference ID if no Stripe session
     const manualRef = `MANUAL-${Date.now().toString(36).toUpperCase()}`
 
-    // 3. Insert into orders table
-    const { data: newOrder, error: orderErr } = await supabase
+    // 3. Merge extra fields into details JSONB so no information is ever lost
+    const orderDetails: any = {
+      ...(typeof details === 'object' && details !== null ? details : { note: details }),
+    }
+    if (address && !orderDetails.address) orderDetails.address = address
+    if (internalNotes && !orderDetails.internalNotes) orderDetails.internalNotes = internalNotes
+    if (scheduledDate && !orderDetails.scheduledDate) orderDetails.scheduledDate = scheduledDate
+
+    // Build the confirmed base record
+    const basePayload: any = {
+      stripe_session_id: manualRef,
+      customer_name: customerName,
+      customer_email: customerEmail || '',
+      customer_phone: customerPhone || null,
+      service_name: serviceName,
+      amount: parsedAmount,
+      currency: 'usd',
+      status: status,
+      details: orderDetails,
+      lead_id: resolvedLeadId,
+    }
+
+    // Extended payload for databases where extra columns were added
+    const extendedPayload: any = {
+      ...basePayload,
+      ...(address ? { address } : {}),
+      ...(internalNotes ? { internal_notes: internalNotes } : {}),
+      ...(scheduledDate ? { scheduled_date: scheduledDate } : {}),
+      ...(customerId ? { customer_id: customerId } : {}),
+    }
+
+    let insertRes = await supabase
       .from('orders')
-      .insert({
-        stripe_session_id: manualRef,
-        customer_name: customerName,
-        customer_email: customerEmail || '',
-        customer_phone: customerPhone || null,
-        address: address || null,
-        service_name: serviceName,
-        amount: parsedAmount,
-        currency: 'usd',
-        status: status,
-        details: details,
-        internal_notes: internalNotes || null,
-        scheduled_date: scheduledDate || null,
-        customer_id: customerId,
-      })
+      .insert(extendedPayload)
       .select('*')
       .single()
 
-    if (orderErr) {
-      console.error('[Create Order DB Error]', orderErr)
-      return NextResponse.json({ error: orderErr.message }, { status: 500 })
+    // If extended columns do not exist in this database schema, fallback seamlessly to basePayload
+    if (insertRes.error && insertRes.error.message.includes('column')) {
+      console.warn('[Create Order] Extended columns missing in orders table, falling back to base payload')
+      insertRes = await supabase
+        .from('orders')
+        .insert(basePayload)
+        .select('*')
+        .single()
     }
+
+    if (insertRes.error) {
+      console.error('[Create Order DB Error]', insertRes.error)
+      return NextResponse.json({ error: insertRes.error.message }, { status: 500 })
+    }
+
+    const newOrder = insertRes.data
 
     // 4. Optionally dispatch ZeptoMail email receipt
     if (sendReceiptEmail && customerEmail && customerEmail.includes('@')) {

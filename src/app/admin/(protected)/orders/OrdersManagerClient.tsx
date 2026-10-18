@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import styles from './orders.module.css'
+import ConfirmationModal from '@/components/admin/ConfirmationModal'
 import {
   ShoppingBag,
   DollarSign,
@@ -35,6 +36,22 @@ export default function OrdersManagerClient({ initialOrders = [] }: { initialOrd
   const [editOrder, setEditOrder] = useState<any | null>(null)
   const [loading, setLoading] = useState(false)
   const [alertMsg, setAlertMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean
+    title: string
+    message: string
+    confirmText?: string
+    cancelText?: string
+    variant?: 'primary' | 'danger'
+    icon?: 'convert' | 'delete'
+    details?: Array<{ label: string; value: React.ReactNode }>
+    action: () => Promise<void>
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    action: async () => {},
+  })
 
   // Form State
   const [formData, setFormData] = useState({
@@ -212,19 +229,37 @@ export default function OrdersManagerClient({ initialOrders = [] }: { initialOrd
     }
   }
 
-  // Delete Order
-  const handleDeleteOrder = async (orderId: string) => {
-    if (!confirm('Are you sure you want to permanently delete this order?')) return
-
-    try {
-      const res = await fetch(`/api/admin/orders?id=${orderId}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error('Failed to delete order')
-      setOrders(orders.filter((o) => o.id !== orderId))
-      if (inspectOrder?.id === orderId) setInspectOrder(null)
-      triggerAlert('Order deleted.')
-    } catch (err: any) {
-      triggerAlert(err.message || 'Error deleting order', 'error')
-    }
+  // Request Delete Order (opens luxury confirmation modal)
+  const requestDeleteOrder = (order: any) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Delete Order Record',
+      message: 'Are you sure you want to permanently delete this order record? This action cannot be undone.',
+      confirmText: 'Yes, Delete',
+      cancelText: 'Cancel',
+      variant: 'danger',
+      icon: 'delete',
+      details: [
+        { label: 'Client', value: order.customer_name },
+        { label: 'Service', value: order.service_name },
+        { label: 'Amount', value: `$${Number(order.amount).toFixed(2)}` },
+        { label: 'Reference', value: order.stripe_session_id || order.id.slice(0, 8) },
+      ],
+      action: async () => {
+        try {
+          const res = await fetch(`/api/admin/orders?id=${order.id}`, { method: 'DELETE' })
+          const resData = await res.json()
+          if (!res.ok) throw new Error(resData.error || 'Failed to delete order')
+          setOrders((prev) => prev.filter((o) => o.id !== order.id))
+          if (inspectOrder?.id === order.id) setInspectOrder(null)
+          setConfirmModal((prev) => ({ ...prev, isOpen: false }))
+          triggerAlert('Order deleted.')
+        } catch (err: any) {
+          triggerAlert(err.message || 'Error deleting order', 'error')
+          throw err
+        }
+      },
+    })
   }
 
   // Print Luxury Invoice
@@ -585,7 +620,7 @@ export default function OrdersManagerClient({ initialOrders = [] }: { initialOrd
                           <Edit2 size={15} />
                         </button>
                         <button
-                          onClick={() => handleDeleteOrder(order.id)}
+                          onClick={() => requestDeleteOrder(order)}
                           title="Delete Order"
                           style={{ background: '#fef2f2', border: '1px solid #fee2e2', padding: '0.45rem', borderRadius: '6px', cursor: 'pointer', color: '#ef4444' }}
                         >
@@ -849,6 +884,19 @@ export default function OrdersManagerClient({ initialOrders = [] }: { initialOrd
           </div>
         </div>
       )}
+      {/* LUXURY CONFIRMATION MODAL */}
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal((prev) => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmModal.action}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText={confirmModal.confirmText}
+        cancelText={confirmModal.cancelText}
+        variant={confirmModal.variant}
+        icon={confirmModal.icon}
+        details={confirmModal.details}
+      />
     </div>
   )
 }
