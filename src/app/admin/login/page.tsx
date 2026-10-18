@@ -34,7 +34,7 @@ export default function AdminLogin() {
         .split(',')
         .map((e) => e.trim().toLowerCase())
         .filter(Boolean)
-      const allowed = new Set(['arko@codecantalk.com', 'flenjureatl@gmail.com', 'order@lateliermaison.com', ...envAdmins])
+      const allowed = new Set(['arko@codecantalk.com', 'lateliermaisonatl@gmail.com', ...envAdmins])
       const userEmail = (data.user?.email || '').toLowerCase().trim()
 
       if (!allowed.has(userEmail)) {

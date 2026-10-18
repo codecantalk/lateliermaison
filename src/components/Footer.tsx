@@ -15,7 +15,7 @@ export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
   const [settings, setSettings] = useState<any>({
-    email: 'support@lateliermaison.com',
+    email: 'lateliermaisonatl@gmail.com',
     phone: '334-487-5707',
     address: 'Buckhead, Atlanta GA',
     availability: 'Serving Atlanta & DMV Area'
@@ -114,14 +114,14 @@ export default function Footer() {
                 <ul className={styles.contactList}>
                   <li><p style={{ margin: 0 }}>Cumberland Blvd SE<br/>Vinings, GA -- 30339</p></li>
                   <li><a href="tel:3344875707">334-487-5707</a></li>
-                  <li><a href="mailto:support@lateliermaison.com" style={{ fontSize: '0.85rem' }}>support@lateliermaison.com</a></li>
+                  <li><a href={`mailto:${settings?.email || 'lateliermaisonatl@gmail.com'}`} style={{ fontSize: '0.85rem' }}>{settings?.email || 'lateliermaisonatl@gmail.com'}</a></li>
                 </ul>
               </div>
               <div className={styles.linkGroup}>
                 <h4 className={styles.colTitle}>DMV Area</h4>
                 <ul className={styles.contactList}>
                   <li><p style={{ margin: 0 }}>4600 Powder Mill Rd<br/>Beltsville, MD 20705<br/>United States</p></li>
-                  <li><a href="mailto:support@lateliermaison.com" style={{ fontSize: '0.85rem' }}>support@lateliermaison.com</a></li>
+                  <li><a href={`mailto:${settings?.email || 'lateliermaisonatl@gmail.com'}`} style={{ fontSize: '0.85rem' }}>{settings?.email || 'lateliermaisonatl@gmail.com'}</a></li>
                 </ul>
               </div>
             </div>

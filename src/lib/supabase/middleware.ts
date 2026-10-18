@@ -37,8 +37,7 @@ export async function updateSession(request: NextRequest) {
 
   const allowedEmails = new Set([
     'arko@codecantalk.com',
-    'flenjureatl@gmail.com',
-    'order@lateliermaison.com',
+    'lateliermaisonatl@gmail.com',
     ...envAdminEmails,
   ])
 
