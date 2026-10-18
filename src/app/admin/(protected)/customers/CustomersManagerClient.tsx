@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import styles from './customers.module.css'
 import ConfirmationModal from '@/components/admin/ConfirmationModal'
@@ -16,25 +16,31 @@ import {
   Mail,
   Phone,
   MapPin,
-  Calendar,
   ShoppingBag,
   MessageSquare,
   ShieldCheck,
   Download,
+  Calculator,
+  RefreshCw,
+  ExternalLink,
 } from 'lucide-react'
 
 export default function CustomersManagerClient({
   initialCustomers = [],
   initialOrders = [],
   initialContacts = [],
+  initialLeads = [],
 }: {
   initialCustomers: any[]
   initialOrders: any[]
   initialContacts: any[]
+  initialLeads?: any[]
 }) {
   const [customers, setCustomers] = useState<any[]>(initialCustomers)
-  const [orders] = useState<any[]>(initialOrders)
-  const [contacts] = useState<any[]>(initialContacts)
+  const [orders, setOrders] = useState<any[]>(initialOrders)
+  const [contacts, setContacts] = useState<any[]>(initialContacts)
+  const [leads, setLeads] = useState<any[]>(initialLeads)
+  const [isRefreshing, setIsRefreshing] = useState(false)
   
   const [searchQuery, setSearchQuery] = useState('')
   const [tierFilter, setTierFilter] = useState('all')
@@ -74,32 +80,71 @@ export default function CustomersManagerClient({
 
   const supabase = createClient()
 
-  // Real-time synchronization for customers
+  const triggerAlert = (text: string, type: 'success' | 'error' = 'success') => {
+    setAlertMsg({ text, type })
+    setTimeout(() => setAlertMsg(null), 5000)
+  }
+
+  // Fetch latest synchronized customers from server
+  const refreshAll = useCallback(async (showToast = false) => {
+    try {
+      setIsRefreshing(true)
+      const res = await fetch('/api/admin/customers')
+      const data = await res.json()
+      if (data.customers) {
+        setCustomers(data.customers)
+        if (showToast) triggerAlert('Client directory synchronized successfully.')
+      }
+    } catch (err: any) {
+      console.error('[Refresh Customers Error]', err)
+      if (showToast) triggerAlert('Failed to synchronize directory', 'error')
+    } finally {
+      setIsRefreshing(false)
+    }
+  }, [])
+
+  // Real-time synchronization for orders, contacts, leads, customers, settings
   useEffect(() => {
     const channel = supabase
-      .channel('cms:customers-mgmt')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'customers' }, (payload) => {
+      .channel('cms:customers-sync')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'customers' }, () => {
+        refreshAll()
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
         if (payload.eventType === 'INSERT') {
-          setCustomers((prev) => [payload.new, ...prev.filter((c) => c.id !== payload.new.id)])
-          triggerAlert(`✦ New Client Profile Registered: ${payload.new.full_name}`)
+          setOrders((prev) => [payload.new, ...prev.filter((o) => o.id !== payload.new.id)])
+          triggerAlert(`✦ New Order Placed: $${payload.new.amount} (${payload.new.customer_name})`)
         } else if (payload.eventType === 'UPDATE') {
-          setCustomers((prev) => prev.map((c) => (c.id === payload.new.id ? payload.new : c)))
-          if (inspectCustomer?.id === payload.new.id) setInspectCustomer(payload.new)
-        } else if (payload.eventType === 'DELETE') {
-          setCustomers((prev) => prev.filter((c) => c.id !== payload.old.id))
+          setOrders((prev) => prev.map((o) => (o.id === payload.new.id ? payload.new : o)))
         }
+        refreshAll()
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'contacts' }, (payload) => {
+        if (payload.eventType === 'INSERT') {
+          setContacts((prev) => [payload.new, ...prev.filter((c) => c.id !== payload.new.id)])
+          triggerAlert(`✦ New Consultation Inquiry: ${payload.new.full_name}`)
+        } else if (payload.eventType === 'UPDATE') {
+          setContacts((prev) => prev.map((c) => (c.id === payload.new.id ? payload.new : c)))
+        }
+        refreshAll()
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, (payload) => {
+        if (payload.eventType === 'INSERT') {
+          setLeads((prev) => [payload.new, ...prev.filter((l) => l.id !== payload.new.id)])
+        } else if (payload.eventType === 'UPDATE') {
+          setLeads((prev) => prev.map((l) => (l.id === payload.new.id ? payload.new : l)))
+        }
+        refreshAll()
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'site_settings' }, () => {
+        refreshAll()
       })
       .subscribe()
 
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase, inspectCustomer])
-
-  const triggerAlert = (text: string, type: 'success' | 'error' = 'success') => {
-    setAlertMsg({ text, type })
-    setTimeout(() => setAlertMsg(null), 5000)
-  }
+  }, [supabase, refreshAll])
 
   // Open Create Modal
   const openCreateModal = () => {
@@ -152,7 +197,7 @@ export default function CustomersManagerClient({
         })
         const data = await res.json()
         if (!res.ok) throw new Error(data.error || 'Failed to create customer')
-        setCustomers([data.customer, ...customers])
+        setCustomers((prev) => [data.customer, ...prev.filter((c) => c.email.toLowerCase() !== data.customer.email.toLowerCase())])
         triggerAlert('Client profile created successfully.')
       } else {
         const res = await fetch('/api/admin/customers', {
@@ -162,8 +207,10 @@ export default function CustomersManagerClient({
         })
         const data = await res.json()
         if (!res.ok) throw new Error(data.error || 'Failed to update customer')
-        setCustomers(customers.map((c) => (c.id === data.customer.id ? data.customer : c)))
-        if (inspectCustomer?.id === data.customer.id) setInspectCustomer(data.customer)
+        setCustomers((prev) => prev.map((c) => (c.email.toLowerCase() === data.customer.email.toLowerCase() ? data.customer : c)))
+        if (inspectCustomer?.email.toLowerCase() === data.customer.email.toLowerCase()) {
+          setInspectCustomer(data.customer)
+        }
         triggerAlert('Client profile updated.')
       }
 
@@ -180,7 +227,7 @@ export default function CustomersManagerClient({
     setConfirmModal({
       isOpen: true,
       title: 'Delete Client Profile',
-      message: 'Are you sure you want to permanently delete this client record? Historical orders will be unlinked.',
+      message: 'Are you sure you want to remove this client from the active directory? Associated historical orders and estimates remain intact in their respective logs.',
       confirmText: 'Yes, Delete',
       cancelText: 'Cancel',
       variant: 'danger',
@@ -192,13 +239,15 @@ export default function CustomersManagerClient({
       ],
       action: async () => {
         try {
-          const res = await fetch(`/api/admin/customers?id=${cust.id}`, { method: 'DELETE' })
+          const res = await fetch(`/api/admin/customers?id=${encodeURIComponent(cust.email || cust.id)}`, { method: 'DELETE' })
           const resData = await res.json()
           if (!res.ok) throw new Error(resData.error || 'Failed to delete client')
-          setCustomers((prev) => prev.filter((c) => c.id !== cust.id))
-          if (inspectCustomer?.id === cust.id) setInspectCustomer(null)
+          setCustomers((prev) => prev.filter((c) => c.id !== cust.id && c.email.toLowerCase() !== cust.email.toLowerCase()))
+          if (inspectCustomer?.id === cust.id || inspectCustomer?.email.toLowerCase() === cust.email.toLowerCase()) {
+            setInspectCustomer(null)
+          }
           setConfirmModal((prev) => ({ ...prev, isOpen: false }))
-          triggerAlert('Client deleted.')
+          triggerAlert('Client profile removed.')
         } catch (err: any) {
           triggerAlert(err.message || 'Error deleting client', 'error')
           throw err
@@ -222,14 +271,18 @@ export default function CustomersManagerClient({
 
   // Export CSV
   const exportCustomersCSV = () => {
-    const headers = ['Name', 'Email', 'Phone', 'Address', 'VIP Tier', 'Created Date']
+    const headers = ['Name', 'Email', 'Phone', 'Address', 'VIP Tier', 'Total Spend', 'Orders', 'Quotes', 'Inquiries', 'Member Since']
     const rows = customers.map((c) => [
       `"${c.full_name}"`,
       c.email,
       `"${c.phone || ''}"`,
       `"${c.address || ''}"`,
       c.vip_tier || 'standard',
-      new Date(c.created_at).toLocaleDateString(),
+      (c.total_spent || 0).toFixed(2),
+      c.orders_count || 0,
+      c.leads_count || 0,
+      c.contacts_count || 0,
+      c.created_at ? new Date(c.created_at).toLocaleDateString() : '',
     ])
 
     const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n')
@@ -244,14 +297,15 @@ export default function CustomersManagerClient({
   // KPIs
   const totalClients = customers.length
   const eliteCount = customers.filter((c) => c.vip_tier === 'estate_elite' || c.vip_tier === 'vip').length
-  const totalLTV = orders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0)
+  const totalLTV = customers.reduce((sum, c) => sum + (Number(c.total_spent) || 0), 0)
 
-  // Helper to get orders & contacts for a customer
+  // Helper to get orders, contacts & leads for a customer
   const getCustomerHistory = (email: string) => {
     const emailNorm = (email || '').toLowerCase().trim()
-    const clientOrders = orders.filter((o) => (o.customer_email || '').toLowerCase().trim() === emailNorm)
+    const clientOrders = orders.filter((o) => (o.customer_email || o.email || '').toLowerCase().trim() === emailNorm)
     const clientContacts = contacts.filter((c) => (c.email || '').toLowerCase().trim() === emailNorm)
-    return { clientOrders, clientContacts }
+    const clientLeads = leads.filter((l) => (l.email || '').toLowerCase().trim() === emailNorm)
+    return { clientOrders, clientContacts, clientLeads }
   }
 
   return (
@@ -280,10 +334,14 @@ export default function CustomersManagerClient({
       <div className={styles.headerRow}>
         <div className={styles.titleArea}>
           <h1>Customer Directory</h1>
-          <p>Comprehensive client dossier, VIP status management, and lifetime service records.</p>
+          <p>Consolidated client dossier, VIP classification, and auto-synchronized lifetime history.</p>
         </div>
 
         <div className={styles.actionBtns}>
+          <button onClick={() => refreshAll(true)} disabled={isRefreshing} className={styles.secondaryBtn} title="Sync latest client profiles">
+            <RefreshCw size={15} style={{ animation: isRefreshing ? 'spin 1s linear infinite' : 'none' }} />
+            {isRefreshing ? 'Syncing...' : 'Sync Directory'}
+          </button>
           <button onClick={exportCustomersCSV} className={styles.secondaryBtn}>
             <Download size={16} />
             Export Directory
@@ -299,7 +357,7 @@ export default function CustomersManagerClient({
       <div className={styles.kpiGrid}>
         <div className={styles.kpiCard}>
           <div>
-            <div className={styles.kpiLabel}>Total Registered Clients</div>
+            <div className={styles.kpiLabel}>Total Synchronized Clients</div>
             <div className={styles.kpiValue}>{totalClients}</div>
           </div>
           <div className={styles.kpiIcon} style={{ background: 'rgba(11, 19, 43, 0.08)' }}>
@@ -320,7 +378,9 @@ export default function CustomersManagerClient({
         <div className={styles.kpiCard}>
           <div>
             <div className={styles.kpiLabel}>Total Client Portfolio LTV</div>
-            <div className={styles.kpiValue} style={{ color: '#15803d' }}>${totalLTV.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+            <div className={styles.kpiValue} style={{ color: '#15803d' }}>
+              ${totalLTV.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </div>
           </div>
           <div className={styles.kpiIcon} style={{ background: 'rgba(16, 185, 129, 0.1)' }}>
             <DollarSign size={22} color="#10b981" />
@@ -360,7 +420,9 @@ export default function CustomersManagerClient({
             <div style={{ padding: '4rem 2rem', textAlign: 'center', color: '#64748b' }}>
               <Users size={40} color="#cbd5e1" style={{ margin: '0 auto 1rem auto' }} />
               <h3 style={{ fontSize: '1.2rem', color: '#1e293b', marginBottom: '0.5rem' }}>No Clients Found</h3>
-              <p style={{ margin: 0, fontSize: '0.9rem' }}>Client profiles are automatically synchronized when orders or inquiries are placed.</p>
+              <p style={{ margin: 0, fontSize: '0.9rem' }}>
+                Client profiles are automatically synchronized when orders, inquiries, or estimates are placed.
+              </p>
             </div>
           ) : (
             <table className={styles.table}>
@@ -371,21 +433,21 @@ export default function CustomersManagerClient({
                   <th>Service Location</th>
                   <th>VIP Tier</th>
                   <th>Lifetime Spend</th>
-                  <th>Member Since</th>
+                  <th>Activity Summary</th>
                   <th style={{ textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredCustomers.map((cust) => {
-                  const { clientOrders } = getCustomerHistory(cust.email)
-                  const custSpent = clientOrders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0)
+                  const { clientOrders, clientContacts, clientLeads } = getCustomerHistory(cust.email)
+                  const displaySpent = cust.total_spent !== undefined ? cust.total_spent : clientOrders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0)
 
                   return (
-                    <tr key={cust.id}>
+                    <tr key={cust.id || cust.email}>
                       <td>
                         <div style={{ fontWeight: 600, color: '#0B132B', fontSize: '1rem' }}>{cust.full_name}</div>
-                        <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
-                          {clientOrders.length} order{clientOrders.length !== 1 ? 's' : ''} on record
+                        <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '2px' }}>
+                          {clientOrders.length} order{clientOrders.length !== 1 ? 's' : ''} &bull; {clientLeads.length} quote{clientLeads.length !== 1 ? 's' : ''} &bull; {clientContacts.length} inquiry
                         </div>
                       </td>
 
@@ -427,14 +489,17 @@ export default function CustomersManagerClient({
 
                       <td>
                         <span style={{ fontWeight: 700, color: '#b45309', fontSize: '1rem' }}>
-                          ${custSpent.toFixed(2)}
+                          ${Number(displaySpent).toFixed(2)}
                         </span>
                       </td>
 
                       <td>
-                        <span style={{ fontSize: '0.85rem', color: '#64748b' }}>
-                          {new Date(cust.created_at).toLocaleDateString()}
-                        </span>
+                        <div style={{ fontSize: '0.82rem', color: '#334155', fontWeight: 500 }}>
+                          Last: {cust.last_active ? new Date(cust.last_active).toLocaleDateString() : 'N/A'}
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                          Since: {cust.created_at ? new Date(cust.created_at).toLocaleDateString() : 'N/A'}
+                        </div>
                       </td>
 
                       <td style={{ textAlign: 'right' }}>
@@ -473,19 +538,21 @@ export default function CustomersManagerClient({
 
       {/* CLIENT DOSSIER DRAWER / MODAL */}
       {inspectCustomer && (() => {
-        const { clientOrders, clientContacts } = getCustomerHistory(inspectCustomer.email)
-        const totalSpent = clientOrders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0)
+        const { clientOrders, clientContacts, clientLeads } = getCustomerHistory(inspectCustomer.email)
+        const totalSpent = inspectCustomer.total_spent !== undefined
+          ? inspectCustomer.total_spent
+          : clientOrders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0)
 
         return (
           <div className={styles.overlay} onClick={() => setInspectCustomer(null)}>
-            <div className={styles.modal} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '720px' }}>
+            <div className={styles.modal} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '780px' }}>
               <div className={styles.modalHeader}>
                 <div>
                   <span style={{ fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#c5a059', fontWeight: 700 }}>
                     Client Dossier
                   </span>
                   <h3>{inspectCustomer.full_name}</h3>
-                  <div style={{ display: 'flex', gap: '1rem', marginTop: '0.25rem', fontSize: '0.85rem' }}>
+                  <div style={{ display: 'flex', gap: '1rem', marginTop: '0.25rem', fontSize: '0.85rem', flexWrap: 'wrap' }}>
                     <a href={`mailto:${inspectCustomer.email}`} style={{ color: '#2563eb', display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}>
                       <Mail size={13} /> {inspectCustomer.email}
                     </a>
@@ -494,6 +561,11 @@ export default function CustomersManagerClient({
                         <Phone size={13} /> {inspectCustomer.phone}
                       </a>
                     )}
+                    {inspectCustomer.address && (
+                      <span style={{ color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <MapPin size={13} /> {inspectCustomer.address}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <button className={styles.closeBtn} onClick={() => setInspectCustomer(null)}>&times;</button>
@@ -501,11 +573,11 @@ export default function CustomersManagerClient({
 
               <div className={styles.modalBody}>
                 {/* Stats row */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
                   <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                     <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Lifetime Spend</div>
                     <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#b45309', fontFamily: 'var(--font-serif)', marginTop: '0.2rem' }}>
-                      ${totalSpent.toFixed(2)}
+                      ${Number(totalSpent).toFixed(2)}
                     </div>
                   </div>
 
@@ -517,7 +589,7 @@ export default function CustomersManagerClient({
                   </div>
 
                   <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Tier Classification</div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>VIP Classification</div>
                     <div style={{ marginTop: '0.35rem' }}>
                       {inspectCustomer.vip_tier === 'estate_elite' ? (
                         <span className={styles.badgeElite}><Crown size={11} /> Estate Elite</span>
@@ -544,18 +616,53 @@ export default function CustomersManagerClient({
                     <ShoppingBag size={16} color="#c5a059" /> Order History ({clientOrders.length})
                   </h4>
                   {clientOrders.length === 0 ? (
-                    <p style={{ fontSize: '0.85rem', color: '#94a3b8', margin: 0 }}>No paid orders on record.</p>
+                    <p style={{ fontSize: '0.85rem', color: '#94a3b8', margin: 0 }}>No booking orders on record.</p>
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                       {clientOrders.map((o) => (
                         <div key={o.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', background: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
                           <div>
                             <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '0.9rem' }}>{o.service_name}</div>
-                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{new Date(o.created_at).toLocaleDateString()} &bull; Ref: {o.stripe_session_id ? o.stripe_session_id.slice(-8).toUpperCase() : o.id.slice(0, 8)}</div>
+                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                              {new Date(o.created_at).toLocaleDateString()} &bull; Ref: {o.stripe_session_id ? o.stripe_session_id.slice(-8).toUpperCase() : o.id.slice(0, 8)}
+                              {o.details?.address ? ` • ${o.details.address}` : ''}
+                            </div>
                           </div>
                           <div style={{ textAlign: 'right' }}>
                             <div style={{ fontWeight: 700, color: '#b45309' }}>${Number(o.amount).toFixed(2)}</div>
                             <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', fontWeight: 600, color: o.status === 'completed' ? '#15803d' : '#2563eb' }}>{o.status}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Estimates Quotes History */}
+                <div>
+                  <h4 style={{ fontSize: '0.95rem', color: '#0B132B', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <Calculator size={16} color="#c5a059" /> Calculated Estimate Quotes ({clientLeads.length})
+                  </h4>
+                  {clientLeads.length === 0 ? (
+                    <p style={{ fontSize: '0.85rem', color: '#94a3b8', margin: 0 }}>No estimate quote calculations on record.</p>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                      {clientLeads.map((l) => (
+                        <div key={l.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', background: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+                          <div>
+                            <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '0.9rem' }}>{l.service_type || 'Estimate Consultation'}</div>
+                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                              {new Date(l.created_at).toLocaleDateString()}
+                              {l.details?.squareFeet ? ` • ${l.details.squareFeet} sq ft` : ''}
+                              {l.details?.bedrooms ? ` • ${l.details.bedrooms} bed` : ''}
+                              {l.details?.location ? ` • ${l.details.location}` : ''}
+                            </div>
+                          </div>
+                          <div style={{ textAlign: 'right' }}>
+                            <div style={{ fontWeight: 700, color: '#b45309' }}>${Number(l.total_price || 0).toFixed(2)}</div>
+                            <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', fontWeight: 600, color: l.status === 'converted' ? '#15803d' : '#64748b' }}>
+                              {l.status || 'pending'}
+                            </span>
                           </div>
                         </div>
                       ))}
@@ -579,6 +686,16 @@ export default function CustomersManagerClient({
                             <span style={{ fontSize: '0.75rem', color: '#64748b' }}>{new Date(c.created_at).toLocaleDateString()}</span>
                           </div>
                           {c.details && <p style={{ margin: '0.3rem 0 0 0', fontSize: '0.82rem', color: '#475569', lineHeight: 1.4 }}>{c.details}</p>}
+                          {c.address && <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px' }}>Location: {c.address}</div>}
+                          {Array.isArray(c.image_urls) && c.image_urls.length > 0 && (
+                            <div style={{ display: 'flex', gap: '6px', marginTop: '6px', flexWrap: 'wrap' }}>
+                              {c.image_urls.map((url: string, idx: number) => (
+                                <a key={idx} href={url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: '0.75rem', color: '#2563eb' }}>
+                                  <ExternalLink size={11} /> Attachment #{idx + 1}
+                                </a>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -589,8 +706,9 @@ export default function CustomersManagerClient({
               <div className={styles.modalFooter}>
                 <button
                   onClick={() => {
+                    const custToEdit = inspectCustomer
                     setInspectCustomer(null)
-                    openEditModal(inspectCustomer)
+                    openEditModal(custToEdit)
                   }}
                   className={styles.primaryBtn}
                 >
@@ -695,6 +813,7 @@ export default function CustomersManagerClient({
           </div>
         </div>
       )}
+
       {/* LUXURY CONFIRMATION MODAL */}
       <ConfirmationModal
         isOpen={confirmModal.isOpen}
