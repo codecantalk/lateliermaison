@@ -32,18 +32,29 @@ export async function PUT(req: Request) {
     }
 
     const supabase = createAdminClient()
-    const { data, error } = await supabase
+    
+    // First try with status and updated_at, fall back to status only if updated_at column does not exist
+    let result = await supabase
       .from('leads')
       .update({ status, updated_at: new Date().toISOString() })
       .eq('id', id)
       .select('*')
       .single()
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+    if (result.error && result.error.message.includes('updated_at')) {
+      result = await supabase
+        .from('leads')
+        .update({ status })
+        .eq('id', id)
+        .select('*')
+        .single()
     }
 
-    return NextResponse.json({ success: true, estimate: data })
+    if (result.error) {
+      return NextResponse.json({ error: result.error.message }, { status: 500 })
+    }
+
+    return NextResponse.json({ success: true, estimate: result.data })
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 })
   }

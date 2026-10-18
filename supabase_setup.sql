@@ -85,6 +85,10 @@ BEGIN
     ALTER TABLE public.customers ADD COLUMN IF NOT EXISTS vip_tier TEXT DEFAULT 'standard';
     ALTER TABLE public.customers ADD COLUMN IF NOT EXISTS internal_notes TEXT;
     ALTER TABLE public.customers ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
+
+    -- Ensure updated_at exists in leads and contacts
+    ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
+    ALTER TABLE public.contacts ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
 END $$;
 
 -- 5. Enable Row Level Security (RLS)

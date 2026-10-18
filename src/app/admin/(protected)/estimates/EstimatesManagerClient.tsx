@@ -57,19 +57,28 @@ export default function EstimatesManagerClient({ initialEstimates = [] }: { init
 
   // Update Status
   const handleStatusChange = async (estimateId: string, newStatus: string) => {
+    const prevEstimates = [...estimates]
+    const prevInspect = inspectEstimate ? { ...inspectEstimate } : null
+
+    // Optimistically update UI immediately for buttery smooth feel
+    setEstimates(estimates.map((e) => (e.id === estimateId ? { ...e, status: newStatus } : e)))
+    if (inspectEstimate?.id === estimateId) {
+      setInspectEstimate({ ...inspectEstimate, status: newStatus })
+    }
+
     try {
       const res = await fetch('/api/admin/estimates', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: estimateId, status: newStatus }),
       })
-      if (!res.ok) throw new Error('Status update failed')
-      setEstimates(estimates.map((e) => (e.id === estimateId ? { ...e, status: newStatus } : e)))
-      if (inspectEstimate?.id === estimateId) {
-        setInspectEstimate({ ...inspectEstimate, status: newStatus })
-      }
+      const resData = await res.json()
+      if (!res.ok) throw new Error(resData.error || 'Status update failed')
       triggerAlert(`Estimate marked as ${newStatus}`)
     } catch (err: any) {
+      // Rollback on failure
+      setEstimates(prevEstimates)
+      if (prevInspect) setInspectEstimate(prevInspect)
       triggerAlert(err.message || 'Error updating status', 'error')
     }
   }

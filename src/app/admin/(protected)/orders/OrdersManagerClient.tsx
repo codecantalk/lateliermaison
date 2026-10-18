@@ -85,19 +85,27 @@ export default function OrdersManagerClient({ initialOrders = [] }: { initialOrd
 
   // Quick Status Update
   const handleStatusChange = async (orderId: string, newStatus: string) => {
+    const prevOrders = [...orders]
+    const prevInspect = inspectOrder ? { ...inspectOrder } : null
+
+    // Optimistically update UI immediately
+    setOrders(orders.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)))
+    if (inspectOrder?.id === orderId) {
+      setInspectOrder({ ...inspectOrder, status: newStatus })
+    }
+
     try {
       const res = await fetch('/api/admin/orders', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: orderId, status: newStatus }),
       })
-      if (!res.ok) throw new Error('Status update failed')
-      setOrders(orders.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)))
-      if (inspectOrder?.id === orderId) {
-        setInspectOrder({ ...inspectOrder, status: newStatus })
-      }
+      const resData = await res.json()
+      if (!res.ok) throw new Error(resData.error || 'Status update failed')
       triggerAlert(`Order marked as ${newStatus}`)
     } catch (err: any) {
+      setOrders(prevOrders)
+      if (prevInspect) setInspectOrder(prevInspect)
       triggerAlert(err.message || 'Error updating status', 'error')
     }
   }

@@ -194,12 +194,24 @@ export async function PUT(req: Request) {
     if (internalNotes !== undefined) updatePayload.internal_notes = internalNotes
     if (scheduledDate !== undefined) updatePayload.scheduled_date = scheduledDate
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from('orders')
       .update(updatePayload)
       .eq('id', id)
       .select('*')
       .single()
+
+    if (error && error.message.includes('updated_at')) {
+      delete updatePayload.updated_at
+      const retry = await supabase
+        .from('orders')
+        .update(updatePayload)
+        .eq('id', id)
+        .select('*')
+        .single()
+      data = retry.data
+      error = retry.error
+    }
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 })

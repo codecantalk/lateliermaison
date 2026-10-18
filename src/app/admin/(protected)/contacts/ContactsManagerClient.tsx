@@ -58,19 +58,27 @@ export default function ContactsManagerClient({ initialContacts = [] }: { initia
 
   // Update Status
   const handleStatusChange = async (contactId: string, newStatus: string) => {
+    const prevContacts = [...contacts]
+    const prevInspect = inspectContact ? { ...inspectContact } : null
+
+    // Optimistically update UI immediately
+    setContacts(contacts.map((c) => (c.id === contactId ? { ...c, status: newStatus } : c)))
+    if (inspectContact?.id === contactId) {
+      setInspectContact({ ...inspectContact, status: newStatus })
+    }
+
     try {
       const res = await fetch('/api/admin/contacts', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: contactId, status: newStatus }),
       })
-      if (!res.ok) throw new Error('Status update failed')
-      setContacts(contacts.map((c) => (c.id === contactId ? { ...c, status: newStatus } : c)))
-      if (inspectContact?.id === contactId) {
-        setInspectContact({ ...inspectContact, status: newStatus })
-      }
+      const resData = await res.json()
+      if (!res.ok) throw new Error(resData.error || 'Status update failed')
       triggerAlert(`Inquiry marked as ${newStatus}`)
     } catch (err: any) {
+      setContacts(prevContacts)
+      if (prevInspect) setInspectContact(prevInspect)
       triggerAlert(err.message || 'Error updating status', 'error')
     }
   }
