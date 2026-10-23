@@ -201,10 +201,91 @@
 .subheadline {
   color: rgba(226, 232, 240, 0.78);
   font-size: clamp(0.9rem, 1.2vw, 1.05rem);
-  max-width: 400px;
+  max-width: 440px;
   line-height: 1.55;
   margin: 0;
   font-weight: 300;
+}
+
+.heroActionGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.heroActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  backdrop-filter: blur(10px);
+  transition: all 0.25s ease;
+}
+
+.heroActionBtn:hover {
+  background: rgba(197, 160, 89, 0.2);
+  border-color: #c5a059;
+  color: #facc15;
+  transform: translateY(-2px);
+}
+
+.heroActionEstimateBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #d97706;
+  border: 1px solid #d97706;
+  color: #ffffff;
+  padding: 0.55rem 1.15rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(217, 119, 6, 0.35);
+}
+
+.heroActionEstimateBtn:hover {
+  background: #b45309;
+  transform: translateY(-2px);
+}
+
+.cardActionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.cardSecondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.cardSecondaryBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-color: #ffffff;
 }
 
 /* Controls Bar (City Tabs + 3D Toggle) */
