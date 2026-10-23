@@ -278,9 +278,13 @@ export default function LandingPage() {
               }}
             >
               
-              <motion.div 
-                whileHover={{ y: -5 }}
-                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: '#ffffff', textAlign: 'center', cursor: 'default' }}
+              <motion.a 
+                href={process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL || 'https://www.google.com/search?q=L%27Atelier+Maison+Atlanta+reviews'}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ y: -5, scale: 1.02 }}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: '#ffffff', textAlign: 'center', textDecoration: 'none', cursor: 'pointer' }}
+                title="View verified 5.0 Google Reviews (Opens in new tab)"
               >
                 <div style={{ display: 'flex', gap: '4px', color: '#d97706', fontSize: '1.5rem' }}>
                   <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2, delay: 0 }}>★</motion.span>
@@ -289,8 +293,10 @@ export default function LandingPage() {
                   <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2, delay: 0.6 }}>★</motion.span>
                   <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2, delay: 0.8 }}>★</motion.span>
                 </div>
-                <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#e5e7eb' }}>5.0 Google Reviews</span>
-              </motion.div>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#e5e7eb', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  5.0 Google Reviews ↗
+                </span>
+              </motion.a>
 
               <motion.div 
                 whileHover={{ y: -5 }}
@@ -479,7 +485,7 @@ export default function LandingPage() {
               </h2>
               <div style={{ borderTop: '1px solid #eaeaea', paddingTop: '2rem' }}>
                 <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', fontWeight: 400, lineHeight: 1.8, color: '#4b5563', marginBottom: '3rem' }}>
-                  L’ATELIER MAISON caters to everyone. But we care more about your satisfaction and the quality of our work product. <span style={{ fontStyle: 'italic', color: '#1e3a8a' }}>Dream with us.</span>
+                  We prioritize your complete satisfaction, uncompromising attention to detail, and the lasting quality of our craftsmanship. <span style={{ fontStyle: 'italic', color: '#1e3a8a' }}>Dream with us.</span>
                 </p>
                 <Link href="/estimate" className="btn btn-primary" style={{ letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                   Start Your Project

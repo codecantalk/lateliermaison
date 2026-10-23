@@ -201,6 +201,39 @@ export default function CleaningClient() {
       {/* NEW: The Premium Interactive Checklist */}
       <CleaningChecklist />
 
+      {/* Local Divisions Quick Access */}
+      <section style={{ padding: '3.5rem 5%', backgroundColor: '#f8fafc', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0' }}>
+        <div className="container" style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center' }}>
+          <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#d97706', fontWeight: 700, display: 'block', marginBottom: '0.5rem' }}>
+            Dedicated Local Hubs
+          </span>
+          <h3 style={{ fontFamily: '"ivyprestige-headline", serif', fontSize: 'clamp(1.75rem, 3vw, 2.25rem)', color: '#0B132B', margin: '0 0 0.75rem 0' }}>
+            Serving Atlanta & The DMV Corridor
+          </h3>
+          <p style={{ color: '#64748b', fontSize: '1rem', maxWidth: '650px', margin: '0 auto 2rem auto', lineHeight: 1.6 }}>
+            Select your region for tailored local pricing, specialized neighborhood crews, and direct concierge contact.
+          </p>
+          <div style={{ display: 'flex', gap: '1.25rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link 
+              href="/atlanta/house-cleaning"
+              className="btn btn-outline"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.85rem 1.75rem', borderColor: '#0B132B', color: '#0B132B', fontWeight: 600, backgroundColor: '#ffffff' }}
+            >
+              <span>📍 Atlanta House Cleaning</span>
+              <span>→</span>
+            </Link>
+            <Link 
+              href="/dmv/house-cleaning"
+              className="btn btn-outline"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.85rem 1.75rem', borderColor: '#0B132B', color: '#0B132B', fontWeight: 600, backgroundColor: '#ffffff' }}
+            >
+              <span>📍 DMV House Cleaning (DC, MD, VA)</span>
+              <span>→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
 
 
       {/* CTA Section - Simple Link to Estimate */}

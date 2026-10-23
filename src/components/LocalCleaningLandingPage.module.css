@@ -1,0 +1,784 @@
+.pageWrapper {
+  width: 100%;
+  overflow-x: hidden;
+  background-color: #ffffff;
+  color: #1e293b;
+  font-family: var(--font-sans, "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif);
+}
+
+/* 1. Top Urgency / Info Ribbon */
+.topRibbon {
+  background: linear-gradient(90deg, #0B132B 0%, #1e3a8a 100%);
+  color: #ffffff;
+  padding: 0.65rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.topRibbon strong {
+  color: #facc15;
+}
+
+.topRibbonLink {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s ease;
+}
+
+.topRibbonLink:hover {
+  opacity: 0.85;
+}
+
+/* 2. Hero Section */
+.heroSection {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  padding: 7rem 1.5rem 5rem 1.5rem;
+  background: linear-gradient(135deg, #0B132B 0%, #111e47 50%, #1e3a8a 100%);
+  color: #ffffff;
+  overflow: hidden;
+}
+
+.heroBackground {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.25;
+  mix-blend-mode: luminosity;
+  pointer-events: none;
+}
+
+.heroGlow {
+  position: absolute;
+  top: 10%;
+  right: -5%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(197, 160, 89, 0.22) 0%, rgba(11, 19, 43, 0) 70%);
+  filter: blur(60px);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.heroContainer {
+  position: relative;
+  z-index: 10;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+@media (max-width: 991px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
+
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.googleBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0.45rem 1.15rem;
+  border-radius: 50px;
+  width: fit-content;
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.googleBadge:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  border-color: #facc15;
+}
+
+.googleBadgeLight {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 0.5rem 1.25rem;
+  border-radius: 50px;
+  width: fit-content;
+  text-decoration: none;
+  color: #1e293b;
+  font-size: 0.88rem;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.googleBadgeLight:hover {
+  border-color: #d97706;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.heroHeadline {
+  font-family: var(--font-serif, "ivyprestige-headline", "Playfair Display", Georgia, serif);
+  font-size: clamp(2.4rem, 5vw, 4.2rem);
+  line-height: 1.12;
+  font-weight: 400;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.goldAccent {
+  color: #c5a059;
+  font-style: italic;
+}
+
+.heroSubtitle {
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0;
+  max-width: 640px;
+}
+
+.heroCtaGroup {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.btnPrimary {
+  background-color: #d97706;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 6px 20px rgba(217, 119, 6, 0.35);
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btnPrimary:hover {
+  background-color: #b45309;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(217, 119, 6, 0.45);
+}
+
+.btnPhone {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  padding: 1rem 1.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.3s ease;
+}
+
+.btnPhone:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.trustBadgesRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  margin-top: 0.5rem;
+}
+
+.trustBadgeItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+.trustBadgeItem svg {
+  color: #facc15;
+  flex-shrink: 0;
+}
+
+/* Hero Right Floating Card */
+.heroQuickCard {
+  background: #ffffff;
+  color: #1e293b;
+  border-radius: 18px;
+  padding: 2.25rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  position: relative;
+}
+
+.heroQuickCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.cardHubBadge {
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cardTitle {
+  font-family: var(--font-serif, "ivyprestige-headline", serif);
+  font-size: 1.5rem;
+  color: #0B132B;
+  margin: 0 0 0.5rem 0;
+}
+
+.cardSubtitle {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin: 0 0 1.25rem 0;
+  line-height: 1.5;
+}
+
+.cardFeatureList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.cardFeatureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.88rem;
+  color: #334155;
+}
+
+.cardFeatureItem svg {
+  color: #16a34a;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.cardContactBox {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.cardContactBox a {
+  color: #1e3a8a;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* 3. Local Trust / Physical Hub Banner */
+.localHubBar {
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 2.5rem 1.5rem;
+}
+
+.hubContainer {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  align-items: center;
+}
+
+.hubItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.hubIcon {
+  width: 44px;
+  height: 44px;
+  background: #eff6ff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e3a8a;
+  flex-shrink: 0;
+}
+
+.hubLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.hubValue {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.hubValue a {
+  color: #0f172a;
+  text-decoration: none;
+}
+
+.hubValue a:hover {
+  color: #2563eb;
+}
+
+/* 4. Section Containers */
+.section {
+  padding: 5rem 1.5rem;
+}
+
+.sectionAlt {
+  background-color: #fbfbfd;
+  border-top: 1px solid #eef2f6;
+  border-bottom: 1px solid #eef2f6;
+}
+
+.sectionHeader {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 3.5rem auto;
+}
+
+.eyebrow {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #d97706;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.sectionTitle {
+  font-family: var(--font-serif, "ivyprestige-headline", "Playfair Display", Georgia, serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: #0B132B;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+}
+
+.sectionSubtitle {
+  font-size: 1.1rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* 5. Packages Bento Grid */
+.packagesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.packageCard {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 2.25rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.packageCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.08);
+  border-color: #c5a059;
+}
+
+.popularCard {
+  border: 2px solid #c5a059;
+  background: linear-gradient(180deg, #ffffff 0%, #fffdf9 100%);
+}
+
+.popularBadge {
+  position: absolute;
+  top: -12px;
+  right: 24px;
+  background: #d97706;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.85rem;
+  border-radius: 20px;
+}
+
+.packageName {
+  font-family: var(--font-serif, serif);
+  font-size: 1.75rem;
+  color: #0B132B;
+  margin: 0 0 0.5rem 0;
+}
+
+.packageDesc {
+  color: #64748b;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.packageFeatures {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.packageFeatureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.9rem;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.packageFeatureItem svg {
+  color: #d97706;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* 6. Comparison Table */
+.tableWrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+  overflow-x: auto;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.comparisonTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.comparisonTable th,
+.comparisonTable td {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.comparisonTable th {
+  background: #f8fafc;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0B132B;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.highlightCol {
+  background: #fdfaf3 !important;
+  color: #1e3a8a;
+  font-weight: 700;
+}
+
+/* 7. Local Neighborhoods / Coverage */
+.coverageContainer {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.neighborhoodPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+  max-width: 1000px;
+  margin: 0 auto 3rem auto;
+}
+
+.neighborhoodPill {
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  padding: 0.55rem 1.15rem;
+  border-radius: 50px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+}
+
+.neighborhoodPill:hover {
+  border-color: #d97706;
+  color: #d97706;
+  transform: translateY(-1px);
+}
+
+.districtGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.districtCard {
+  background: #ffffff;
+  padding: 1.75rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.districtCard h4 {
+  font-family: var(--font-serif, serif);
+  font-size: 1.25rem;
+  color: #0B132B;
+  margin: 0 0 0.5rem 0;
+}
+
+.districtCard p {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* 8. Local Reviews */
+.reviewsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.reviewCard {
+  background: #ffffff;
+  padding: 2.25rem;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.reviewStars {
+  color: #d97706;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.75rem;
+}
+
+.reviewText {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: #334155;
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+
+.reviewAuthor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 1rem;
+}
+
+.authorName {
+  font-family: var(--font-serif, serif);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #0B132B;
+  margin: 0;
+}
+
+.authorMeta {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.verifiedGoogle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #2563eb;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* 9. FAQs Accordion */
+.faqContainer {
+  max-width: 850px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.faqItem {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.faqItem:hover {
+  border-color: #cbd5e1;
+}
+
+.faqQuestion {
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  background: transparent;
+  border: none;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #0B132B;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  gap: 1rem;
+}
+
+.faqAnswer {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #475569;
+}
+
+/* 10. Sticky Mobile Call & Book Bar (Ad Conversion) */
+.mobileStickyBar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(11, 19, 43, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0.75rem 1rem;
+  z-index: 999;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 768px) {
+  .mobileStickyBar {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+}
+
+.mobileCallBtn {
+  flex: 1;
+  background: #ffffff;
+  color: #0B132B;
+  padding: 0.75rem 0.5rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.mobileBookBtn {
+  flex: 1.4;
+  background: #d97706;
+  color: #ffffff;
+  padding: 0.75rem 0.5rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}

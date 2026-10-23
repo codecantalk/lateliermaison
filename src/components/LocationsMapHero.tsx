@@ -25,14 +25,14 @@ export const SERVICE_LOCATIONS: ServiceLocation[] = [
     id: 'atlanta',
     city: 'Atlanta',
     region: 'Georgia, USA',
-    badge: 'North American HQ',
+    badge: 'Atlanta Hub',
     slug: 'atlanta',
     coordsText: '33.7490° N, 84.3880° W',
     x: 232,
     y: 260,
     labelOffset: { x: -75, y: 14 },
-    desc: 'Our flagship North American headquarters, delivering ground-up luxury architectural builds, historic remodels, and total estate care.',
-    specialties: ['Ground-Up Construction', 'Luxury Remodeling', 'Estate Management'],
+    desc: 'Our flagship Atlanta headquarters serving Buckhead, Vinings, Midtown, Sandy Springs, Alpharetta, and the greater metro with luxury house cleaning, remodeling, and estate care.',
+    specialties: ['Luxury House Cleaning', 'Bespoke Remodeling', 'Estate Concierge'],
     img: '/luxury-hero.jpg'
   },
   {
@@ -282,15 +282,13 @@ export default function LocationsMapHero() {
               <line x1="820" y1="40" x2="820" y2="540" />
             </g>
 
-            {/* Equator & Meridian Labels */}
-            <text x="50" y="296" fill="rgba(197, 160, 89, 0.4)" fontSize="9" fontFamily="monospace" letterSpacing="1">0° EQUATOR</text>
-            <text x="506" y="555" fill="rgba(197, 160, 89, 0.4)" fontSize="9" fontFamily="monospace" letterSpacing="1">0° MERIDIAN</text>
-            <text x="186" y="555" fill="rgba(148, 163, 184, 0.25)" fontSize="8" fontFamily="monospace">75° W</text>
-            <text x="666" y="555" fill="rgba(148, 163, 184, 0.25)" fontSize="8" fontFamily="monospace">30° E</text>
+            {/* Regional Corridor Coordinates */}
+            <text x="50" y="555" fill="rgba(197, 160, 89, 0.6)" fontSize="9" fontFamily="monospace" letterSpacing="1.5">✦ ATLANTA (GA) &bull; WASHINGTON DC &bull; MARYLAND &bull; NORTHERN VIRGINIA</text>
+            <text x="780" y="555" fill="rgba(148, 163, 184, 0.3)" fontSize="8" fontFamily="monospace">EAST COAST CORRIDOR</text>
 
             {/* ================= VECTOR LANDMASS OUTLINES ================= */}
             <g id="landmass">
-              {/* North America */}
+              {/* North American Eastern Seaboard & Southeast */}
               <path
                 d="M 65 110 
                    C 95 85, 160 70, 220 75
@@ -315,21 +313,6 @@ export default function LocationsMapHero() {
                 stroke="rgba(197, 160, 89, 0.4)"
                 strokeWidth="1"
               />
-
-              {/* South America */}
-              <path
-                d="M 240 340
-                   C 270 330, 310 345, 335 365
-                   C 365 390, 385 425, 360 460
-                   C 340 490, 315 520, 290 545
-                   C 280 550, 275 530, 270 500
-                   C 260 460, 250 430, 235 395
-                   C 225 375, 230 350, 240 340 Z"
-                fill="url(#landGradient)"
-                stroke="rgba(197, 160, 89, 0.25)"
-                strokeWidth="1"
-              />
-
             </g>
 
             {/* ================= GEODESIC CONNECTION ARCS ================= */}

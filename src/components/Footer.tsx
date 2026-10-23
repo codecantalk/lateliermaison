@@ -114,14 +114,16 @@ export default function Footer() {
                 <ul className={styles.contactList}>
                   <li><p style={{ margin: 0 }}>Cumberland Blvd SE<br/>Vinings, GA -- 30339</p></li>
                   <li><a href="tel:3344875707">334-487-5707</a></li>
-                  <li><a href={`mailto:${settings?.email || 'lateliermaisonatl@gmail.com'}`} style={{ fontSize: '0.85rem' }}>{settings?.email || 'lateliermaisonatl@gmail.com'}</a></li>
+                  <li><a href="mailto:atlanta@lateliermaison.com" style={{ fontSize: '0.85rem' }}>atlanta@lateliermaison.com</a></li>
+                  <li style={{ marginTop: '0.35rem' }}><Link href="/atlanta/house-cleaning" style={{ fontSize: '0.82rem', color: '#c5a059', fontWeight: 600 }}>Atlanta House Cleaning →</Link></li>
                 </ul>
               </div>
               <div className={styles.linkGroup}>
                 <h4 className={styles.colTitle}>DMV Area</h4>
                 <ul className={styles.contactList}>
                   <li><p style={{ margin: 0 }}>4600 Powder Mill Rd<br/>Beltsville, MD 20705<br/>United States</p></li>
-                  <li><a href={`mailto:${settings?.email || 'lateliermaisonatl@gmail.com'}`} style={{ fontSize: '0.85rem' }}>{settings?.email || 'lateliermaisonatl@gmail.com'}</a></li>
+                  <li><a href="mailto:dmv@lateliermaison.com" style={{ fontSize: '0.85rem' }}>dmv@lateliermaison.com</a></li>
+                  <li style={{ marginTop: '0.35rem' }}><Link href="/dmv/house-cleaning" style={{ fontSize: '0.82rem', color: '#c5a059', fontWeight: 600 }}>DMV House Cleaning →</Link></li>
                 </ul>
               </div>
             </div>
