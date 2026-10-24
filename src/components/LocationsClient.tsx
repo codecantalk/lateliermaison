@@ -65,44 +65,13 @@ export default function LocationsClient() {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    // Refresh any global scroll triggers
     const timer = setTimeout(() => {
       ScrollTrigger.refresh()
-    }, 250)
-
-    const ctx = gsap.context(() => {
-      // Title reveal
-      gsap.from('.loc-title', { 
-        y: 30, 
-        opacity: 0, 
-        duration: 0.8, 
-        ease: 'power3.out', 
-        stagger: 0.1,
-        scrollTrigger: {
-          trigger: '.loc-title',
-          start: 'top 90%',
-          once: true
-        }
-      })
-
-      // Card reveal with fallback
-      gsap.utils.toArray('.loc-card').forEach((card: any) => {
-        gsap.from(card, {
-          y: 35,
-          opacity: 0,
-          duration: 0.9,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 92%',
-            once: true
-          }
-        })
-      })
-    }, containerRef)
+    }, 200)
 
     return () => {
       clearTimeout(timer)
-      ctx.revert()
     }
   }, [])
 
