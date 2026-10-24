@@ -15,7 +15,7 @@ export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
   const [settings, setSettings] = useState<any>({
-    email: 'lateliermaisonatl@gmail.com',
+    email: 'atlanta@lateliermaison.com',
     phone: '334-487-5707',
     address: 'Buckhead, Atlanta GA',
     availability: 'Serving Atlanta & DMV Area'
