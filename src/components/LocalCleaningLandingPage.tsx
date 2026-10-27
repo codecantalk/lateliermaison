@@ -60,7 +60,7 @@ export default function LocalCleaningLandingPage({ config }: { config: LocalLand
   const [openFaq, setOpenFaq] = useState<number | null>(0)
 
   const googleReviewsUrl = config.googleReviewsUrl || 
-    (process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL || 'https://www.google.com/search?q=L%27Atelier+Maison+Atlanta+reviews')
+    (process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL || 'https://share.google/cJk8y6TGiLCE7k5i4')
 
   // Generate Local Business & HouseCleaning Schema
   const schemaData = {

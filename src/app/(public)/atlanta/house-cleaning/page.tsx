@@ -51,7 +51,7 @@ const atlantaConfig: LocalLandingConfig = {
   email: 'atlanta@lateliermaison.com',
   hours: 'Monday — Saturday: 8:00 AM — 6:00 PM',
   heroImage: '/luxury-hero.jpg',
-  googleReviewsUrl: process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL || 'https://www.google.com/search?q=L%27Atelier+Maison+Atlanta+reviews',
+  googleReviewsUrl: process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL || 'https://share.google/cJk8y6TGiLCE7k5i4',
   serviceAreas: [
     {
       district: 'Core Atlanta & Historic Districts',

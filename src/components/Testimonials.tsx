@@ -40,7 +40,7 @@ const reviews = [
 
 export default function Testimonials() {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const googleBusinessUrl = process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL || 'https://www.google.com/search?q=L%27Atelier+Maison+Atlanta+reviews'
+  const googleBusinessUrl = process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL || 'https://share.google/cJk8y6TGiLCE7k5i4'
 
   // Autoplay functionality
   useEffect(() => {
