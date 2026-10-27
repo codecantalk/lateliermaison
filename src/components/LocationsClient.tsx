@@ -242,10 +242,10 @@ export default function LocationsClient() {
               textAlign: 'center' 
             }}>
               <ShieldCheck size={36} color="#c5a059" style={{ margin: '0 auto 1rem auto' }} />
-              <h3 className="font-serif" style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>
+              <h3 className="font-serif" style={{ fontSize: '2rem', marginBottom: '0.75rem', color: '#ffffff', textShadow: '0 2px 8px rgba(0,0,0,0.25)' }}>
                 Uncompromising Service in Every Neighborhood
               </h3>
-              <p style={{ maxWidth: '650px', margin: '0 auto 2rem auto', color: 'rgba(255,255,255,0.85)', fontSize: '1.05rem', lineHeight: 1.6 }}>
+              <p style={{ maxWidth: '650px', margin: '0 auto 2rem auto', color: '#f1f5f9', fontSize: '1.05rem', lineHeight: 1.6 }}>
                 Every home in Atlanta and the DMV corridor receives vetted master artisans, eco-luxury non-toxic solutions, and our 100% satisfaction guarantee.
               </p>
               <Link href="/estimate" className="btn btn-primary" style={{ backgroundColor: '#d97706', border: 'none', padding: '0.9rem 2.2rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
