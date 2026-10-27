@@ -359,7 +359,7 @@ export default function LocalCleaningLandingPage({ config }: { config: LocalLand
                 <li className={styles.packageFeatureItem}><Check size={18} /><span>Ideal seasonal refresh (Spring / Fall / Holiday)</span></li>
               </ul>
             </div>
-            <a href="#estimate-calculator" className={styles.btnPrimary} style={{ width: '100%', justifyContent: 'center', backgroundColor: '#0B132B' }}>
+            <a href="#estimate-calculator" className={styles.btnPrimary} style={{ width: '100%', justifyContent: 'center', background: 'linear-gradient(135deg, #1e3a8a 0%, #0B132B 100%)', border: 'none' }}>
               Quote Deep Clean
             </a>
           </div>
@@ -378,7 +378,7 @@ export default function LocalCleaningLandingPage({ config }: { config: LocalLand
                 <li className={styles.packageFeatureItem}><Check size={18} /><span>Guaranteed handover ready for closing inspection</span></li>
               </ul>
             </div>
-            <a href="#estimate-calculator" className={styles.btnPrimary} style={{ width: '100%', justifyContent: 'center', backgroundColor: '#0B132B' }}>
+            <a href="#estimate-calculator" className={styles.btnPrimary} style={{ width: '100%', justifyContent: 'center', background: 'linear-gradient(135deg, #1e3a8a 0%, #0B132B 100%)', border: 'none' }}>
               Quote Move In/Out
             </a>
           </div>
@@ -606,23 +606,38 @@ export default function LocalCleaningLandingPage({ config }: { config: LocalLand
       </section>
 
       {/* 11. Final CTA Banner */}
-      <section style={{ backgroundColor: '#0B132B', color: '#ffffff', padding: '5rem 1.5rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
+      <section style={{ 
+        background: 'linear-gradient(135deg, #0B132B 0%, #1e3a8a 100%)', 
+        color: '#ffffff', 
+        padding: '5rem 1.5rem', 
+        textAlign: 'center', 
+        position: 'relative', 
+        overflow: 'hidden' 
+      }}>
+        <div style={{ maxWidth: '850px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
           <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#facc15', fontWeight: 700, display: 'block', marginBottom: '1rem' }}>
             Transform Your Sanctuary Today
           </span>
-          <h2 style={{ fontFamily: 'var(--font-serif, serif)', fontSize: 'clamp(2.2rem, 4.5vw, 3.5rem)', margin: '0 0 1.25rem 0', fontWeight: 400 }}>
-            Experience the #1 Luxury House Cleaning in <span style={{ color: '#c5a059', fontStyle: 'italic' }}>{config.shortName}</span>
+          <h2 style={{ 
+            fontFamily: '"ivyprestige-headline", "Playfair Display", Georgia, serif', 
+            fontSize: 'clamp(2.2rem, 4.5vw, 3.5rem)', 
+            color: '#ffffff', 
+            margin: '0 0 1.25rem 0', 
+            fontWeight: 400,
+            lineHeight: 1.2,
+            textShadow: '0 2px 10px rgba(0,0,0,0.35)'
+          }}>
+            Experience the #1 Luxury House Cleaning in <span style={{ color: '#d97706', fontStyle: 'italic' }}>{config.shortName}</span>
           </h2>
-          <p style={{ fontSize: '1.15rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.6, marginBottom: '2.5rem' }}>
+          <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.15rem', color: '#f1f5f9', lineHeight: 1.6, marginBottom: '2.5rem' }}>
             Book online in under 60 seconds or speak directly with our local concierge team.
           </p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="#estimate-calculator" className={styles.btnPrimary} style={{ padding: '1.1rem 2.5rem', fontSize: '1rem' }}>
+            <a href="#estimate-calculator" className="btn btn-primary" style={{ backgroundColor: '#d97706', border: 'none', padding: '0.95rem 2.5rem', fontSize: '0.9rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#ffffff', borderRadius: '50px' }}>
               Book Your Cleaning Now
             </a>
-            <a href={`tel:${config.phoneClean}`} className={styles.btnPhone} style={{ padding: '1.1rem 2rem' }}>
-              <Phone size={18} color="#facc15" />
+            <a href={`tel:${config.phoneClean}`} className="btn btn-outline" style={{ borderColor: 'rgba(255,255,255,0.4)', color: '#ffffff', background: 'rgba(255,255,255,0.1)', padding: '0.95rem 2rem', fontSize: '0.9rem', letterSpacing: '0.08em', textTransform: 'uppercase', borderRadius: '50px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <Phone size={16} color="#facc15" />
               <span>Call Local Team: {config.phone}</span>
             </a>
           </div>
