@@ -81,6 +81,15 @@ const ICONS_MAP: Record<string, React.ReactNode> = {
 const DEFAULT_CLEANING = {
   base: { apartment: 169, townhome: 199, single: 229 },
   additions: { bedroom: 30, bathroom: 35 },
+  multipliers: {
+    deepClean: 1.35,
+    moveInOut: 1.45,
+    moderateCondition: 1.15,
+    heavyCondition: 1.30,
+    twoFloors: 15,
+    threePlusFloors: 30,
+    monTueDiscountPercent: 10
+  },
   fixedExtras: {
     fridge: { label: 'Inside Refrigerator', price: 40 },
     oven: { label: 'Inside Oven', price: 40 },
@@ -93,6 +102,27 @@ const DEFAULT_CLEANING = {
     windows: { label: 'Interior Windows', prices: { apartment: 35, townhome: 55, single: 75 } },
     garage: { label: 'Garage Sweep', prices: { apartment: 0, townhome: 40, single: 55 } },
   }
+}
+
+const DEFAULT_TV = {
+  screenSize: { small: 149, medium: 179, large: 229 },
+  bracketType: { tilt: 0, motion: 60, client_provided: -20 },
+  wallSurface: { drywall: 0, brick: 75 },
+  wireConcealment: { none: 0, in_wall: 95 }
+}
+
+const DEFAULT_PAINT = {
+  touchup: { min: 195, max: 350, label: 'Accent Wall & Touch-Up' },
+  single_room: { min: 550, max: 950, label: 'Single Room (Walls & Trim)' },
+  multi_room: { min: 1800, max: 4500, label: 'Multiple Rooms / Interior' },
+  exterior: { min: 3500, max: 9500, label: 'Exterior Facade & Siding' }
+}
+
+const DEFAULT_FLOOR = {
+  repair: { min: 195, max: 350, label: 'Scratch Repair & Transition' },
+  single_room: { min: 900, max: 2200, label: 'Single Room Installation' },
+  multi_room: { min: 3500, max: 8500, label: 'Multi-Room Hardwood / Tile' },
+  whole_estate: { min: 8000, max: 22000, label: 'Full Estate Installation' }
 }
 
 const DEFAULT_REMODEL = {
@@ -235,19 +265,35 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
         const { data } = await supabase
           .from('pricing_config')
           .select('key, value')
-          .in('key', ['cleaning_pricing', 'remodeling_pricing', 'construction_pricing'])
+          .in('key', [
+            'cleaning_pricing', 
+            'remodeling_pricing', 
+            'construction_pricing',
+            'tv_pricing',
+            'painting_pricing',
+            'flooring_pricing',
+            'estate_pricing'
+          ])
         
         if (data && data.length > 0) {
           setPricingConfig({
             cleaning: data.find(d => d.key === 'cleaning_pricing')?.value || DEFAULT_CLEANING,
             remodeling: data.find(d => d.key === 'remodeling_pricing')?.value || DEFAULT_REMODEL,
             construction: data.find(d => d.key === 'construction_pricing')?.value || DEFAULT_CONST,
+            tv: data.find(d => d.key === 'tv_pricing')?.value || DEFAULT_TV,
+            painting: data.find(d => d.key === 'painting_pricing')?.value || DEFAULT_PAINT,
+            flooring: data.find(d => d.key === 'flooring_pricing')?.value || DEFAULT_FLOOR,
+            estate: data.find(d => d.key === 'estate_pricing')?.value || ESTATE_PRICING,
           })
         } else {
           setPricingConfig({
             cleaning: DEFAULT_CLEANING,
             remodeling: DEFAULT_REMODEL,
             construction: DEFAULT_CONST,
+            tv: DEFAULT_TV,
+            painting: DEFAULT_PAINT,
+            flooring: DEFAULT_FLOOR,
+            estate: ESTATE_PRICING,
           })
         }
       } catch {
@@ -255,6 +301,10 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
           cleaning: DEFAULT_CLEANING,
           remodeling: DEFAULT_REMODEL,
           construction: DEFAULT_CONST,
+          tv: DEFAULT_TV,
+          painting: DEFAULT_PAINT,
+          flooring: DEFAULT_FLOOR,
+          estate: ESTATE_PRICING,
         })
       } finally {
         setIsPricingLoading(false)
@@ -309,14 +359,20 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
       total += (data.bathrooms - 1) * (cfg.additions?.bathroom || 35)
     }
 
-    if (data.floors === 2) total += 15
-    else if (data.floors >= 3) total += 30
+    const twoFloorsFee = cfg.multipliers?.twoFloors ?? 15
+    const threePlusFloorsFee = cfg.multipliers?.threePlusFloors ?? 30
+    if (data.floors === 2) total += twoFloorsFee
+    else if (data.floors >= 3) total += threePlusFloorsFee
 
-    if (data.condition === 'moderate') total = Math.round(total * 1.15)
-    else if (data.condition === 'heavy') total = Math.round(total * 1.30)
+    const modMultiplier = cfg.multipliers?.moderateCondition ?? 1.15
+    const heavyMultiplier = cfg.multipliers?.heavyCondition ?? 1.30
+    if (data.condition === 'moderate') total = Math.round(total * modMultiplier)
+    else if (data.condition === 'heavy') total = Math.round(total * heavyMultiplier)
 
-    if (data.packageType === 'deep') total = Math.round(total * 1.35)
-    else if (data.packageType === 'move_in_out') total = Math.round(total * 1.45)
+    const deepMultiplier = cfg.multipliers?.deepClean ?? 1.35
+    const moveInOutMultiplier = cfg.multipliers?.moveInOut ?? 1.45
+    if (data.packageType === 'deep') total = Math.round(total * deepMultiplier)
+    else if (data.packageType === 'move_in_out') total = Math.round(total * moveInOutMultiplier)
 
     data.extras?.forEach(extra => {
       const fixed = cfg.fixedExtras?.[extra]
@@ -332,8 +388,9 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
 
     const subtotal = total
     let discount = 0
+    const discountPct = (cfg.multipliers?.monTueDiscountPercent ?? 10) / 100
     if (data.isMondayTuesday) {
-      discount = Math.round(total * 0.10)
+      discount = Math.round(total * discountPct)
       total -= discount
     }
 
@@ -363,68 +420,59 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
   // 2. Reactive TV Mounting Calculation (Derived synchronously with useMemo)
   const tvResult = useMemo(() => {
     if (selectedService !== 'tv') return null
-    let total = 149
+    const cfg = pricingConfig?.tv || DEFAULT_TV
+    const sizePrices = cfg.screenSize || DEFAULT_TV.screenSize
+    const bracketPrices = cfg.bracketType || DEFAULT_TV.bracketType
+    const wallPrices = cfg.wallSurface || DEFAULT_TV.wallSurface
+    const wirePrices = cfg.wireConcealment || DEFAULT_TV.wireConcealment
+
+    let total = sizePrices[tvValues.screenSize] ?? 149
     const breakdown: string[] = []
 
-    // Size
     if (tvValues.screenSize === 'medium') {
-      total = 179
-      breakdown.push('55" – 75" Display Base: $179')
+      breakdown.push(`55" – 75" Display Base: $${total}`)
     } else if (tvValues.screenSize === 'large') {
-      total = 229
-      breakdown.push('75"+ Cinema Display Base: $229')
+      breakdown.push(`75"+ Cinema Display Base: $${total}`)
     } else {
-      total = 149
-      breakdown.push('Under 55" Display Base: $149')
+      breakdown.push(`Under 55" Display Base: $${total}`)
     }
 
-    // Bracket
+    const bracketFee = bracketPrices[tvValues.bracketType] ?? 0
+    total += bracketFee
     if (tvValues.bracketType === 'motion') {
-      total += 60
-      breakdown.push('Full-Motion Swivel Bracket (+$60)')
+      breakdown.push(`Full-Motion Swivel Bracket (+$${bracketFee})`)
     } else if (tvValues.bracketType === 'client_provided') {
-      total -= 20
-      breakdown.push('Client Provided Mount (-$20)')
+      breakdown.push(`Client Provided Mount ($${bracketFee})`)
     } else {
       breakdown.push('Tilt Mount Bracket Included')
     }
 
-    // Wall
+    const wallFee = wallPrices[tvValues.wallSurface] ?? 0
+    total += wallFee
     if (tvValues.wallSurface === 'brick') {
-      total += 75
-      breakdown.push('Masonry / Fireplace Anchors (+$75)')
+      breakdown.push(`Masonry / Fireplace Anchors (+$${wallFee})`)
     }
 
-    // Wire
+    const wireFee = wirePrices[tvValues.wireConcealment] ?? 0
+    total += wireFee
     if (tvValues.wireConcealment === 'in_wall') {
-      total += 95
-      breakdown.push('In-Wall Power & Wire Kit (+$95)')
+      breakdown.push(`In-Wall Power & Wire Kit (+$${wireFee})`)
     }
 
     return { total, breakdown }
-  }, [selectedService, tvValues.screenSize, tvValues.bracketType, tvValues.wallSurface, tvValues.wireConcealment])
+  }, [selectedService, tvValues.screenSize, tvValues.bracketType, tvValues.wallSurface, tvValues.wireConcealment, pricingConfig])
 
   // 3. Reactive Range Calculation (Derived synchronously with useMemo)
   const rangeResult = useMemo(() => {
     if (selectedService === 'painting') {
-      const paintMap = {
-        touchup: { min: 195, max: 350, label: 'Accent Wall & Touch-Up' },
-        single_room: { min: 550, max: 950, label: 'Single Room (Walls & Trim)' },
-        multi_room: { min: 1800, max: 4500, label: 'Multiple Rooms / Interior' },
-        exterior: { min: 3500, max: 9500, label: 'Exterior Facade & Siding' },
-      }
-      const cfg = paintMap[paintValues.scope] || paintMap.single_room
+      const paintMap = pricingConfig?.painting || DEFAULT_PAINT
+      const cfg = paintMap[paintValues.scope] || paintMap.single_room || DEFAULT_PAINT.single_room
       return { min: cfg.min, max: cfg.max, type: `Artisan Painting • ${cfg.label}` }
     }
 
     if (selectedService === 'flooring') {
-      const floorMap = {
-        repair: { min: 195, max: 350, label: 'Scratch Repair & Transition' },
-        single_room: { min: 900, max: 2200, label: 'Single Room Installation' },
-        multi_room: { min: 3500, max: 8500, label: 'Multi-Room Hardwood / Tile' },
-        whole_estate: { min: 8000, max: 22000, label: 'Full Estate Installation' },
-      }
-      const cfg = floorMap[floorValues.scope] || floorMap.single_room
+      const floorMap = pricingConfig?.flooring || DEFAULT_FLOOR
+      const cfg = floorMap[floorValues.scope] || floorMap.single_room || DEFAULT_FLOOR.single_room
       return { min: cfg.min, max: cfg.max, type: `Custom Flooring • ${cfg.label}` }
     }
 
@@ -444,7 +492,7 @@ export default function EstimateCalculator({ defaultService = null }: { defaultS
 
     if (selectedService === 'estate') {
       const tradeKey = estateValues.trade || 'handyman'
-      const tradeConfig = ESTATE_PRICING[tradeKey] || ESTATE_PRICING.handyman
+      const tradeConfig = (pricingConfig?.estate && pricingConfig.estate[tradeKey]) || ESTATE_PRICING[tradeKey] || ESTATE_PRICING.handyman
       const scopeKey = estateValues.scope || 'diagnostic'
       const [min, max] = tradeConfig[scopeKey] || [160, 260]
       const scopeName = scopeKey === 'diagnostic' ? 'Diagnostic Evaluation' : scopeKey === 'minor' ? 'Minor Project' : 'Major Renovation'
