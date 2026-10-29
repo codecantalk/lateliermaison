@@ -2,9 +2,10 @@ import { Metadata } from 'next'
 import LocalCleaningLandingPage, { LocalLandingConfig } from '@/components/LocalCleaningLandingPage'
 
 export const metadata: Metadata = {
-  title: 'Luxury House Cleaning Services in DMV Area (DC, MD, VA) | L\'Atelier Maison',
-  description: 'Premier residential house cleaning serving Washington DC, Bethesda, Potomac, Arlington, Alexandria & McLean. 5.0 Google stars, eco-luxe formulas, bonded & insured.',
+  title: 'DMV House Cleaning | Luxury Maid Service in DC, MD & Northern VA | L\'Atelier Maison',
+  description: 'Premier DMV house cleaning serving Washington DC, Bethesda, Potomac, Arlington, Alexandria & McLean. 5.0 Google stars, eco-luxe formulas, bonded & insured.',
   keywords: [
+    'dmv house cleaning',
     'house cleaning dmv',
     'luxury cleaning washington dc',
     'maid service bethesda md',
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
     canonical: 'https://www.lateliermaison.com/dmv/house-cleaning',
   },
   openGraph: {
-    title: 'Luxury House Cleaning in DMV Area | L\'Atelier Maison',
+    title: 'DMV House Cleaning | Luxury Maid Service in DC, MD & Northern VA',
     description: 'Bespoke house cleaning across Washington DC, Maryland, and Northern Virginia. Eco-friendly supplies, hospital-grade HEPA filters, 5.0 Star rated.',
     url: 'https://www.lateliermaison.com/dmv/house-cleaning',
     siteName: 'L\'Atelier Maison',
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
         url: '/luxury-bathroom.jpg',
         width: 1200,
         height: 630,
-        alt: 'L\'Atelier Maison DMV House Cleaning',
+        alt: 'DMV House Cleaning by L\'Atelier Maison',
       },
     ],
     locale: 'en_US',

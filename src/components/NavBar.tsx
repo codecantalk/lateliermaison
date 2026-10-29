@@ -11,6 +11,7 @@ export default function NavBar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [cleaningDropdownOpen, setCleaningDropdownOpen] = useState(false)
 
   // Identify pages with dark hero (like /locations map hero)
   const normalizedPath = pathname?.replace(/\/$/, '') || ''
@@ -51,9 +52,46 @@ export default function NavBar() {
 
           {/* Desktop Links */}
           <div className={styles.desktopLinks}>
-            <Link href="/services/housecleaning" className={styles.navLink}>
-              HOUSE CLEANING
-            </Link>
+            <div 
+              className={styles.navDropdownGroup}
+              onMouseEnter={() => setCleaningDropdownOpen(true)}
+              onMouseLeave={() => setCleaningDropdownOpen(false)}
+            >
+              <Link 
+                href="/services/housecleaning" 
+                className={styles.navLink}
+                onClick={() => setCleaningDropdownOpen(false)}
+                aria-expanded={cleaningDropdownOpen}
+                aria-haspopup="true"
+              >
+                <span>HOUSE CLEANING</span>
+                <span className={`${styles.dropdownCaret} ${cleaningDropdownOpen ? styles.dropdownCaretOpen : ''}`}>▾</span>
+              </Link>
+              <div className={`${styles.dropdownMenu} ${cleaningDropdownOpen ? styles.dropdownMenuOpen : ''}`}>
+                <Link 
+                  href="/atlanta/house-cleaning" 
+                  className={styles.dropdownItem}
+                  onClick={() => setCleaningDropdownOpen(false)}
+                >
+                  ATLANTA HOUSE CLEANING
+                </Link>
+                <Link 
+                  href="/dmv/house-cleaning" 
+                  className={styles.dropdownItem}
+                  onClick={() => setCleaningDropdownOpen(false)}
+                >
+                  DMV HOUSE CLEANING
+                </Link>
+                <Link 
+                  href="/services/housecleaning" 
+                  className={styles.dropdownItem}
+                  style={{ borderTop: '1px solid rgba(0, 0, 0, 0.06)', fontSize: '0.72rem', opacity: 0.8 }}
+                  onClick={() => setCleaningDropdownOpen(false)}
+                >
+                  ALL CLEANING SERVICES →
+                </Link>
+              </div>
+            </div>
 
             <div 
               className={styles.navDropdownGroup}
@@ -136,6 +174,14 @@ export default function NavBar() {
             <Link href="/services/housecleaning" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>
               House Cleaning
             </Link>
+            <div className={styles.mobileSubGroup} style={{ marginBottom: '1rem' }}>
+              <Link href="/atlanta/house-cleaning" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>
+                Atlanta House Cleaning
+              </Link>
+              <Link href="/dmv/house-cleaning" className={styles.mobileSubLink} onClick={() => setMobileMenuOpen(false)}>
+                DMV House Cleaning (DC, MD, VA)
+              </Link>
+            </div>
             
             <Link href="/services" className={styles.mobileLink} onClick={() => setMobileMenuOpen(false)}>
               Home Services

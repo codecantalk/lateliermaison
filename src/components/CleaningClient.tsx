@@ -143,6 +143,90 @@ export default function CleaningClient() {
 
         <div style={{ paddingTop: '0rem' }}>
 
+        {/* Dedicated Regional Operating Divisions */}
+        <section style={{ padding: '3rem 5% 1rem 5%', backgroundColor: '#ffffff' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{
+              background: 'linear-gradient(135deg, #0B132B 0%, #1e3a8a 100%)',
+              borderRadius: '24px',
+              padding: 'clamp(2rem, 4vw, 3rem)',
+              color: '#ffffff',
+              boxShadow: '0 20px 40px rgba(11, 19, 43, 0.15)',
+              textAlign: 'center'
+            }}>
+              <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#facc15', fontWeight: 700, display: 'block', marginBottom: '0.75rem' }}>
+                Dedicated Regional Operating Divisions
+              </span>
+              <h2 style={{ fontFamily: '"ivyprestige-headline", "Playfair Display", serif', fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)', color: '#ffffff', margin: '0 0 1rem 0', fontWeight: 400 }}>
+                Choose Your Market For Dedicated Local Service
+              </h2>
+              <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.05rem', color: '#e2e8f0', maxWidth: '750px', margin: '0 auto 2rem auto', lineHeight: 1.6 }}>
+                We operate specialized local dispatch hubs with dedicated concierge and cleaning artisans. Select your area to access local reviews, neighborhood coverage, and instant quote booking:
+              </p>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', maxWidth: '900px', margin: '0 auto' }}>
+                
+                {/* Atlanta Card */}
+                <Link 
+                  href="/atlanta/house-cleaning" 
+                  style={{
+                    display: 'block',
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '16px',
+                    padding: '1.75rem',
+                    textAlign: 'left',
+                    textDecoration: 'none',
+                    color: '#ffffff',
+                    transition: 'all 0.3s ease'
+                  }}
+                  className="hover-lift"
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <span style={{ fontSize: '1.25rem', fontWeight: 700, color: '#facc15' }}>Atlanta House Cleaning</span>
+                    <span style={{ fontSize: '1.2rem' }}>→</span>
+                  </div>
+                  <p style={{ fontSize: '0.9rem', color: '#cbd5e1', margin: '0 0 1.25rem 0', lineHeight: 1.5 }}>
+                    Serving Buckhead, Vinings, Midtown, Sandy Springs, Alpharetta & North Atlanta.
+                  </p>
+                  <span style={{ display: 'inline-block', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#ffffff', background: '#d97706', padding: '8px 18px', borderRadius: '50px', fontWeight: 600 }}>
+                    Visit Atlanta Hub →
+                  </span>
+                </Link>
+
+                {/* DMV Card */}
+                <Link 
+                  href="/dmv/house-cleaning" 
+                  style={{
+                    display: 'block',
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '16px',
+                    padding: '1.75rem',
+                    textAlign: 'left',
+                    textDecoration: 'none',
+                    color: '#ffffff',
+                    transition: 'all 0.3s ease'
+                  }}
+                  className="hover-lift"
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <span style={{ fontSize: '1.25rem', fontWeight: 700, color: '#facc15' }}>DMV House Cleaning</span>
+                    <span style={{ fontSize: '1.2rem' }}>→</span>
+                  </div>
+                  <p style={{ fontSize: '0.9rem', color: '#cbd5e1', margin: '0 0 1.25rem 0', lineHeight: 1.5 }}>
+                    Serving Washington DC, Bethesda, Potomac, Arlington, Alexandria, McLean & Northern VA.
+                  </p>
+                  <span style={{ display: 'inline-block', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#ffffff', background: '#d97706', padding: '8px 18px', borderRadius: '50px', fontWeight: 600 }}>
+                    Visit DMV Hub →
+                  </span>
+                </Link>
+
+              </div>
+            </div>
+          </div>
+        </section>
+
       {/* 3. Services (Premium Bento Layout) */}
       <section style={{ padding: '4rem 5% 4rem 5%', backgroundColor: '#fcfaf8' }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>

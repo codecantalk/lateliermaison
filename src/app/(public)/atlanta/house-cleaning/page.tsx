@@ -2,9 +2,10 @@ import { Metadata } from 'next'
 import LocalCleaningLandingPage, { LocalLandingConfig } from '@/components/LocalCleaningLandingPage'
 
 export const metadata: Metadata = {
-  title: 'Luxury House Cleaning Services in Atlanta, GA | L\'Atelier Maison',
-  description: 'Top-rated luxury house cleaning & maid service in Atlanta, Buckhead, Vinings, Midtown & Alpharetta. 5.0 Google stars, eco-friendly formulas, instant online quotes.',
+  title: 'Atlanta House Cleaning | Luxury Maid Service & Housekeeping | L\'Atelier Maison',
+  description: 'Top-rated Atlanta house cleaning and maid service serving Buckhead, Vinings, Midtown & Alpharetta. 5.0 Google stars, eco-friendly formulas, instant online quotes.',
   keywords: [
+    'atlanta house cleaning',
     'house cleaning atlanta',
     'luxury cleaning atlanta',
     'maid service buckhead',
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
     canonical: 'https://www.lateliermaison.com/atlanta/house-cleaning',
   },
   openGraph: {
-    title: 'Luxury House Cleaning in Atlanta, GA | L\'Atelier Maison',
+    title: 'Atlanta House Cleaning | Luxury Maid Service in Atlanta, GA',
     description: 'Experience white-glove residential cleaning in Buckhead, Vinings, Midtown, and Alpharetta. 5.0 Star rated, fully insured.',
     url: 'https://www.lateliermaison.com/atlanta/house-cleaning',
     siteName: 'L\'Atelier Maison',
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
         url: '/luxury-hero.jpg',
         width: 1200,
         height: 630,
-        alt: 'L\'Atelier Maison Atlanta House Cleaning',
+        alt: 'Atlanta House Cleaning by L\'Atelier Maison',
       },
     ],
     locale: 'en_US',

@@ -168,7 +168,11 @@ export default function ServicesClient() {
                <p style={{ fontSize: '1.125rem', lineHeight: 1.8, color: '#4b5563', marginBottom: '2rem' }}>
                   Atelier Maison's signature cleaning service. We meticulously maintain your sanctuary so you can focus on what matters most. From deep resets to ongoing immaculate upkeep.
                </p>
-               <Link href="/services/housecleaning" className={`btn btn-outline ${styles.ctaBtn}`}>Explore House Cleaning</Link>
+               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                  <Link href="/atlanta/house-cleaning" className={`btn btn-primary ${styles.ctaBtn}`}>Atlanta House Cleaning →</Link>
+                  <Link href="/dmv/house-cleaning" className={`btn btn-primary ${styles.ctaBtn}`}>DMV House Cleaning →</Link>
+                  <Link href="/services/housecleaning" className={`btn btn-outline ${styles.ctaBtn}`}>Overview</Link>
+               </div>
             </div>
           </div>
 

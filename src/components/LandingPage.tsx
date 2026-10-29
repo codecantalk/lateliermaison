@@ -383,12 +383,20 @@ export default function LandingPage() {
                   ))}
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                <Link href="/services/housecleaning" className="btn btn-primary" style={{ flex: '1 1 auto', textAlign: 'center' }}>
-                  Explore Cleaning Services →
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '10px' }}>
+                <Link href="/atlanta/house-cleaning" className="btn btn-primary" style={{ flex: '1 1 auto', textAlign: 'center', fontSize: '0.85rem' }}>
+                  Atlanta House Cleaning →
                 </Link>
-                <Link href="/estimate?service=cleaning" className="btn btn-outline" style={{ flex: '1 1 auto', textAlign: 'center' }}>
-                  Get Estimated Quote
+                <Link href="/dmv/house-cleaning" className="btn btn-primary" style={{ flex: '1 1 auto', textAlign: 'center', fontSize: '0.85rem' }}>
+                  DMV House Cleaning →
+                </Link>
+              </div>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <Link href="/services/housecleaning" className="btn btn-outline" style={{ flex: '1 1 auto', textAlign: 'center', fontSize: '0.85rem' }}>
+                  All Cleaning Services
+                </Link>
+                <Link href="/estimate?service=cleaning" className="btn btn-outline" style={{ flex: '1 1 auto', textAlign: 'center', fontSize: '0.85rem' }}>
+                  Estimate Calculator
                 </Link>
               </div>
             </div>
@@ -485,7 +493,7 @@ export default function LandingPage() {
               </h2>
               <div style={{ borderTop: '1px solid #eaeaea', paddingTop: '2rem' }}>
                 <p style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontSize: '1.125rem', fontWeight: 400, lineHeight: 1.8, color: '#4b5563', marginBottom: '3rem' }}>
-                  We prioritize your complete satisfaction, uncompromising attention to detail, and the lasting quality of our craftsmanship. <span style={{ fontStyle: 'italic', color: '#1e3a8a' }}>Dream with us.</span>
+                  L’Atelier Maison caters to your home and it’s needs. We prioritize your complete satisfaction, uncompromising attention to detail, and the lasting quality of our craftsmanship. <span style={{ fontStyle: 'italic', color: '#1e3a8a' }}>Dream with us.</span>
                 </p>
                 <Link href="/estimate" className="btn btn-primary" style={{ letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                   Start Your Project

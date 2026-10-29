@@ -6,10 +6,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const routes = [
     { path: '', priority: 1.0, changeFrequency: 'daily' as const },
+    { path: '/atlanta/house-cleaning', priority: 0.98, changeFrequency: 'weekly' as const },
+    { path: '/dmv/house-cleaning', priority: 0.98, changeFrequency: 'weekly' as const },
     { path: '/services', priority: 0.9, changeFrequency: 'weekly' as const },
-    { path: '/services/housecleaning', priority: 0.9, changeFrequency: 'weekly' as const },
-    { path: '/atlanta/house-cleaning', priority: 0.95, changeFrequency: 'weekly' as const },
-    { path: '/dmv/house-cleaning', priority: 0.95, changeFrequency: 'weekly' as const },
+    { path: '/services/housecleaning', priority: 0.85, changeFrequency: 'weekly' as const },
     { path: '/services/remodeling', priority: 0.9, changeFrequency: 'weekly' as const },
     { path: '/services/estate-management', priority: 0.8, changeFrequency: 'weekly' as const },
     { path: '/services/painting', priority: 0.8, changeFrequency: 'weekly' as const },

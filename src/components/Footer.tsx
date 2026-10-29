@@ -115,6 +115,11 @@ export default function Footer() {
                   <li><p style={{ margin: 0 }}>Cumberland Blvd SE<br/>Vinings, GA -- 30339</p></li>
                   <li><a href="tel:3344875707">334-487-5707</a></li>
                   <li><a href="mailto:atlanta@lateliermaison.com" style={{ fontSize: '0.85rem' }}>atlanta@lateliermaison.com</a></li>
+                  <li style={{ marginTop: '0.4rem' }}>
+                    <Link href="/atlanta/house-cleaning" style={{ color: '#d97706', fontWeight: 600, fontSize: '0.85rem' }}>
+                      Atlanta House Cleaning →
+                    </Link>
+                  </li>
                 </ul>
               </div>
               <div className={styles.linkGroup}>
@@ -122,6 +127,11 @@ export default function Footer() {
                 <ul className={styles.contactList}>
                   <li><p style={{ margin: 0 }}>4600 Powder Mill Rd<br/>Beltsville, MD 20705<br/>United States</p></li>
                   <li><a href="mailto:dmv@lateliermaison.com" style={{ fontSize: '0.85rem' }}>dmv@lateliermaison.com</a></li>
+                  <li style={{ marginTop: '0.4rem' }}>
+                    <Link href="/dmv/house-cleaning" style={{ color: '#d97706', fontWeight: 600, fontSize: '0.85rem' }}>
+                      DMV House Cleaning →
+                    </Link>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -131,7 +141,15 @@ export default function Footer() {
           <div className={styles.footerCol}>
             <div className={styles.navGrid}>
               <div className={styles.linkGroup}>
-
+                <h4 className={styles.colTitle}>Services</h4>
+                <ul className={styles.contactList}>
+                  <li><Link href="/atlanta/house-cleaning" style={{ fontSize: '0.85rem' }}>Atlanta Cleaning</Link></li>
+                  <li><Link href="/dmv/house-cleaning" style={{ fontSize: '0.85rem' }}>DMV Cleaning</Link></li>
+                  <li><Link href="/services/remodeling" style={{ fontSize: '0.85rem' }}>Remodeling</Link></li>
+                  <li><Link href="/estimate" style={{ fontSize: '0.85rem', color: '#d97706', fontWeight: 600 }}>Get Free Estimate →</Link></li>
+                </ul>
+              </div>
+              <div className={styles.linkGroup}>
                 <h4 className={styles.colTitle}>Hours</h4>
                 <ul className={styles.contactList}>
                   <li><p style={{ margin: 0, fontWeight: 500 }}>Monday — Saturday</p></li>

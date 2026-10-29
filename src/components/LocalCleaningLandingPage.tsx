@@ -142,6 +142,14 @@ export default function LocalCleaningLandingPage({ config }: { config: LocalLand
         <a href={`tel:${config.phoneClean}`} className={styles.topRibbonLink}>
           Call {config.phone}
         </a>
+        <span>•</span>
+        <Link 
+          href={config.regionId === 'atlanta' ? '/dmv/house-cleaning' : '/atlanta/house-cleaning'} 
+          className={styles.topRibbonLink}
+          style={{ textDecoration: 'underline', color: '#facc15' }}
+        >
+          {config.regionId === 'atlanta' ? 'Need DMV House Cleaning? Click here →' : 'Need Atlanta House Cleaning? Click here →'}
+        </Link>
       </div>
 
       {/* 2. Conversion-Focused Hero Section */}
@@ -150,7 +158,7 @@ export default function LocalCleaningLandingPage({ config }: { config: LocalLand
         <div className={styles.heroBackground}>
           <Image
             src={config.heroImage}
-            alt={`Luxury House Cleaning in ${config.cityName}`}
+            alt={`${config.regionId === 'atlanta' ? 'Atlanta' : 'DMV'} House Cleaning Services`}
             fill
             priority
             style={{ objectFit: 'cover' }}
@@ -185,9 +193,9 @@ export default function LocalCleaningLandingPage({ config }: { config: LocalLand
               {/* Main H1 Headline */}
               <h1 className={styles.heroHeadline}>
                 {config.regionId === 'atlanta' ? (
-                  <>Pristine Luxury <span className={styles.goldAccent}>House Cleaning</span> in Atlanta, GA.</>
+                  <>Atlanta <span className={styles.goldAccent}>House Cleaning</span> & Luxury Maid Service</>
                 ) : (
-                  <>White-Glove <span className={styles.goldAccent}>House Cleaning</span> in the DMV Area.</>
+                  <>DMV <span className={styles.goldAccent}>House Cleaning</span> & Luxury Maid Service</>
                 )}
               </h1>
 
